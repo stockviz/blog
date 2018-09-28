@@ -17,7 +17,7 @@ options("scipen"=100)
 
 reportPath <- "."
 indexName<-'NIFTY MIDCAP 100'
-periodDays<-c(50, 100, 200)
+periodDays<-c(50, 100, 200, 500)
 
 mytheme <- ttheme_default(
 		core = list(fg_params=list(fontfamily='Segoe UI', hjust=1, x=1)),
@@ -45,21 +45,21 @@ plotDentistyCharts<-function(plotXts, bhPlotXts){
 	for(i in 1:length(bhPlotXts[1,])){
 		bhDensities<-rbind(bhDensities, density(bhPlotXts[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(bhPlotXts[,i])))
-		areas<-rbind(areas, c(bhColNames[i], round(100*distFun(0.0),2), round(100*(1-distFun(0.0)), 2)))
+		areas<-rbind(areas, c(bhColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
 	}
 
 	lowsDensities<-c()
 	for(i in 1:length(lows[1,])){
 		lowsDensities<-rbind(lowsDensities, density(lows[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(lows[,i])))
-		areas<-rbind(areas, c(lowColNames[i], round(100*distFun(0.0),2), round(100*(1-distFun(0.0)), 2)))
+		areas<-rbind(areas, c(lowColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
 	}
 
 	highsDensities<-c()
 	for(i in 1:length(highs[1,])){
 		highsDensities<-rbind(highsDensities, density(highs[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(highs[,i])))
-		areas<-rbind(areas, c(highColNames[i], round(100*distFun(0.0),2), round(100*(1-distFun(0.0)), 2)))
+		areas<-rbind(areas, c(highColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
 	}
 	
 	startYr<-year(index(first(plotXts)))
@@ -69,7 +69,7 @@ plotDentistyCharts<-function(plotXts, bhPlotXts){
 	tt2<-arrangeGrob(tableGrob(areas, rows=NULL, theme=mytheme), ncol=1, 
 		top = textGrob(sprintf("Probability %d:%d", startYr, endYr),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 		bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggplot2::ggsave(sprintf('%s/table.%s.%s.png', reportPath, indexName, startYr, endYr), tt2, width=3, height=7, units='in')
+	ggplot2::ggsave(sprintf('%s/table.%s.%s.png', reportPath, indexName, startYr, endYr), tt2, width=3, height=12, units='in')
 	
 	png(sprintf("%s/%s.lows.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
 	par(family='Segoe UI')
