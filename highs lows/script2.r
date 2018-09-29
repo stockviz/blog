@@ -18,6 +18,7 @@ options("scipen"=100)
 reportPath <- "."
 indexName<-'NIFTY MIDCAP 100'
 periodDays<-c(50, 100, 200, 500)
+probBrackets<-list(c(0, 10), c(5, 15))
 
 mytheme <- ttheme_default(
 		core = list(fg_params=list(fontfamily='Segoe UI', hjust=1, x=1)),
@@ -40,36 +41,65 @@ plotDentistyCharts<-function(plotXts, bhPlotXts){
 	colors<-rainbow(length(lows[1,]))
 	ctrlColors<-gray((1:length(bhPlotXts[1,]))/(2*length(bhPlotXts[1,])))
 
-	areas<-data.frame(KEY="", LTZ=0.0, GTZ=0.0)
+	areaList<-list()
+	for(i in 1:length(probBrackets)){
+		areaList[[i]]<-data.frame(KEY="", HP=0, LT=0.0, GT=0.0)
+		names(areaList[[i]])<-c("KEY", "HP", sprintf("LT_%d", probBrackets[[i]][1]), sprintf("GT_%d", probBrackets[[i]][2]))
+	}
+
 	bhDensities<-c()
 	for(i in 1:length(bhPlotXts[1,])){
 		bhDensities<-rbind(bhDensities, density(bhPlotXts[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(bhPlotXts[,i])))
-		areas<-rbind(areas, c(bhColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
+		
+		lastUsIndex<-regexpr("\\_[^\\_]*$", bhColNames[i])[1]
+		hp<-as.numeric(substring(bhColNames[i], lastUsIndex+1))
+		lhLabel<-substr(bhColNames[i], 1, lastUsIndex-1)
+		
+		for(j in 1:length(probBrackets)){
+			areaList[[j]]<-rbind(areaList[[j]], c(lhLabel, hp, round(100*distFun(probBrackets[[j]][1]),0), round(100*(1-distFun(probBrackets[[j]][2])), 0)))
+		}
 	}
 
 	lowsDensities<-c()
 	for(i in 1:length(lows[1,])){
 		lowsDensities<-rbind(lowsDensities, density(lows[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(lows[,i])))
-		areas<-rbind(areas, c(lowColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
+		
+		lastUsIndex<-regexpr("\\_[^\\_]*$", lowColNames[i])[1]
+		hp<-as.numeric(substring(lowColNames[i], lastUsIndex+1))
+		lhLabel<-substr(lowColNames[i], 1, lastUsIndex-1)
+		
+		for(j in 1:length(probBrackets)){
+			areaList[[j]]<-rbind(areaList[[j]], c(lhLabel, hp, round(100*distFun(probBrackets[[j]][1]),0), round(100*(1-distFun(probBrackets[[j]][2])), 0)))
+		}
 	}
 
 	highsDensities<-c()
 	for(i in 1:length(highs[1,])){
 		highsDensities<-rbind(highsDensities, density(highs[,i], na.rm=T))
 		distFun<-ecdf(as.numeric(na.omit(highs[,i])))
-		areas<-rbind(areas, c(highColNames[i], round(100*distFun(0.0),0), round(100*(1-distFun(0.0)), 0)))
+
+		lastUsIndex<-regexpr("\\_[^\\_]*$", highColNames[i])[1]
+		hp<-as.numeric(substring(highColNames[i], lastUsIndex+1))
+		lhLabel<-substr(highColNames[i], 1, lastUsIndex-1)
+		
+		for(j in 1:length(probBrackets)){
+			areaList[[j]]<-rbind(areaList[[j]], c(lhLabel, hp, round(100*distFun(probBrackets[[j]][1]),0), round(100*(1-distFun(probBrackets[[j]][2])), 0)))
+		}
 	}
 	
 	startYr<-year(index(first(plotXts)))
 	endYr<-year(index(last(plotXts)))
 
-	areas<-areas[-1,]
-	tt2<-arrangeGrob(tableGrob(areas, rows=NULL, theme=mytheme), ncol=1, 
-		top = textGrob(sprintf("Probability %d:%d", startYr, endYr),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
-		bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggplot2::ggsave(sprintf('%s/table.%s.%s.png', reportPath, indexName, startYr, endYr), tt2, width=3, height=12, units='in')
+	for(j in 1:length(probBrackets)){
+		areas<-areaList[[j]]
+		areas<-areas[-1,]
+		tt2<-arrangeGrob(tableGrob(areas, rows=NULL, theme=mytheme), ncol=1, 
+			top = textGrob(sprintf("Probability %d:%d", startYr, endYr),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+			bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
+		ggplot2::ggsave(sprintf('%s/table.%s.%d-%d.%d-%d.png', reportPath, indexName, startYr, endYr, probBrackets[[j]][1], probBrackets[[j]][2]), tt2, width=3.5, height=12, units='in')
+	}
 	
 	png(sprintf("%s/%s.lows.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
 	par(family='Segoe UI')
