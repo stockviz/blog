@@ -8,5 +8,5 @@ Tracks the highs and lows over different lookback periods. It highlights how lon
 ### script2.r
 How are x-day returns distributed after a high/low is formed over y-days? And is there an ideal configuration (x,y) that produces consistent positive returns?
 
-##blogs
+## blogs
 * [StockViz: Highs and Lows](https://stockviz.biz/index.php/2018/09/27/highs-and-lows/)
