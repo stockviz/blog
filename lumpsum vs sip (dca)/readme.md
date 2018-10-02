@@ -10,3 +10,4 @@ Added average returns and probabilities by applying an empirical cumulative dist
 
 ## blogs
 * [StockViz: Lumpsum vs. Dollar Cost Averaging (SIP)](https://stockviz.biz/2018/06/23/lumpsum-vs-dollar-cost-averaging-sip/)
+* [StockViz: Lumpsum vs. SIP: Thinking in Probabilities] (https://stockviz.biz/2018/10/02/lumpsum-vs-sip-thinking-in-probabilities/)
