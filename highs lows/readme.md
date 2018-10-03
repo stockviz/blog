@@ -10,3 +10,4 @@ How are x-day returns distributed after a high/low is formed over y-days? And is
 
 ## blogs
 * [StockViz: Highs and Lows](https://stockviz.biz/index.php/2018/09/27/highs-and-lows/)
+* [StockViz: Buying at highs and lows: Thinking in Probabilities](https://stockviz.biz/index.php/2018/10/03/buying-at-highs-and-lows-thinking-in-probabilities/)
