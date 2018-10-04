@@ -7,4 +7,4 @@ An index is said to be in a drawdown if it is a THRESHOLD% below its maximum lev
 
 ## blogs
 * [StockViz: Systematic Buy-the-Dip](https://stockviz.biz/2016/06/25/systematic-buy-dip/)
-* [StockViz: Systematic Buy-the-Dip, an Update](https://stockviz.biz/2016/06/25/systematic-buy-dip/)
+* [StockViz: Systematic Buy-the-Dip, an Update](https://stockviz.biz/2018/10/04/systematic-buy-the-dip-an-update/)
