@@ -149,3 +149,8 @@ illustrate<-function(indexName, ddLb, ddThresh){
 runAll()
 analyzeData()
 illustrate("NIFTY 50", 100, -10)
+#for(lb in ddLbs){
+#	for(thresh in ddThresholds){
+#		illustrate("NIFTY MIDCAP 100", lb, thresh)
+#	}
+#}
