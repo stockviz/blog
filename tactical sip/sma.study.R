@@ -105,7 +105,7 @@ runAll<-function(){
 			runScenarios(indexNames[ii], smaLower[jj])
 		}
 	}
-	names(retDf)<-c("INDEX", "YEARS", "SMA", sapply(lookbacks, function(x) sprintf("SMA_%d", x)))
+	names(retDf)<-c("INDEX", "YEARS", "L_MA", sapply(lookbacks, function(x) sprintf("SMA_%d", x)))
 	write.csv(retDf, sprintf('%s/table.sma.asset-diff.csv', reportPath), row.names = F)
 }
 
@@ -113,7 +113,7 @@ analyzeData<-function(){
 	retDf<-read.csv(sprintf('%s/table.sma.asset-diff.csv', reportPath))
 
 	summaryDt<-retDf %>%
-		group_by(INDEX, SMA) %>%
+		group_by(INDEX, L_MA) %>%
 		summarize_at(vars(matches("SMA_*")), funs(min, max, mean))
 		
 	toPrintDf<-data.frame(summaryDt)
@@ -123,7 +123,7 @@ analyzeData<-function(){
 	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
 				top = textGrob("Asset Difference (SMA)",gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggsave(sprintf('%s/table.asset-diff.SMA.png', reportPath), tt2, width=21, height=5, units='in')
+	ggsave(sprintf('%s/table.asset-diff.SMA.png', reportPath), tt2, width=18, height=5, units='in')
 }
 
 illustrate<-function(indexName, smaL, smaU){
@@ -161,6 +161,6 @@ illustrate<-function(indexName, smaL, smaU){
 }
 
 #runAll()
-#analyzeData()
+analyzeData()
 #illustrate("NIFTY 50", 3, 200)
-illustrate("NIFTY SMLCAP 100", 3, 100)
+#illustrate("NIFTY SMLCAP 100", 3, 100)
