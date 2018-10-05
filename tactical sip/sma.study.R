@@ -9,6 +9,7 @@ library('reshape2')
 library('grid')
 library('gridExtra')
 library('gtable')
+library('dplyr')
 
 source("d:/stockviz/r/config.r")
 
@@ -28,7 +29,38 @@ dailyRiskFreeRate<-0.05/240
 
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-analyzeScenarios<-function(indexName, smaL){
+retDf<-data.frame(matrix(ncol=3+length(lookbacks), nrow=0))
+
+analyzeScenarios<-function(indexPxts, smaNames, smaFlagNames){
+	#invest Rs. 1 every day. If in dd, then buy EQ. Else accumulate cash
+
+	indexAccumulator<-matrix(nrow=length(indexPxts[,1]), ncol=length(lookbacks))
+	for(j in 1:length(smaFlagNames)){
+		cash<-0.0
+		for(i in 1:length(indexPxts[,1])){
+			flagName<-smaFlagNames[j]
+			smaName<-smaNames[j]
+			if(is.na(indexPxts[i, flagName]) || indexPxts[i, flagName] != 0 || indexPxts[i, 'SMA_L'] < indexPxts[i, smaName]){
+				#accumulate cash
+				cash <- cash*(1+dailyRiskFreeRate) + 1
+			} else {
+				#liquidate cash and buy index
+				indexAccumulator[i, j]<-cash/indexPxts[i,1]
+				cash <- 0.0
+			}
+		}
+		if(cash > 0){
+			indexAccumulator[i, j]<-cash/indexPxts[i,1]
+		}
+	}
+
+	scenarioReturns<-colSums(indexAccumulator, na.rm=T)/sum(1/indexPxts[,1])-1
+
+	return(scenarioReturns)
+}
+
+runScenarios<-function(indexName, smaL){
+	print(indexName)
 	indexPx<-sqlQuery(lcon, sprintf("select PX_CLOSE, TIME_STAMP from BHAV_INDEX where index_name='%s'", indexName))
 	indexPxts2<-xts(indexPx[,1], as.Date(indexPx[,2]))
 
@@ -48,63 +80,87 @@ analyzeScenarios<-function(indexName, smaL){
 	smaCountNames<-sapply(lookbacks, function(x) sprintf("SMA_C_%d", x))
 	names(indexPxts2)<-c(firstCols, smaNames, smaCountNames)
 
-	indexPxts<-na.omit(indexPxts2)
+	indexPxts2<-na.omit(indexPxts2)
 	
 	for(i in smaCountNames){
-		indexPxts<-merge(indexPxts, indexPxts[,i] + lag(indexPxts[,i], 1)) #crossover == 0
+		indexPxts2<-merge(indexPxts2, indexPxts2[,i] + lag(indexPxts2[,i], 1)) #crossover == 0
 	}
 	smaFlagNames<-sapply(lookbacks, function(x) sprintf("SMA_FLAG_%d", x))
-	names(indexPxts)<-c(firstCols, smaNames, smaCountNames, smaFlagNames)
-
-	for(i in 1:length(lookbacks)){
-		toPlot<-data.frame(indexPxts[,1], index(indexPxts[,1]), ifelse(indexPxts$SMA_L > indexPxts[, smaNames[i]], 'above', 'below'), ifelse(indexPxts[,smaFlagNames[i]] == 0 & indexPxts[, 2] >= indexPxts[, smaNames[i]], indexPxts[,1], NA))
-		names(toPlot)<-c('INDEX', 'DAY', 'SMA', 'BUY')
-		xAxisTicks<-seq(from=first(index(indexPxts)), to=last(index(indexPxts)), length.out=10)
-		ggplot(data=toPlot, aes(x=DAY, y=INDEX)) +
-			theme_economist() +
-			geom_line(aes(color=SMA, group=1)) + 
-			geom_point(aes(x=DAY, y=BUY), color='darkgreen', size=1) + 
-			scale_x_date(breaks = xAxisTicks) +
-			labs(x='', y='', color='') + 
-			ggtitle(sprintf("%s %dx%d [%s:%s] @StockViz", indexName, smaL, lookbacks[i], first(index(indexPxts[,1])), last(index(indexPxts[,1]))))
-			
-		ggsave(sprintf("%s/%s.sma.%dx%d.png", reportPath, indexName, smaL, lookbacks[i]), dpi=600, width=12, height=6, units="in")
-	}
+	names(indexPxts2)<-c(firstCols, smaNames, smaCountNames, smaFlagNames)
 	
-	indexAccumulator<-matrix(nrow=length(indexPxts[,1]), ncol=length(lookbacks))
-	for(j in 1:length(smaFlagNames)){
-		cash<-0.0
-		for(i in 1:length(indexPxts[,1])){
-			flagName<-smaFlagNames[j]
-			smaName<-smaNames[j]
-			if(is.na(indexPxts[i, flagName]) || indexPxts[i, flagName] != 0 || indexPxts[i, 2] < indexPxts[i, smaName]){
-				#accumulate cash
-				cash <- cash*(1+dailyRiskFreeRate) + 1
-			} else {
-				#liquidate cash and buy index
-				indexAccumulator[i, j]<-cash/indexPxts[i,1]
-				cash <- 0.0
-			}
-		}
-		if(cash > 0){
-			indexAccumulator[i, j]<-cash/indexPxts[i,1]
-		}
+	startYr<-year(first(index(indexPxts2)))
+	endYr<-year(first(index(indexPxts2)))
+	
+	for(kk in startYr:(endYr-4)){
+		yearRange<-sprintf("%d/%d", kk, kk+4)
+		print(yearRange)
+		retDf<<-rbind(retDf, c(indexName, yearRange, smaL, round(100.0*analyzeScenarios(indexPxts2[yearRange,], smaNames, smaFlagNames), 2)))
 	}
 
-	
-	return(colSums(indexAccumulator, na.rm=T)/sum(1/indexPxts[,1])-1)
 }
 
-retDf<-data.frame(matrix(ncol=2+length(lookbacks), nrow=0))
-
-for(ii in 1:length(indexNames)){
-	for(jj in 1:length(smaLower)){
-		retDf<-rbind(retDf, c(indexNames[ii], smaLower[jj], round(100.0*analyzeScenarios(indexNames[ii], smaLower[jj]), 2)))
+runAll<-function(){
+	for(ii in 1:length(indexNames)){
+		for(jj in 1:length(smaLower)){
+			runScenarios(indexNames[ii], smaLower[jj])
+		}
 	}
+	names(retDf)<-c("INDEX", "YEARS", "SMA", sapply(lookbacks, function(x) sprintf("SMA_%d", x)))
+	write.csv(retDf, sprintf('%s/table.sma.asset-diff.csv', reportPath), row.names = F)
 }
-names(retDf)<-c("INDEX", "SMA", sapply(lookbacks, function(x) sprintf("SMA_%d", x)))
 
-tt2<-arrangeGrob(tableGrob(retDf, rows=NULL, theme=mytheme), ncol=1, 
-			top = textGrob("Asset Difference",gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
-			bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-ggsave(sprintf('%s/table.asset-diff.png', reportPath), tt2, width=6, height=5, units='in')
+analyzeData<-function(){
+	retDf<-read.csv(sprintf('%s/table.sma.asset-diff.csv', reportPath))
+
+	summaryDt<-retDf %>%
+		group_by(INDEX, SMA) %>%
+		summarize_at(vars(matches("SMA_*")), funs(min, max, mean))
+		
+	toPrintDf<-data.frame(summaryDt)
+	colNames<-names(toPrintDf)
+	toPrintDf[,colNames[grepl("SMA_", colNames)]]<-round(toPrintDf[,colNames[grepl("SMA_", colNames)]], 2)
+
+	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
+				top = textGrob("Asset Difference (SMA)",gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
+	ggsave(sprintf('%s/table.asset-diff.SMA.png', reportPath), tt2, width=21, height=5, units='in')
+}
+
+illustrate<-function(indexName, smaL, smaU){
+	indexPx<-sqlQuery(lcon, sprintf("select PX_CLOSE, TIME_STAMP from BHAV_INDEX where index_name='%s'", indexName))
+	indexPxts2<-xts(indexPx[,1], as.Date(indexPx[,2]))
+	
+	indexPxts2<-merge(indexPxts2, SMA(indexPxts2, smaL)) #use a smaller sma crossover to generate the signal
+	indexPxts2<-merge(indexPxts2, SMA(indexPxts2[,1], smaU))
+	names(indexPxts2)<-c("INDEX", "SMA_L", "SMA_U")
+	
+	indexPxts2<-merge(indexPxts2, ifelse(indexPxts2$SMA_L > indexPxts2$SMA_U, 1, -1))	
+	names(indexPxts2)[length(names(indexPxts2))] <- "SMA_C"
+	
+	indexPxts2<-na.omit(indexPxts2)
+	indexPxts2<-merge(indexPxts2, indexPxts2$SMA_C + lag(indexPxts2$SMA_C, 1)) #crossover == 0
+	names(indexPxts2)[length(names(indexPxts2))] <- "SMA_FLAG"
+	
+	firstDate<-first(index(indexPxts2))
+	lastDate<-last(index(indexPxts2))
+
+	toPlot<-data.frame(indexPxts2[,1], index(indexPxts2[,1]), ifelse(indexPxts2$SMA_L > indexPxts2$SMA_U, 'above', 'below'), ifelse(indexPxts2$SMA_FLAG == 0 & indexPxts2$SMA_L >= indexPxts2$SMA_U, indexPxts2[,1], NA))
+	names(toPlot)<-c('INDEX', 'DAY', 'SMA', 'BUY')
+	xAxisTicks<-seq(from=firstDate, to=lastDate, length.out=10)
+	
+	ggplot(data=toPlot, aes(x=DAY, y=INDEX)) +
+		theme_economist() +
+		geom_line(aes(color=SMA, group=1)) + 
+		geom_point(aes(x=DAY, y=BUY), color='darkgreen', size=1) + 
+		scale_x_date(breaks = xAxisTicks) +
+		scale_y_log10() +
+		labs(x='', y='log()', color='', title=sprintf("%s", indexName), subtitle=sprintf("SMA: %dx%d [%s:%s]", smaL, smaU, firstDate, lastDate)) +
+		annotate("text", x=lastDate, y=100, label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.8)
+		
+	ggsave(sprintf("%s/%s.SMA.%dx%d.png", reportPath, indexName, smaL, smaU), dpi=600, width=12, height=6, units="in")	
+}
+
+#runAll()
+#analyzeData()
+#illustrate("NIFTY 50", 3, 200)
+illustrate("NIFTY SMLCAP 100", 3, 100)
