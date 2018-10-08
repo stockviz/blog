@@ -89,7 +89,7 @@ runScenarios<-function(indexName, smaL){
 	names(indexPxts2)<-c(firstCols, smaNames, smaCountNames, smaFlagNames)
 	
 	startYr<-year(first(index(indexPxts2)))
-	endYr<-year(first(index(indexPxts2)))
+	endYr<-year(last(index(indexPxts2)))
 	
 	for(kk in startYr:(endYr-4)){
 		yearRange<-sprintf("%d/%d", kk, kk+4)
@@ -160,7 +160,7 @@ illustrate<-function(indexName, smaL, smaU){
 	ggsave(sprintf("%s/%s.SMA.%dx%d.png", reportPath, indexName, smaL, smaU), dpi=600, width=12, height=6, units="in")	
 }
 
-#runAll()
+runAll()
 analyzeData()
 #illustrate("NIFTY 50", 3, 200)
 #illustrate("NIFTY SMLCAP 100", 3, 100)

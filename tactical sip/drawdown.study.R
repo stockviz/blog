@@ -82,7 +82,7 @@ runScenarios<-function(indexName){
 	names(indexPxts2)<-c("INDEX", maxColNames, ddColNames)
 	
 	startYr<-year(first(index(indexPxts2)))
-	endYr<-year(first(index(indexPxts2)))
+	endYr<-year(last(index(indexPxts2)))
 	
 	for(jj in 1:length(ddThresholds)){
 		for(kk in startYr:(endYr-4)){
