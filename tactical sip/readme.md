@@ -13,7 +13,11 @@ In the 'dip buying' case, the index is bought as long as it is below the THRESHO
 An index is bought only when the lower SMA crosses a larger SMA. By running a sliding 5-year window over different lower and upper SMAs, one can get a sense for the strategy's efficacy.
 In the 'dip buying' case, the index is bough only once - when the crossover is observed.
 
+### daily.vs.monthly.R
+Barring a few outliers, there isn't much of a difference between a daily SIP and monthly one in terms of total asset size accumulated at the end.
+
 ## blogs
 * [StockViz: Systematic Buy-the-Dip](https://stockviz.biz/2016/06/25/systematic-buy-dip/)
 * [StockViz: Systematic Buy-the-Dip, an Update](https://stockviz.biz/2018/10/04/systematic-buy-the-dip-an-update/)
 * [StockViz: Systematic Buy-the-Dip, SMA crosses](https://stockviz.biz/2018/10/04/systematic-buy-the-dip-an-update/)
+* [StockViz: Daily vs. Monthly SIP](https://stockviz.biz/2018/10/08/daily-vs-monthly-sip/)
