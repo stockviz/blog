@@ -157,7 +157,49 @@ runAnalysis<-function(){
 	write.csv(allResultDf, sprintf('%s/cumulative.2-asset.csv', reportPath), row.names = F)
 }
 
-createTable<-function(aa){
+createTable1<-function(){
+	pdf(NULL)
+	retDf<-read.csv(sprintf('%s/cumulative.2-asset.csv', reportPath))
+	
+	toPrint<- retDf %>%
+		group_by(THRESH) %>%
+		summarize(NO_TAX_MEAN = mean(CUMULATIVE[DRAG==0]), TAX_MEAN = mean(CUMULATIVE[DRAG==1])) %>%
+		mutate(DIFF=TAX_MEAN/NO_TAX_MEAN) 
+		
+	toPrintDf<-data.frame(toPrint)
+	toPrintDf<-round(100*toPrintDf, 2)
+	
+	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
+				top = textGrob(sprintf("Avg. Returns by threshold and tax difference"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
+	ggsave(sprintf('%s/table.cumulative.2-asset.avg.tax-diff.png', reportPath), tt2, width=5, height=3, units='in')
+}
+
+createTable1B<-function(){
+	pdf(NULL)
+	retDf<-read.csv(sprintf('%s/cumulative.2-asset.csv', reportPath))
+	
+	options(tibble.print_max = Inf)
+	toPrint<- retDf %>%
+		group_by(A_ALLOC, THRESH) %>%
+		summarize(NO_TAX = mean(CUMULATIVE[DRAG==0]), TAX = mean(CUMULATIVE[DRAG==1])) %>%
+		mutate(DIFF=TAX/NO_TAX-1) %>%
+		arrange(desc(DIFF)) %>%
+		print()
+	
+	options(tibble.print_max = 10)
+	
+	toPrintDf<-data.frame(toPrint)
+	toPrintDf<-round(100*toPrintDf, 2)
+	
+	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
+				top = textGrob(sprintf("Returns sorted by tax difference"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
+	ggsave(sprintf('%s/table.cumulative.2-asset.avg.tax-diff.B.png', reportPath), tt2, width=5, height=8, units='in')
+}
+
+
+createTable2<-function(aa){
 	pdf(NULL)
 	retDf<-read.csv(sprintf('%s/cumulative.2-asset.csv', reportPath))
 	toPrintDf<-retDf[retDf$A_ALLOC == aa, c('THRESH', 'DRAG', 'CUMULATIVE')]
@@ -173,4 +215,7 @@ createTable<-function(aa){
 	ggsave(sprintf('%s/table.cumulative.2-asset.png', reportPath, 100*aa), tt2, width=3, height=4, units='in')
 }
 
-createTable(0.6)
+#runAnalysis()
+#createTable2(0.6)
+#createTable1()
+createTable1B()
