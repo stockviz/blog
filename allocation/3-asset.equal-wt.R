@@ -77,11 +77,15 @@ runScenario<-function(assetWeights, rebalThreshold, stt=0, tax=0){
 		#print(i)
 
 		targetVal <- assetWeights * totalVal
-		excessAmt <- (currentVal - targetVal)*(1-stt)*(1-tax)
+		excessAmt <- (currentVal - targetVal)
 		excessAsset <- as.numeric(excessAmt/allXts[i,])
 		
-		holder[i,assetCols] <- holder[i-1,assetCols] - excessAsset
-		holder[i,assetVals] <- currentVal - excessAmt
+		sttOnExcess <- sum(stt*abs(excessAmt))
+		taxOnProfits <- sum(tax*excessAmt[excessAmt > 0])
+		totalDrag <- sttOnExcess+taxOnProfits
+		
+		holder[i,assetCols] <- holder[i-1,assetCols] - excessAsset - as.numeric(totalDrag/3/allXts[i,])
+		holder[i,assetVals] <- currentVal - excessAmt - totalDrag/3
 	}
 
 	allXts$TOTAL <- rowSums(holder[,assetVals])
@@ -146,9 +150,9 @@ createTable1<-function(){
 	toPrintDf<-round(100*toPrintDf, 2)
 	
 	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
-				top = textGrob(sprintf("Returns sorted by tax difference"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+				top = textGrob(sprintf("3-asset EQL"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggsave(sprintf('%s/table.cumulative.3-asset.eq-wt.tax-diff.png', reportPath), tt2, width=3, height=2, units='in')
+	ggsave(sprintf('%s/table.cumulative.3-asset.EQL.png', reportPath), tt2, width=3, height=2, units='in')
 }
 
 

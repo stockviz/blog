@@ -89,6 +89,7 @@ pspec <- add.objective(portfolio=pspec, type="return", name="mean")
 getOptimWeights<-function(asof){
 	print(asof)
 	opOut<-optimize.portfolio(tail(returnsXts[sprintf("/%s", asof),], efLookback), portfolio = pspec)
+	###chart.EfficientFrontier(opOut, match.col="ETL" or "var", n.portfolios=25, type="l")
 	return(as.numeric(extractWeights(opOut)))
 }
 
@@ -123,11 +124,15 @@ runScenario<-function(rebalThreshold, stt=0, tax=0){
 		assetWeightDf<<-rbind(assetWeightDf, c(rebalThreshold, stt+tax, toString(asof), assetWeights[1],assetWeights[2],assetWeights[3]))
 		
 		targetVal <- assetWeights * totalVal
-		excessAmt <- (currentVal - targetVal)*(1-stt)*(1-tax)
+		excessAmt <- (currentVal - targetVal)
 		excessAsset <- as.numeric(excessAmt/allSubsetXts[i,])
 		
-		holder[i,assetCols] <- holder[i-1,assetCols] - excessAsset
-		holder[i,assetVals] <- currentVal - excessAmt
+		sttOnExcess <- sum(stt*abs(excessAmt))
+		taxOnProfits <- sum(tax*excessAmt[excessAmt > 0])
+		totalDrag <- sttOnExcess+taxOnProfits
+		
+		holder[i,assetCols] <- holder[i-1,assetCols] - excessAsset - as.numeric(totalDrag/3/allSubsetXts[i,])
+		holder[i,assetVals] <- currentVal - excessAmt - totalDrag/3
 	}
 
 	allSubsetXts$TOTAL <- rowSums(holder[,assetVals])
@@ -188,16 +193,16 @@ createTable1<-function(){
 		group_by(THRESH) %>%
 		summarize(NO_TAX = mean(CUMULATIVE[DRAG==0]), TAX = mean(CUMULATIVE[DRAG==1])) %>%
 		mutate(DIFF=TAX/NO_TAX-1) %>%
-		arrange(desc(TAX)) %>%
+		arrange(desc(THRESH)) %>%
 		print()
 	
 	toPrintDf<-data.frame(toPrint)
 	toPrintDf<-round(100*toPrintDf, 2)
 	
 	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
-				top = textGrob(sprintf("sorted by after tax returns"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
+				top = textGrob(sprintf("3-asset %s", objectiveToggle),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggsave(sprintf('%s/table.cumulative.3-asset.optim.%s.tax-diff.png', reportPath, objectiveToggle), tt2, width=3, height=2, units='in')
+	ggsave(sprintf('%s/table.cumulative.3-asset.%s.png', reportPath, objectiveToggle), tt2, width=3, height=2, units='in')
 }
 
 createTable2<-function(aT, tax){
@@ -228,5 +233,5 @@ createTable2<-function(aT, tax){
 }
 	
 #runAnalysis()
-#createTable1()
-createTable2(0.2, 0)
+createTable1()
+#createTable2(0.2, 0)

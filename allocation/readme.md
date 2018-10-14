@@ -2,6 +2,9 @@
 Scenario analysis and projections of different asset allocation schemes.
 
 ## scripts
+### correlation.study.R
+Looks at rolling correlations between different assets on a USD basis.
+
 ### 2-asset.R
 A simple two asset (equity/bond) allocation toggled through different allocations, rebalance thresholds and taxes.
 
