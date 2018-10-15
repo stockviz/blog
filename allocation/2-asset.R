@@ -81,6 +81,24 @@ runScenario<-function(assetWeights, rebalThreshold, stt=0, tax=0){
 	return(retXts)
 }
 
+
+plotResults<-function(toPlot, chartTitle, suffix){
+	png(sprintf("%s/cumulative.2-asset.%s.png", reportPath, suffix), width=1400, height=800, bg="white")
+	layout(matrix(c(1, 2)), heights = c(2, 1.3), widths = 1)
+	par(mar = c(0, 4, 4, 2), family='Segoe UI', bty="n")
+	plot_object <-chart.CumReturns(toPlot, cex.legend=1, main=NA, xaxis = FALSE, legend.loc = "topleft", begin = c("first", "axis"), geometric = TRUE) 
+	print(plot_object)
+	mtext("Cumulative Return", side=2, line=1)
+	title(main=chartTitle, family='Segoe UI') 
+	mtext(paste(sprintf("%.2f%%", 100*apply(toPlot, 2, Return.cumulative)), collapse=" / "), cex=0.8)
+	par(mar = c(5, 4, 0, 2))
+	plot_object <-chart.Drawdown(toPlot, main = NA, ylab = "Drawdown", event.labels = NULL, ylog = FALSE, geometric = TRUE, bty="n")
+	print(plot_object)
+	mtext("Drawdown", side=2, line=1)
+	mtext("@StockViz", side=4, col='grey')
+	dev.off()
+}
+
 runAnalysis<-function(){
 	thresholdPct<-c(c(0.05, 0.1), seq(0.2, 1, 0.2))
 	aAllocPct<-seq(0.4, 0.9, 0.1)
@@ -112,19 +130,8 @@ runAnalysis<-function(){
 		names(resultXts)<-c("A", "B", sapply(aAllocPct, function(x) sprintf("A_%.0f", 100*x)))
 		names(resultDragXts)<-c("A", "B", sapply(aAllocPct, function(x) sprintf("A_%.0f", 100*x)))
 		
-		png(sprintf("%s\\cumulative.2-asset.%.2f.png", reportPath, 100*aT), bg = "white", width = 1200, height = 600)
-		par(family='Segoe UI')
-		charts.PerformanceSummary(resultXts, main=NA)
-		title(sprintf("Two Asset Portfolio (%.0f) @StockViz", 100*aT, 100*aa))
-		mtext(paste(sprintf("%.2f%%", 100*apply(resultXts, 2, Return.cumulative)), collapse=" / "), family='Segoe UI')
-		dev.off()
-		
-		png(sprintf("%s\\cumulative.2-asset.drag.%.2f.png", reportPath, 100*aT), bg = "white", width = 1200, height = 600)
-		par(family='Segoe UI')
-		charts.PerformanceSummary(resultDragXts, main=NA)
-		title(sprintf("Two Asset Portfolio w/tax drag (%.0f) @StockViz", 100*aT, 100*aa))
-		mtext(paste(sprintf("%.2f%%", 100*apply(resultDragXts, 2, Return.cumulative)), collapse=" / "), family='Segoe UI')
-		dev.off()
+		plotResults(resultXts, sprintf("MIDCAP/0-5yr (%.0f)", 100*aT), sprintf("%.0f", 100*aT))
+		plotResults(resultDragXts, sprintf("MIDCAP/0-5yr (%.0f)", 100*aT), sprintf("drag.%.0f", 100*aT))
 	}
 
 	names(allResultDf)<-c('THRESH', 'A_ALLOC', 'DRAG', 'CUMULATIVE')
@@ -166,7 +173,7 @@ createTable2<-function(aa){
 	ggsave(sprintf('%s/table.cumulative.2-asset.%.0f.png', reportPath, 100*aa), tt2, width=3, height=6, units='in')
 }
 
-#runAnalysis()
-createTable2(0.6)
+runAnalysis()
+#createTable2(0.6)
 #createTable1()
 #createTable1B()
