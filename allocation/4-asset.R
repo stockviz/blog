@@ -181,7 +181,7 @@ plotResults<-function(toPlot, chartTitle, suffix){
 
 runAnalysis<-function(){
 	#thresholdPct<-c(0.05)
-	thresholdPct<-c(c(0.5, 0.1), seq(0.2, 1, 0.2))
+	thresholdPct<-c(c(0.05, 0.1), seq(0.2, 1, 0.2))
 
 	allResultDf<-data.frame(matrix(ncol=3,nrow=0))
 
@@ -226,5 +226,38 @@ createTable1<-function(){
 	ggsave(sprintf('%s/table.cumulative.4-asset.%s.png', reportPath, objectiveToggle), tt2, width=3, height=3, units='in')
 }
 
-runAnalysis()
-createTable1()
+createTable2<-function(aT, tax){
+	pdf(NULL)
+	retDf<-read.csv(sprintf('%s/cumulative.4-asset.optim.%s.weights.csv', reportPath, objectiveToggle))
+	taxFlag <- "TAX"
+	if(tax == 0){
+		taxFlag <- "NO_TAX"
+	}
+	
+	toPrint<- retDf %>%
+		filter(THRESH==aT & DRAG == tax) %>%
+		select(DATE, A1, A2, A3) %>%
+		mutate(A1=round(100*A1,2),A2=round(100*A2,2),A3=round(100*A3,2)) %>%
+		print()
+		
+	toPrintDf<-data.frame(toPrint)
+	toPrintDf$DATE<-as.Date(toPrintDf$DATE)
+	
+	firstDate<-first(toPrintDf$DATE)
+	lastDate<-last(toPrintDf$DATE)
+	xAxisTicks<-seq(from=firstDate, to=lastDate, length.out=5)
+	
+	ggplot(data = melt(toPrintDf, id='DATE'), aes(x = DATE, y=value, color=variable)) +
+	  geom_point() +
+	  theme_economist() +
+	  scale_x_date(breaks = xAxisTicks) +
+	  labs(x='', y='asset weights', color='', title=sprintf("Four asset %s weights (%.0f/%s)", objectiveToggle, 100*aT, taxFlag), subtitle=sprintf("[%s:%s]", firstDate, lastDate))+
+	  annotate("text", x=lastDate, y=min(toPrintDf[,c(2,3,4)]), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.8)
+	  
+	ggsave(sprintf("%s/4-asset.%.0f.%s.%s.weights.png", reportPath, 100*aT, taxFlag, objectiveToggle), dpi=600, width=8, height=4, units="in")	
+}
+
+#runAnalysis()
+#createTable1()
+createTable2(0.2, 0)
+createTable2(0.8, 0)

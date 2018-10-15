@@ -115,7 +115,7 @@ plotResults<-function(toPlot, chartTitle, suffix){
 
 runAnalysis<-function(){
 	#thresholdPct<-c(0.05)
-	thresholdPct<-seq(0.05, 0.2, 0.05)
+	thresholdPct<-c(c(0.05, 0.1), seq(0.2, 1, 0.2))
 	aAllocPct<-rep(1/3, 3)
 
 	allResultDf<-data.frame(matrix(ncol=3,nrow=0))
@@ -152,9 +152,9 @@ createTable1<-function(){
 	tt2<-arrangeGrob(tableGrob(toPrintDf, rows=NULL, theme=mytheme), ncol=1, 
 				top = textGrob(sprintf("3-asset EQL"),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 				bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-	ggsave(sprintf('%s/table.cumulative.3-asset.EQL.png', reportPath), tt2, width=3, height=2, units='in')
+	ggsave(sprintf('%s/table.cumulative.3-asset.EQL.png', reportPath), tt2, width=3, height=3, units='in')
 }
 
 
-#runAnalysis()
+runAnalysis()
 createTable1()
