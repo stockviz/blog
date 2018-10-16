@@ -14,7 +14,12 @@ An equal weighted three asset (midcap/bond/nasdaq-100) allocation toggled throug
 ### 3-asset.optimized.R
 Uses portfolio optimization methods to allocate a three asset (midcap/bond/nasdaq-100) portfolio. The portfolio is then toggled through different rebalance thresholds and taxes. Variance (var) and expected tail loss (ETL) are minimized while mean returns are maximized.
 
+### 4-asset.R
+Adds gold as the fourth asset and analyzes the portfolio when the assets are equal weighted/var optimized/ETL optimized.
+
 ## blogs
 * [StockViz: Allocating a Two-Asset Portfolio](https://stockviz.biz/2018/10/10/allocating-a-two-asset-portfolio/)
 * [StockViz: Allocating a Three-Asset Portfolio, Equal Weighted](https://stockviz.biz/index.php/2018/10/11/allocating-a-three-asset-portfolio-equal-weighted/)
 * [StockViz: Allocating a Three-Asset Portfolio, Optimized](https://stockviz.biz/2018/10/12/allocating-a-three-asset-portfolio-optimized/)
+* [StockViz: Allocating a Four-Asset Portfolio](https://stockviz.biz/index.php/2018/10/15/allocating-a-four-asset-portfolio/)
+* [StockViz: The EQUAL-III Theme](https://stockviz.biz/index.php/2018/10/16/equal-iii/)
