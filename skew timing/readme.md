@@ -9,5 +9,5 @@ Blog: [Is Skewness a Timing Signal?](https://stockviz.biz/2018/10/19/is-skewness
 
 ### NIFTY.R
 Calculates the rolling skewness of 220-day daily returns of a NIFTY index and uses it to time the same index.\
-Two scenarios are computed. One in which cash returns 0 and another where it returns the returns of the 0-5year bond total return index.\
+Two scenarios are computed. One in which cash returns 0 and another where it returns the returns of the 0-5year bond total return index.
 
