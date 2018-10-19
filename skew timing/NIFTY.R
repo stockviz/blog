@@ -83,7 +83,7 @@ toPlot<-na.omit(allXts[, c('DRET_INDEX_LAG1', 'DRET_INDEX_P','DRET_INDEX_N')])
 plotCumReturns(toPlot, sprintf("%s/skew(%s)", indexName, indexName), sprintf("%s/cumulative.%s.SKEW.png", reportPath, gsub(" ", "_", indexName)))
 
 #returns with switching over to bonds
-allXts$DRET_INDEX_P<-ifelse(allXts$SKEW_INDEX < 0, allXts$DRET_INDEX_LAG1, allXts$DRET_BIL_LAG1)
+allXts$DRET_INDEX_P<-ifelse(allXts$SKEW_INDEX >= 0, allXts$DRET_INDEX_LAG1, allXts$DRET_BIL_LAG1)
 allXts$DRET_INDEX_N<-ifelse(allXts$SKEW_INDEX < 0, allXts$DRET_INDEX_LAG1, allXts$DRET_BIL_LAG1)
 toPlot<-na.omit(allXts[, c('DRET_INDEX_LAG1', 'DRET_INDEX_P','DRET_INDEX_N')])
 plotCumReturns(toPlot, sprintf("%s~LQD/skew(%s)", indexName, indexName), sprintf("%s/cumulative.%s-LQD.SKEW.png", reportPath, gsub(" ", "_", indexName)))
