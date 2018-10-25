@@ -10,17 +10,20 @@ library('grid')
 library('gridExtra')
 library('gtable')
 
+args = commandArgs(TRUE)
+indexNameArg <- args[1]
+
 options("scipen"=100)
 options(stringsAsFactors = FALSE)
 
 reportPath <- "."
-dataPath <- "."
-
 reportPath <- "D:/StockViz/public/blog/entries and exits/binary"
 
 source("d:/stockviz/r/config.r")
 
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+
+thresholds<-seq(from=0.05, to=0.8, by=0.05)
 
 runSim<-function(iXts, exitThreshold, entryThreshold){
 	iXts$IS_LONG<-0
@@ -50,6 +53,7 @@ runSim<-function(iXts, exitThreshold, entryThreshold){
 }
 
 analyzeIndex<-function(indexName){
+	print(indexName)
 	pxSeries<-sqlQuery(lcon, sprintf("select px_close, time_stamp from bhav_index where index_name='%s'", indexName))
 
 	allXts<-xts(pxSeries[,1], as.Date(pxSeries[,2]))
@@ -63,10 +67,10 @@ analyzeIndex<-function(indexName){
 	resultXts <- allXts$RET_LAG_1
 	rNames<-c('BH')
 
-	thresholds<-seq(from=0.05, to=0.8, by=0.05)
-
+	print(sprintf("running sim... %s", Sys.time()))
 	for(i in thresholds){
 		for(j in thresholds){
+			cat(".")
 			rXts<-runSim(allXts, as.numeric(i), as.numeric(j))
 			resultXts<-merge(resultXts, rXts)
 			sName<-sprintf("S-%.2f-%.2f", i, j)
@@ -75,6 +79,7 @@ analyzeIndex<-function(indexName){
 		}
 	}
 
+	print(sprintf("collating... %s", Sys.time()))
 	years<-sort(unique(year(index(resultXts))))
 	years<-years[-1]
 	years<-years[-length(years)]
@@ -120,6 +125,7 @@ analyzeIndex<-function(indexName){
 	resultDf2$RET_IR<-round(as.numeric(resultDf2$RET_IR), 2)
 
 	write.csv(resultDf2, file=sprintf('%s/simple.entry.exit.%s.csv', reportPath, indexName), row.names =F)
+	print(sprintf("done... %s", Sys.time()))
 }
 
 analyzeIndex2<-function(indexName, exitThreshold, entryThreshold){
@@ -194,15 +200,7 @@ plotCumReturns<-function(toPlot, chartTitle, fileName){
 	dev.off()
 }
 
-analyzeIndex('NIFTY 50')
-analyzeIndex('NIFTY MIDCAP 100')
-analyzeIndex('NIFTY SMLCAP 100')
+#analyzeIndex(indexNameArg)
+#writeCsv2Png(indexNameArg)
+analyzeIndex2(indexNameArg, 0.55, 0.05)
 
-writeCsv2Png('NIFTY 50')
-writeCsv2Png('NIFTY MIDCAP 100')
-writeCsv2Png('NIFTY SMLCAP 100')
-		
-
-analyzeIndex2('NIFTY 50', 0.35, 0.1)	
-analyzeIndex2('NIFTY MIDCAP 100', 0.7, 0.1)
-analyzeIndex2('NIFTY SMLCAP 100', 0.8, 0.15)
