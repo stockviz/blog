@@ -86,11 +86,3 @@ p1<-ggcorplot(cor.matrix(retDf), retDf, main=sprintf('Lag -1 %s [%s:%s]', asset1
 tt2<-arrangeGrob(p1, ncol=1, bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
 ggsave(sprintf('%s/%s.INR.OIL.lag-1.%s.%s.png', reportPath, asset1Name, startDate, endDate), tt2, width=9, height=8, units='in')
 
-q()
-png(sprintf('%s/%s.INR.lag-1.lm.%s.%s.png', reportPath, asset1Name, startDate, endDate), width=10, height=10, units='in', res=300)
-layout(matrix(1:4, ncol = 2))
-par(family='Segoe UI')
-plot(lm("INDEX~INR", retDf), main=sprintf('Lag -1 %s vs. INR [%s:%s]', asset1Name, startDate, endDate))
-layout(1)
-dev.off()
-
