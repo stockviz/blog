@@ -1,5 +1,4 @@
-# Replication of the Newfound Research article When Simplicity Met Fragility
-<sub><sup>(pdf in the repository)</sup></sub>
+# Replication of the Newfound Research article When Simplicity Met Fragility[pdf](WhenSimplicityMetFragility.pdf)
 
 ## scripts
 ### replication.R
