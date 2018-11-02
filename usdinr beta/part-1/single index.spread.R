@@ -1,4 +1,3 @@
-# index (long/short) with hedging using options
 library('RODBC')
 library('quantmod')
 library('PerformanceAnalytics')
@@ -52,8 +51,8 @@ plotBeta<-function(drXts, lb){
 	names(betaDf)<-indices[-1]
 	betaDf$T<-as.Date(index(betaXts[,1]))
 	
-	plotStart<-min(toPlotDf$T)
-	plotEnd<-max(toPlotDf$T)
+	plotStart<-min(betaDf$T)
+	plotEnd<-max(betaDf$T)
 	
 	plotDf(betaDf, 
 		sprintf("Beta between %s and %s", indices[1], paste(indices[-1], collapse=",")), 
@@ -93,20 +92,18 @@ for(ind in indices){
 names(refXts)<-indices
 
 allXts<-na.locf(refXts)
-dateRange<-"2010/"
+dateRange<-"2005/"
 
-plotTimeSeries(allXts)
+#plotTimeSeries(allXts)
 plotTimeSeries(allXts[dateRange,])
 	
-q()
 drXts<-ROC(allXts)
-plotBeta(drXts, 20)
-plotBeta(drXts, 50)
-plotBeta(drXts, 100)
-plotBeta(drXts, 200)
-
+#plotBeta(drXts, 20)
+#plotBeta(drXts, 50)
+#plotBeta(drXts, 100)
+#plotBeta(drXts, 200)
 
 plotBeta(drXts[dateRange,], 20)
 plotBeta(drXts[dateRange,], 50)
-plotBeta(drXts[dateRange,], 100)
-plotBeta(drXts[dateRange,], 200)
+#plotBeta(drXts[dateRange,], 100)
+#plotBeta(drXts[dateRange,], 200)
