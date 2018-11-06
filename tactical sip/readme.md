@@ -19,5 +19,5 @@ Barring a few outliers, there isn't much of a difference between a daily SIP and
 ## blogs
 * [StockViz: Systematic Buy-the-Dip](https://stockviz.biz/2016/06/25/systematic-buy-dip/)
 * [StockViz: Systematic Buy-the-Dip, an Update](https://stockviz.biz/2018/10/04/systematic-buy-the-dip-an-update/)
-* [StockViz: Systematic Buy-the-Dip, SMA crosses](https://stockviz.biz/2018/10/04/systematic-buy-the-dip-an-update/)
+* [StockViz: Systematic Buy-the-Dip, SMA crosses](https://stockviz.biz/index.php/2018/10/05/systematic-buy-the-dip-sma-crosses/)
 * [StockViz: Daily vs. Monthly SIP](https://stockviz.biz/2018/10/08/daily-vs-monthly-sip/)
