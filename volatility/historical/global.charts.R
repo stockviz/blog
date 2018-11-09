@@ -157,9 +157,6 @@ ohlcNames<-c("Open","High","Low","Close")
 df<-sqlQuery(lconUs2, sprintf("select time_stamp, ac from BHAV_YAHOO where symbol='^VIX' and time_stamp >= '%s' and time_stamp <= '%s' and o > 0", startDate, endDate))
 vixXts<-na.omit(xts(df[,-1], as.Date(df[,1])))
 
-df<-sqlQuery(rcon, sprintf("select time_stamp, px_close from VIX_HISTORY where time_stamp >= '%s' and time_stamp <= '%s'", startDate, endDate))
-vixXts<-merge(vixXts, na.omit(xts(df[,-1], as.Date(df[,1]))))
-
 pgCon <- dbConnect(RPostgres::Postgres(), host='windows', user=ldbuser2, password=ldbpassword2, dbname='StockVizBeka', sslmode='allow')
 res <- dbSendQuery(pgCon, "SELECT time_stamp, val->>'Close' as close FROM quandl_ts_json WHERE id=8470456 AND time_stamp >= $1 AND time_stamp <= $2", list(startDate, endDate))
 df <- dbFetch(res)
@@ -167,10 +164,12 @@ dbClearResult(res)
 dbDisconnect(pgCon)
 vixXts<-merge(vixXts, na.omit(xts(df[,-1], as.Date(df[,1]))))
 
-names(vixXts)<-c('SP500', 'N50', 'NK225')
-#plotVix(vixXts)
+df<-sqlQuery(rcon, sprintf("select time_stamp, px_close from VIX_HISTORY where time_stamp >= '%s' and time_stamp <= '%s'", startDate, endDate))
+vixXts<-merge(vixXts, na.omit(xts(df[,-1], as.Date(df[,1]))))
+
+names(vixXts)<-c('SP500', 'NK225', 'N50')
+plotVix(vixXts)
 plotVix(vixXts, "2010/")
-q()
 
 #historical volatility
 
