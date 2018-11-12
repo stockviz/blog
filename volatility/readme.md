@@ -7,4 +7,4 @@ Blog: [Volatility and VIX Charts](https://stockviz.biz/2018/11/09/volatility-and
 
 ### vix/returns.vix.R and vix/backtest.1.R
 Chart the subsequent n-day returns off VIX quintiles and run a simple backtest based on daily returns over different quintiles\
-Blog: [VIX and Equity Index Returns, Part I](https://stockviz.biz/2018/11/12/vix-and-equity-index-returns-part-i/
+Blog: [VIX and Equity Index Returns, Part I](https://stockviz.biz/2018/11/12/vix-and-equity-index-returns-part-i/)
