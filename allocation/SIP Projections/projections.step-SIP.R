@@ -114,6 +114,8 @@ drift<-0.05
 numMonths<-12*20
 maxIter<-10000
 
+############################################
+
 eqtRnd<-base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths))
 while(nrow(eqtRnd) < numMonths){
 	eqtRnd<-rbind(eqtRnd, base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths - nrow(eqtRnd))))
@@ -123,6 +125,83 @@ bndRnd<-base::sample(bondMonthlyRet, min(nrow(bondMonthlyRet), numMonths))
 while(nrow(bndRnd) < numMonths){
 	bndRnd<-rbind(bndRnd, base::sample(bondMonthlyRet, min(nrow(bondMonthlyRet), numMonths - nrow(bndRnd))))
 }
+
+print("#static allocation, random return sampling")
+#static allocation, random return sampling
+assetReturns<-data.frame(E=eqtRnd, B=bndRnd)
+assetWeights<-data.frame(E=rep(0.6, numMonths), B=rep(0.4, numMonths))
+sipFlow<-c(rep(5000.0, numMonths/4), rep(10000.0, numMonths/4), rep(15000.0, numMonths/4), rep(20000.0, numMonths/4))
+
+mainTitle<-sprintf("Static 60/40 Allocation %s/%s", equityName, bondName)
+subTitle<-"20yr random sampling. Step-up SIP."
+projectSip(assetReturns, assetWeights, sipFlow, mainTitle, subTitle, sprintf("%s/random.60.40.B.%s.png", reportPath, equityName))
+
+print("running projections...")
+projections<-c()
+terminalAssets<-c()
+for(i in 1:maxIter){
+	if(i %% 100 == 0) cat(paste(i, ' '))
+	
+	eqtRnd<-base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths))
+	while(nrow(eqtRnd) < numMonths){
+		eqtRnd<-rbind(eqtRnd, base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths - nrow(eqtRnd))))
+	}
+
+	bndRnd<-base::sample(bondMonthlyRet, min(nrow(bondMonthlyRet), numMonths))
+	while(nrow(bndRnd) < numMonths){
+		bndRnd<-rbind(bndRnd, base::sample(bondMonthlyRet, min(nrow(bondMonthlyRet), numMonths - nrow(bndRnd))))
+	}
+
+	assetReturns<-data.frame(E=eqtRnd, B=bndRnd)
+	projectedVals<-projectSip(assetReturns, assetWeights, sipFlow)
+	projections<-c(projections, 100*projectedVals[[2]]) #just take the IRR
+	
+	terminalAssets<-c(terminalAssets, sum(last(projectedVals[[1]])))
+}
+
+projDf<-data.frame(projections)
+names(projDf)<-c('IRR')
+projDf[,1]<-as.numeric(projDf[,1])
+medianIrr<-median(projDf[,1])
+
+minIrr<-min(projDf[,1])
+maxIrr<-max(projDf[,1])
+
+subTitle<-sprintf("20yr random sampling. Step-up SIP. Projected IRR: [%.2f%%,%.2f%%]", minIrr, maxIrr)
+
+ggplot(projDf, aes(IRR)) +
+	theme_economist() +
+	geom_histogram(aes(y=..density..), binwidth=0.25, colour="black", fill="lightblue") +
+	geom_density(alpha=.2, fill="#FF6666") +
+	geom_vline(aes(xintercept=medianIrr), colour="blue", size=1, linetype='dashed', alpha=0.5) +
+	geom_label(aes(x=medianIrr, label=sprintf("%.2f%%", medianIrr), y=0), colour="blue") +
+	labs(y='density', x='projected IRR', color='', title=mainTitle, subtitle=subTitle) +
+	annotate("text", x=max(projDf$IRR), y=0, label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.9)
+	
+ggsave(sprintf("%s/random.60.40.IRR.DENSITY.B.%s.png", reportPath, equityName), dpi=600, width=12, height=6, units="in")
+
+projDf<-data.frame(terminalAssets)
+names(projDf)<-c('A')
+projDf[,1]<-as.numeric(projDf[,1])
+medianIrr<-median(projDf[,1])
+
+minIrr<-min(projDf[,1])
+maxIrr<-max(projDf[,1])
+
+subTitle<-sprintf("20yr random sampling. Step-up SIP. Projected final asset value: [%.2f,%.2f]", minIrr, maxIrr)
+
+ggplot(projDf, aes(A)) +
+	theme_economist() +
+	geom_histogram(aes(y=..density..), binwidth=(maxIrr-minIrr)/100, colour="black", fill="lightblue") +
+	geom_density(alpha=.2, fill="#FF6666") +
+	geom_vline(aes(xintercept=medianIrr), colour="blue", size=1, linetype='dashed', alpha=0.5) +
+	geom_label(aes(x=medianIrr, label=sprintf("%.2f", medianIrr), y=0), colour="blue") +
+	labs(y='density', x='projected final asset value', color='', title=mainTitle, subtitle=subTitle) +
+	annotate("text", x=max(projDf$A), y=0, label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.9)
+	
+ggsave(sprintf("%s/random.60.40.VALUE.DENSITY.B.%s.png", reportPath, equityName), dpi=600, width=12, height=6, units="in")
+
+############################################
 
 print("#glide-path allocation, random return sampling")
 #glide-path allocation, random return sampling
@@ -139,6 +218,7 @@ print("running projections...")
 projections<-c()
 terminalAssets<-c()
 for(i in 1:maxIter){
+	if(i %% 100 == 0) cat(paste(i, ' '))
 	eqtRnd<-base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths))
 	while(nrow(eqtRnd) < numMonths){
 		eqtRnd<-rbind(eqtRnd, base::sample(equityMonthlyRet, min(nrow(equityMonthlyRet), numMonths - nrow(eqtRnd))))
