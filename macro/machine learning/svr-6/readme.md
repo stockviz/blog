@@ -1,0 +1,3 @@
+The FRED publishes the currency indices only on Monday afternoons, or the next business day if they were closed. We get around this problem by computing the currency index we are interested in (DTWEXM) by using the underlying the currencies themselves and the weights used by the FRED. 
+
+[Macro: Computing DTWEXM before the FRED](https://stockviz.biz/index.php/2018/11/27/macro-computing-dtwexm-before-the-fred/)
