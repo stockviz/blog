@@ -31,9 +31,11 @@ niftyXts<-merge(niftyXts, stats::lag(niftyXts$PX_CLOSE, 1))
 
 names(niftyXts)<-c('O', 'C', 'PC')
 
+niftyXts$O2C<-niftyXts$O-niftyXts$C
 niftyXts$C2C<-niftyXts$C-niftyXts$PC
 niftyXts$C2O<-niftyXts$O-niftyXts$PC
 
+niftyXts$O2C_PCT<-niftyXts$O2C/niftyXts$C
 niftyXts$C2C_PCT<-niftyXts$C2C/niftyXts$PC
 niftyXts$C2O_PCT<-niftyXts$C2O/niftyXts$PC
 
@@ -41,6 +43,21 @@ niftyXts$WDAY<-wday(index(niftyXts)) #Sunday is 1, Monday is 2... Saturday is 7
 niftyXts$DAY_GAP<-niftyXts$WDAY-stats::lag(niftyXts$WDAY, 1)
 
 niftyXts<-na.omit(niftyXts)
+
+c2cO2c<-merge(ifelse(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4, niftyXts$C2C_PCT, NA), ifelse(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4, niftyXts$O2C_PCT, NA))
+c2cO2c<-na.omit(c2cO2c)
+names(c2cO2c)<-c('C2C', 'O2C')
+Common.PlotCumReturns(c2cO2c, "NIFTY Friday/Monday Close-to-Close vs. Open-to-Close Returns", sprintf("%s/NIFTY.c2c-o2c.friday-monday.cumulative.png", reportPath))
+
+c2cO2c<-merge(ifelse(niftyXts$DAY_GAP != 1 & !(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4), niftyXts$C2C_PCT, NA), ifelse(niftyXts$DAY_GAP != 1 & !(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4), niftyXts$O2C_PCT, NA))
+c2cO2c<-na.omit(c2cO2c)
+names(c2cO2c)<-c('C2C', 'O2C')
+Common.PlotCumReturns(c2cO2c, "NIFTY Holiday Close-to-Close vs. Open-to-Close Returns", sprintf("%s/NIFTY.c2c-o2c.holiday.cumulative.png", reportPath))
+
+c2cO2c<-merge(ifelse(niftyXts$DAY_GAP == 1, niftyXts$C2C_PCT, NA), ifelse(niftyXts$DAY_GAP == 1, niftyXts$O2C_PCT, NA))
+c2cO2c<-na.omit(c2cO2c)
+names(c2cO2c)<-c('C2C', 'O2C')
+Common.PlotCumReturns(c2cO2c, "NIFTY Day 1 Close-to-Close vs. Open-to-Close Returns", sprintf("%s/NIFTY.c2c-o2c.day1.cumulative.png", reportPath))
 
 gapRegularMonday<-ifelse(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4, niftyXts$C2O_PCT, NA)
 gapAfterHoliday<-ifelse(niftyXts$DAY_GAP != 1 & !(niftyXts$WDAY == 2 & niftyXts$DAY_GAP == -4), niftyXts$C2O_PCT, NA)
