@@ -24,9 +24,11 @@ usdDf1<-sqlQuery(lconUs2, sprintf("select ac, time_stamp from BHAV_YAHOO
 							where time_stamp >= '%s' and time_stamp <= '%s' 
 							and symbol='%s'", startDate, endDate, index1))
 usdXts1<-xts(usdDf1$ac, as.Date(usdDf1$time_stamp))
-usdDailyRets<-dailyReturn(usdXts1)
+usdWeeklyRets<-weeklyReturn(usdXts1)
+usdWeeklyRets<-usdWeeklyRets[-1]
+usdWeeklyRets<-usdWeeklyRets[-nrow(usdWeeklyRets)]
 
-dailyXts<-rollapply(usdDailyRets, 500, function(X){
+weeklyXts<-rollapply(usdWeeklyRets, 200, function(X){
 	tryCatch({
 		mix_mod <- normalmixEM(X, k=2, lambda = c(0.2, 0.8))
 		xts(matrix(c(mix_mod$sigma[1], mix_mod$sigma[2], last(mix_mod$posterior[,1])), ncol=3), index(last(X)))
@@ -35,43 +37,17 @@ dailyXts<-rollapply(usdDailyRets, 500, function(X){
 	})
 }, by.column=F)
 
-dailyXtsCp<-na.omit(dailyXts)
-names(dailyXtsCp)<-c('SIGMA_1', 'SIGMA_2', 'PROB_1')
+weeklyXtsCp<-na.omit(weeklyXts)
+names(weeklyXtsCp)<-c('SIGMA_1', 'SIGMA_2', 'PROB_1')
 
 #lower sigma => stable. 
-dailyXtsCp$PROB_STABLE<-ifelse(dailyXtsCp$SIGMA_1 < dailyXtsCp$SIGMA_2, dailyXtsCp$PROB_1, 1-dailyXtsCp$PROB_1) 
+weeklyXtsCp$PROB_STABLE<-ifelse(weeklyXtsCp$SIGMA_1 < weeklyXtsCp$SIGMA_2, weeklyXtsCp$PROB_1, 1-weeklyXtsCp$PROB_1) 
 
 #apply a threshold to the probability to make a binary classification
-dailyXtsCp$REGIME<-ifelse(dailyXtsCp$PROB_STABLE > 0.5, 1, 0)
-
-#apply a moving average to smooth regimes
-dailyXtsCp$PROB_STABLE_SUM<-rollapply(dailyXtsCp$PROB_STABLE, 50, sum)
-dailyXtsCp$REGIME_2<-ifelse(dailyXtsCp$PROB_STABLE_SUM > 25, 1, 0)
-
-#plot the smoothed regime moving average over log prices
-toPlotXts<-na.omit(merge(usdXts1, dailyXtsCp$REGIME_2))
-names(toPlotXts)<-c('P', 'R')
-
-toPlotDf<-data.frame(toPlotXts)
-toPlotDf$T<-as.Date(index(toPlotXts))
-
-toPlotDf$R<-factor(toPlotDf$R, levels=sort(unique(toPlotDf$R)))
-plotStart<-min(toPlotDf$T)
-plotEnd<-max(toPlotDf$T)
-xAxisTicks<-seq(plotStart, plotEnd, length.out=10)
-
-pdf(NULL)	
-ggplot(toPlotDf, aes(x=T, y=P, color=R)) + 
-	theme_economist() +
-	geom_line(aes(color=R, group=1)) +
-	scale_y_log10() +
-	scale_x_date(breaks = xAxisTicks) +
-	labs(x = "", y="log(price)", fill="", color="", title="S&P 500", subtitle="rolling 500-day window") +
-	annotate("text", x=plotEnd, y=min(toPlotDf$P), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8)
-ggsave(sprintf("%s/sp500.regime.png", reportPath), width=12, height=6, units="in")
+weeklyXtsCp$REGIME<-ifelse(weeklyXtsCp$PROB_STABLE > 0.5, 1, 0)
 
 #use the non-smoothed regime to create a density plot	
-btXts<-na.omit(merge(usdDailyRets, dailyXtsCp$REGIME))	
+btXts<-na.omit(merge(usdWeeklyRets, weeklyXtsCp$REGIME))	
 names(btXts)<-c('BH', 'REGIME')
 
 plotStart<-first(index(btXts))
@@ -81,14 +57,15 @@ btDf<-data.frame(100*merge(btXts[btXts$REGIME == 0]$BH, btXts[btXts$REGIME == 1]
 names(btDf)<-c('Unstable', 'Stable')
 meltedDf<-melt(btDf)
 
+pdf(NULL)
 ggplot(meltedDf, aes(x=value, color=variable)) +
 	theme_economist() +
 	stat_density(geom="line", position = "identity", na.rm=T, size=0.8) +
-	labs(y='density', x='daily returns(%)', fill='', color='', title="S&P 500 Regime", subtitle=sprintf("%s:%s", plotStart, plotEnd)) +
+	labs(y='density', x='weekly returns(%)', fill='', color='', title="S&P 500 Regime", subtitle=sprintf("%s:%s", plotStart, plotEnd)) +
 	annotate("text", x=min(btDf, na.rm=T), y=0, label = "@StockViz", hjust=-.5, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.9)
-ggsave(sprintf("%s/sp500.regime.density.png", reportPath), width=12, height=6, units="in")
+ggsave(sprintf("%s/sp500.regime.density.weekly.png", reportPath), width=12, height=6, units="in")
 
 #use the non-smoothed regime for a long-only back-test
 btXts$BH_LAG_1<-stats::lag(btXts$BH, -1)
 btXts$L<-ifelse(btXts$REGIME == 1, btXts$BH_LAG_1, 0)
-Common.PlotCumReturns(btXts[, c('BH_LAG_1','L')], "S&P 500 Regime Switch", sprintf("%s/sp500.regime.cumulative.png", reportPath))
+Common.PlotCumReturns(btXts[, c('BH_LAG_1','L')], "S&P 500 Regime Switch (weekly)", sprintf("%s/sp500.regime.cumulative.weekly.png", reportPath))
