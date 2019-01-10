@@ -18,7 +18,31 @@ lconUs2 <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;
 startDate<-as.Date("1991-01-01")
 endDate<-as.Date("2018-12-31")
 lb <- 12*5 #lookback in months
-rf <- 0.02/12 #risk free return
+riskfree <- 0.02/12 #risk free return
+
+plotChart<-function(omDf, ratioName){
+	omMelt<-melt(omDf, id='YMD')
+	xAxisTicks<-seq(startDate, endDate, length.out=10)
+
+	pdf(NULL)
+	ggplot(omMelt, aes(x=YMD, y=value, color=variable)) +
+		theme_economist() +
+		geom_line() +
+		scale_x_date(breaks = xAxisTicks) +
+		labs(x = "", y=ratioName, fill="", color="", title=ratioName, subtitle=sprintf("%d-month lookback [%s:%s]", lb, startDate, endDate)) +
+		annotate("text", x=endDate, y=min(omMelt$value), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8)
+	ggsave(sprintf("%s/%s.%s.%s.%s.%s.%d.png", reportPath, ratioName, index1, index2, startDate, endDate, lb), width=12, height=6, units="in")
+}
+
+mergeXts<-function(om1, om2){
+	omDf1<-data.frame(YMD=as.Date(sprintf("%d-%d-%d", year(index(om1)), month(index(om1)), 25)), V = coredata(om1))
+	omDf2<-data.frame(YMD=as.Date(sprintf("%d-%d-%d", year(index(om2)), month(index(om2)), 25)), V = coredata(om2))
+
+	omDf<-merge(omDf1, omDf2, by='YMD')
+	names(omDf)<-c('YMD', index1, index2)
+	
+	return(omDf)
+}
 
 index1<-'^GSPC'
 index2<-'NIFTY50 USD'
@@ -43,24 +67,20 @@ mRet1<-mRet1[-nrow(mRet1)]
 mRet2<-mRet2[-1]
 mRet2<-mRet2[-nrow(mRet2)]
 
-om1<-na.omit(rollapply(mRet1, lb, function(X) Omega(X, Rf = rf)))
-om2<-na.omit(rollapply(mRet2, lb, function(X) Omega(X, Rf = rf)))
+om1<-na.omit(rollapply(mRet1, lb, function(X) Omega(X, Rf = riskfree)))
+om2<-na.omit(rollapply(mRet2, lb, function(X) Omega(X, Rf = riskfree)))
 
-omDf1<-data.frame(YMD=as.Date(sprintf("%d-%d-%d", year(index(om1)), month(index(om1)), 25)), V = coredata(om1))
-omDf2<-data.frame(YMD=as.Date(sprintf("%d-%d-%d", year(index(om2)), month(index(om2)), 25)), V = coredata(om2))
+omDf<-mergeXts(om1, om2)
+plotChart(omDf, 'Omega')
 
-omDf<-merge(omDf1, omDf2, by='YMD')
-names(omDf)<-c('YMD', index1, index2)
+om1<-na.omit(rollapply(mRet1, lb, function(X) AdjustedSharpeRatio(X, Rf = riskfree)))
+om2<-na.omit(rollapply(mRet2, lb, function(X) AdjustedSharpeRatio(X, Rf = riskfree)))
 
-omMelt<-melt(omDf, id='YMD')
-xAxisTicks<-seq(startDate, endDate, length.out=10)
+omDf<-mergeXts(om1, om2)
+plotChart(omDf, 'Adjusted Sharpe Ratio')
 
-pdf(NULL)
-ggplot(omMelt, aes(x=YMD, y=value, color=variable)) +
-	theme_economist() +
-	geom_line() +
-	scale_x_date(breaks = xAxisTicks) +
-	labs(x = "", y="omega", fill="", color="", title="Omega", subtitle=sprintf("%d-month lookback [%s:%s]", lb, startDate, endDate)) +
-	annotate("text", x=endDate, y=min(omMelt$value), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8)
-ggsave(sprintf("%s/OMEGA.%s.%s.%s.%s.%d.png", reportPath, index1, index2, startDate, endDate, lb), width=12, height=6, units="in")
-	
+om1<-na.omit(rollapply(mRet1, lb, function(X) SharpeRatio(X, Rf = riskfree, FUN='StdDev')[[1]])) 
+om2<-na.omit(rollapply(mRet2, lb, function(X) SharpeRatio(X, Rf = riskfree, FUN='StdDev')[[1]]))
+
+omDf<-mergeXts(om1, om2)
+plotChart(omDf, 'Sharpe Ratio')
