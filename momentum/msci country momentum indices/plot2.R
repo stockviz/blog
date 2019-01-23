@@ -70,14 +70,25 @@ msciIndices$ED_DATE<-as.Date(msciIndices$ED_DATE)
 startDate<-max(msciIndices$ST_DATE)
 startYear<-year(startDate)+1
 
+monthlyRetsXts<-xts()
 retDf<-data.frame(INDEX="", YEAR=0, RET=0.0)
 for(i in 1:nrow(msciIndices)){
 	monthlyVals<-downloadMsci(msciIndices$ID[i])
+	
+	mRets<-diff(monthlyVals)/stats::lag(monthlyVals,1)
+	mRets<-Common.NormalizeMonthlyDates(mRets)
+	monthlyRetsXts<-merge(monthlyRetsXts, mRets)
+	
 	annRets<-annualReturn(monthlyVals)
 	
 	rets<-data.frame(INDEX=rep(msciIndices$NAME[i], nrow(annRets)), YEAR=year(index(annRets)), RET=as.numeric(100*coredata(annRets)))
 	retDf<-rbind(retDf, rets)
 }
+
+monthlyRetsXts<-na.omit(monthlyRetsXts)
+names(monthlyRetsXts)<-msciIndices$NAME
+
+Common.PlotCumReturns(monthlyRetsXts, "MSCI Country-wise Momentum Indices", sprintf("%s/MSCI.sub-country.momentum.cumulative.png", reportPath))
 
 retDf<-retDf[-1,]
 retDf$YEAR<-as.numeric(retDf$YEAR)
