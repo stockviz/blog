@@ -44,26 +44,11 @@ downloadMsci<-function(indexId){
 	return(momXts2)
 }
 
-msciIndices<-data.frame(NAME=c('AUSTRALIA MOMENTUM',
-	'BRAZIL MOMENTUM',
-	'CANADA MOMENTUM',
-	'CHILE MOMENTUM',
-	'CHINA MOMENTUM',
-	'COLOMBIA MOMENTUM',
-	'FRANCE MOMENTUM',
-	'GERMANY MOMENTUM',
-	'HONG KONG MOMENTUM',
-	'INDIA MOMENTUM',
-	'JAPAN MOMENTUM',
-	'KOREA MOMENTUM',
-	'MEXICO MOMENTUM',
-	'PERU MOMENTUM',
-	'RUSSIA MOMENTUM',
-	'SOUTH AFRICA MOMENTUM',
-	'SWITZERLAND MOMENTUM',
-	'TAIWAN MOMENTUM',
-	'UNITED KINGDOM MOMENTUM',
-	'USA MOMENTUM'))
+msciIndices<-data.frame(NAME=c('INDIA MOMENTUM',
+	'EM (EMERGING MARKETS) MOMENTUM',
+	'EUROPE MOMENTUM',
+	'USA MOMENTUM',
+	'WORLD MOMENTUM'))
 
 msciIndices$ID<-NA	
 msciIndices$ST_DATE<-NA
@@ -109,11 +94,10 @@ pdf(NULL)
 ggplot(data=v2, aes(x=INDEX, y=RET, fill=YEAR)) +
   theme_economist() +
   geom_bar(stat="identity", position=position_dodge()) +
-  coord_flip() +
   labs(x = "", y="returns(%)", fill="", color="", title="MSCI Country Momentum Index Returns", subtitle=sprintf("%s:%s", startDate, endDate)) +
-  annotate("text", x=0, y=max(v2$RET), label = "@StockViz", hjust=1.1, vjust=-.5, col="white", cex=6, fontface = "bold", alpha = 0.5)
+  annotate("text", x=0, y=min(v2$RET), label = "@StockViz", hjust=1.1, vjust=-.5, col="white", cex=6, fontface = "bold", alpha = 0.5)
 
-ggsave(sprintf("%s/MSCI.country.momentum.yearwise.%s.%s.png", reportPath, startDate, endDate), width=10, height=20, units="in")  
+ggsave(sprintf("%s/MSCI.sub-country.momentum.yearwise.%s.%s.png", reportPath, startDate, endDate), width=16, height=8, units="in")  
 
 ###
 lts<-c(median(v2$RET)-sd(v2$RET),median(v2$RET)+sd(v2$RET))
@@ -126,4 +110,4 @@ ggplot(data=v2, aes(x=YEAR, y=INDEX)) +
 	labs(x = "", y="", fill="", color="", title="MSCI Country Momentum Index Returns", subtitle=sprintf("%s:%s", startDate, endDate)) +
 	annotate("text", x=1, y=0, label = "@StockViz", hjust=0.5, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.5)
 
-ggsave(sprintf("%s/MSCI.country.momentum.yearwise.heat.%s.%s.png", reportPath, startDate, endDate), width=22, height=12, units="in")
+ggsave(sprintf("%s/MSCI.sub-country.momentum.yearwise.heat.%s.%s.png", reportPath, startDate, endDate), width=25, height=6, units="in")
