@@ -1,0 +1,5 @@
+rscript backtest.R "USA IMI" "ACWI ex USA"
+rscript backtest.R "USA IMI" "ACWI ex USA MOMENTUM"
+rscript backtest.R "USA MOMENTUM" "ACWI ex USA"
+rscript backtest.R "USA MOMENTUM" "ACWI ex USA MOMENTUM"
+rscript backtest.R "USA MOMENTUM" "WORLD ex USA MOMENTUM"
