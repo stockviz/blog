@@ -103,7 +103,7 @@ ggplot(mRetDf, aes_string(x=sp500Index2, y=sp500MomIndex2)) +
 	geom_point() +
 	geom_smooth() +
 	geom_text(x = 0.9*min(monthlyReturnXts[,sp500Index], na.rm=T), y = 0.9*max(monthlyReturnXts[,sp500MomIndex], na.rm=T), label = lmEq, parse = TRUE) +
-	labs(x = sp500Index, y=sp500MomIndex, fill="", color="", title=sprintf("Correlation: %s vs %s", sp500Index, sp500MomIndex), subtitle=sprintf("%s:%s", plotStart, plotEnd)) +
+	labs(x = sp500Index, y=sp500MomIndex, fill="", color="", title=sprintf("Correlation: %s vs %s", sp500Index, sp500MomIndex), subtitle=sprintf("monthly returns [%s:%s]", plotStart, plotEnd)) +
 	annotate("text", x=max(monthlyReturnXts[,sp500Index], na.rm=T), y=min(monthlyReturnXts[,sp500MomIndex], na.rm=T), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.5)
 ggsave(sprintf("%s/%s.%s.correlation.png", reportPath, sp500Index, sp500MomIndex), width=20, height=8, units="in")  
 
@@ -113,6 +113,6 @@ ggplot(mRetDf, aes_string(x=exUsIndex2, y=exUsMomIndex2)) +
 	geom_point() +
 	geom_smooth() +
 	geom_text(x = 0.9*min(monthlyReturnXts[,exUsIndex], na.rm=T), y = 0.9*max(monthlyReturnXts[,exUsMomIndex], na.rm=T), label = lmEq, parse = TRUE) +
-	labs(x = exUsIndex, y=exUsMomIndex, fill="", color="", title=sprintf("Correlation: %s vs %s", exUsIndex, exUsMomIndex), subtitle=sprintf("%s:%s", plotStart, plotEnd)) +
+	labs(x = exUsIndex, y=exUsMomIndex, fill="", color="", title=sprintf("Correlation: %s vs %s", exUsIndex, exUsMomIndex), subtitle=sprintf("monthly returns [%s:%s]", plotStart, plotEnd)) +
 	annotate("text", x=max(monthlyReturnXts[,exUsIndex], na.rm=T), y=min(monthlyReturnXts[,exUsMomIndex], na.rm=T), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.5)
 ggsave(sprintf("%s/%s.%s.correlation.png", reportPath, exUsIndex, exUsMomIndex), width=20, height=8, units="in")   
