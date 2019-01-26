@@ -1,0 +1,7 @@
+rscript backtest.R "USA PRIME Value" "ACWI ex USA PRIME Value"
+rscript backtest.R "USA PRIME Value" "WORLD ex USA PRIME Value"
+rscript backtest.R "USA IMI" "ACWI ex USA"
+rscript backtest.R "USA IMI" "ACWI ex USA MOMENTUM"
+rscript backtest.R "USA MOMENTUM" "ACWI ex USA"
+rscript backtest.R "USA MOMENTUM" "ACWI ex USA MOMENTUM"
+rscript backtest.R "USA MOMENTUM" "WORLD ex USA MOMENTUM"
