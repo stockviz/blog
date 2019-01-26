@@ -11,6 +11,9 @@ library('grid')
 library('gridExtra')
 library('gtable')
 
+#baseIndex <- "USA MOMENTUM"
+#worldIndex <- "WORLD ex USA MOMENTUM"
+
 args = commandArgs(TRUE)
 
 baseIndex <- args[1]
@@ -28,12 +31,6 @@ sp500IndexId <- '^GSPC'
 
 exUsIndex <- 'WORLD ex USA'
 exUsIndexId <- 991000
-
-#baseIndex <- 'USA IMI'
-#baseIndexId <- 664187
-
-#worldIndex <- 'ACWI ex USA'
-#worldIndexId <- 991000
 
 tbilIndex <- 'Barclays 3 month T Bill'
 tbilIndexId <- 'BCC23MTB'
@@ -73,7 +70,6 @@ downloadMsci<-function(indexId){
 	
 	return(momXts2)
 }
-
 
 saveDd<-function(retCumXts, ddTitle, ddFileName){
 	tdn<-table.Drawdowns(retCumXts, 10)
@@ -143,6 +139,29 @@ allXts<-merge(m12ReturnXts, monthlyReturnXts2)
 allXts<-na.omit(allXts)
 
 gemSp500Xts<- ifelse(allXts[,1] > allXts[,5], ifelse(allXts[, 1] > allXts[, 2], allXts[, 9], allXts[, 10]), allXts[, 12])
+gemSp500InstXts<-ifelse(allXts[,1] > allXts[,5], ifelse(allXts[, 1] > allXts[, 2], 1, 2), 3)
+
+names(gemSp500InstXts)<-c('E')
+gemSp500InstXts$I<-cumprod(1+gemSp500Xts)
+gemSp500InstDf<-data.frame(gemSp500InstXts)
+gemSp500InstDf$T<-as.Date(index(gemSp500InstXts))
+
+firstDate<-first(gemSp500InstDf$T)
+lastDate<-last(gemSp500InstDf$T)
+xAxisTicks<-seq(from=firstDate, to=lastDate, length.out=10)
+
+pdf(NULL)
+ggplot(data=gemSp500InstDf, aes(x=T, y=I)) +
+  theme_economist() +
+  geom_line(aes(color=factor(E), group=1), size=1.2) +
+  scale_colour_manual(values = c('red','blue','green'), labels = c(baseIndex, worldIndex, bondIndex)) +
+  scale_x_date(breaks = xAxisTicks) +
+  scale_y_log10() +
+  labs(x = "", y="log()", fill="", color="", title="GEM Active Instruments", subtitle=sprintf("%s:%s", firstDate, lastDate)) +
+  annotate("text", x=lastDate, y=min(gemSp500InstDf$I), label = "@StockViz", hjust=1.1, vjust=-.5, col="white", cex=6, fontface = "bold", alpha = 0.5)
+
+ggsave(sprintf("%s/%s.%s.GEM.instruments.png", reportPath, baseIndex, worldIndex), width=20, height=8, units="in")  
+q()
 
 indexClass(gemSp500Xts) <- "Date"
 
