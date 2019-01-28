@@ -8,6 +8,7 @@ What happens if you use value indices instead of market-cap indices in a typical
 
 What happens if you use momentum indices instead of market-cap indices in a typical GEM implementation? Why it makes sense and a backtest: [Global Equities Momentum, Part III](https://stockviz.biz/index.php/2019/01/26/global-equities-momentum-part-iii/)
 
+What happens if you use alternative formation periods? A backtest: [Global Equities Momentum, Part IV](https://stockviz.biz/index.php/2019/01/28/global-equities-momentum-part-iv/)
 
 Charts: [Country-wise momentum heat-maps](https://stockviz.biz/2019/01/23/msci-country-wise-momentum-indices/)
 
