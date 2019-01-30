@@ -20,6 +20,7 @@ startDate<-as.Date('1991-01-01')
 endDate<-as.Date('2018-12-31')
 
 investment<-100000
+rollingPeriodYr<-20
 
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockViz", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
@@ -43,7 +44,7 @@ for(i in 1:nrow(niftyYearly)){
 yearlyBuyPx<-yearlyBuyPx[-1,]
 yearlyAsset<-yearlyAsset[-1,]
 
-yearlyAsset10<-cbind(yearlyAsset[10:nrow(yearlyAsset),1], rollapply(yearlyAsset[, 2:4], 10, sum))
+yearlyAsset10<-cbind(yearlyAsset[rollingPeriodYr:nrow(yearlyAsset),1], rollapply(yearlyAsset[, 2:4], rollingPeriodYr, sum))
 colnames(yearlyAsset10)<-colnames(yearlyAsset)
 
 terminal10<-xts()
@@ -63,10 +64,10 @@ ggplot(data=melt(aRetDf, id='Y'), aes(x=Y, y=value, fill=variable)) +
   theme_economist() +
   geom_bar(stat="identity", position=position_dodge()) +
   geom_text_repel(aes(label= round(value, 2)), position = position_dodge(0.9)) +
-  labs(x = "", y="Rs. lakhs", fill="", color="", title="NIFTY 50: 10-year rolling terminal wealth", subtitle="lumpsum investment of Rs. 1 lakh every year") +
+  labs(x = "", y="Rs. lakhs", fill="", color="", title=sprintf("NIFTY 50: %d-year rolling terminal wealth", rollingPeriodYr), subtitle="lumpsum investment of Rs. 1 lakh every year") +
   annotate("text", x=length(retYears), y=min(terminal10), label = "@StockViz", hjust=1.1, vjust=-.5, col="white", cex=6, fontface = "bold", alpha = 0.5)
 
-ggsave(sprintf("%s/nifty.market-timing.annual.png", reportPath), width=20, height=8, units="in")  
+ggsave(sprintf("%s/nifty.market-timing.%d.annual.png", reportPath, rollingPeriodYr), width=20, height=8, units="in")  
 
 
 
