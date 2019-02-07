@@ -37,5 +37,5 @@ for(ri in refIndices){
 		names(iXts)<-c(oldNames, sprintf("RET_%d", lb))
 	}
 	
-	Common.PlotCumReturns(iXts[, c('RET', sapply(smaLbs, function (X) sprintf("RET_%d", X)))], sprintf("%s Tacical", ri), sprintf("%s/%s.index.cumulative.all.png", reportPath, ri))
+	Common.PlotCumReturns(iXts[, c('RET', sapply(smaLbs, function (X) sprintf("RET_%d", X)))], sprintf("%s Tactical", ri), sprintf("%s/%s.index.cumulative.all.png", reportPath, ri))
 }
