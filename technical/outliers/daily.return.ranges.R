@@ -11,7 +11,7 @@ options(stringsAsFactors = FALSE)
 options("scipen"=100)
 
 reportPath <- "."
-indexName<-"NIFTY 50"
+indexName<-"NIFTY BANK"
 startDate<-as.Date("2011-01-01")
 endDate<-as.Date("2019-02-28")
 
