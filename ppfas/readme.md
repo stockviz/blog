@@ -1,0 +1,1 @@
+Funds the own US equities should be benchmarked against a synthetic index. Read: [What is the right benchmark for funds owning US equities?](https://stockviz.biz/2019/03/12/what-is-the-right-benchmark-for-funds-owning-us-equities/)
