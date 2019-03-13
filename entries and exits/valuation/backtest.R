@@ -17,7 +17,7 @@ indexName1<-"NIFTY 50"
 indexName2<-"NIFTY MIDCAP 50"
 startDate<-as.Date("2004-01-01")
 endDate<-as.Date("2019-02-28")
-ratioName<-"PE"
+ratioName<-"PB"
 
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
@@ -45,5 +45,6 @@ names(allXts)<-c('R', indexName1, indexName2)
 
 allXts$S1<-allXts[,1]*allXts[,2] + (1-allXts[,1])*allXts[,3]
 allXts$S2<-(1-allXts[,1])*allXts[,2] + allXts[,1]*allXts[,3]
+allXts$EQL<- allXts[,2]/2 + allXts[,3]/2
 
 Common.PlotCumReturns(allXts[, -1], sprintf("%s/%s %s Weights", indexName1, indexName2, ratioName), sprintf("%s/%s.%s.%s-weights.png", reportPath, indexName1, indexName2, ratioName))
