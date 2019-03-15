@@ -2,4 +2,5 @@ The [script](ETFs/plot.returns.R) can be used create cumulative and annual retur
 The [script](MSCI/plot.returns.R) can be used create cumulative and annual return charts for MSCI indices.
 
 ## Blogs
-[EM Bonds out-performed EM Equities the last decade](https://stockviz.biz/2019/03/04/em-bond-out-performed-em-equities-the-last-decade/)
+[EM Bonds out-performed EM Equities the last decade](https://stockviz.biz/2019/03/04/em-bond-out-performed-em-equities-the-last-decade/)\
+[Dumb-beta is good enough.](https://stockviz.biz/2019/03/15/no-silver-bullets/)
