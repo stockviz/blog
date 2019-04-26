@@ -124,7 +124,7 @@ toPlot<-na.omit(merge(eqRets1, eqRets2, allocRetXts[,allocName]))
 names(toPlot)<-c(indexName1, indexName2, allocName)
 
 #Common.PlotCumReturns(toPlot, sprintf("%s/%s/%s", indexName1, indexName2, allocName), NULL)
-Common.PlotCumReturns(toPlot, sprintf("%s/%s/%s", indexName1, indexName2, allocName), sprintf("%s/%s.%s.%s.cumulative.png", reportPath, indexName1, indexName2, allocName))
+Common.PlotCumReturns(toPlot, sprintf("%s/%s/%s", indexName1, indexName2, allocName), "(weekly rebalance)", sprintf("%s/%s.%s.%s.cumulative.png", reportPath, indexName1, indexName2, allocName))
 
 
 
