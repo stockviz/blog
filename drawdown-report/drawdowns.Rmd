@@ -1,0 +1,144 @@
+---
+title: Daily Drawdown Report
+subtitle: StockViz
+editor_options:
+  chunk_output_type: console
+output: 
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+---
+
+```{r dt_chunk, include=FALSE}
+
+createdDate <- gsub(" 0", " ",format(Sys.Date(), "%B %d, %Y"))
+
+```
+
+---
+date: `r createdDate`
+---
+
+```{r, calc_chunk, echo = FALSE, message = FALSE, warning = FALSE}
+
+library('RODBC')
+library('quantmod')
+library('PerformanceAnalytics')
+library('xtable')
+library('knitr')
+library('kableExtra')
+
+options(stringsAsFactors = FALSE)
+options("scipen"=100)
+
+source("d:/stockviz/r/config.r")
+
+con <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+
+asofDt<-as.Date(sqlQuery(con, "select max(time_stamp) from px_history")[[1]])
+
+genTables <- function(symbols, startDate, endDate){
+	numCalDays <- as.integer(endDate-startDate)
+	ongoingDf <- data.frame(SYMBOL = "", FROM="", DEPTH = 0.0)
+	recoveringDf <- data.frame(SYMBOL = "", FROM="", TROUGH="", DEPTH = 0.0, BOUNCE = 0.0)
+	for(sym in symbols){
+		retSeries <- sqlQuery(con, sprintf("select time_stamp, daily_return from RETURN_SERIES_ALL where symbol = '%s' and time_stamp >= '%s' and time_stamp <= '%s'", sym, startDate, endDate))
+		if(nrow(retSeries) < 0.5*numCalDays) next
+		if(last(retSeries$time_stamp) != endDate) next
+
+		retXts <- xts(retSeries$daily_return, as.Date(retSeries$time_stamp))
+		tdd <- table.Drawdowns(retXts, 10)
+		
+		notRec <- tdd[is.na(tdd$Recovery),]
+		if(nrow(notRec) > 0) {
+			ongoingDf <- rbind(ongoingDf, c(toString(sym), toString(notRec$From[1]), notRec$Depth[1]))
+		}
+		
+		recovering <- notRec[!is.na(notRec$Trough) & notRec$Trough < endDate,]
+		if(nrow(recovering) > 0) {
+			deepest <- recovering[order(recovering$Depth),][1,]
+			fromDt <- as.Date(deepest$Trough[1])
+			bounce <- Return.cumulative(retXts[sprintf("%s/%s", fromDt, endDate)])
+			
+			if (bounce > 0)	recoveringDf <- rbind(recoveringDf, c(toString(sym), toString(deepest$From[1]), toString(fromDt), deepest$Depth[1], bounce))
+		}
+	}
+	
+	ongoingDf <- ongoingDf[-1,]
+	recoveringDf <- recoveringDf[-1,]
+	
+	ongoingDf$DEPTH <- 100*as.numeric(ongoingDf$DEPTH)
+	recoveringDf$DEPTH <- 100*as.numeric(recoveringDf$DEPTH)
+	recoveringDf$BOUNCE <- round(100*as.numeric(recoveringDf$BOUNCE), 2)
+	
+	ongoingDf <- ongoingDf[order(ongoingDf$DEPTH),]
+	recoveringDf <- recoveringDf[order(recoveringDf$BOUNCE, decreasing = T),]
+	
+	return(list(ongoingDf, recoveringDf))
+}
+```
+
+# Introduction
+
+*Ongoing* drawdowns are a list of stocks that are yet to recover from their worst drawdowns. These are stocks that are yet to find their bottom, given the time-frame.
+
+The list of *Recovering* stocks are those that have bounced back from their deepest drawdown during the given time-frame.
+
+```{r, index_chunk, echo = FALSE, results='asis', message = FALSE, warning = FALSE}
+
+indices <- c('NIFTY 100', 'NIFTY MIDCAP 150', 'NIFTY SMLCAP 100')
+
+generateReport <- function(startDate){
+	cat("#", toString(startDate), "through", toString(asofDt), "\n")
+	kableTable <- list()
+	kableTable2 <- list()
+
+	isOngoingEmpty <- TRUE
+	isRecoveringEmpty <- TRUE
+	for(i in 1:length(indices)){
+		iName <- indices[i]
+		message(iName)
+		syms <- sqlQuery(con, sprintf("select SYMBOL from INDEX_NSE_3 where INDEX_NAME='%s'", iName))$SYMBOL
+		ddRet <- genTables(syms, startDate, asofDt)
+		
+		ongoingDD <- ddRet[[1]]
+		recoveringDD <- ddRet[[2]]
+		
+		if(nrow(ongoingDD) > 0 && isOngoingEmpty == TRUE) isOngoingEmpty <- FALSE
+		
+		if(nrow(recoveringDD) > 0 && isRecoveringEmpty == TRUE) isRecoveringEmpty <- FALSE
+
+		kableTable[[i]] <- kable(ongoingDD, align='llr', row.names = F, format.args = list(nsmall=2)) %>%
+			kable_styling(bootstrap_options = c("condensed", "striped")) %>%
+			scroll_box(height = "500px")
+			
+		kableTable2[[i]] <- kable(recoveringDD, align='lllrr', row.names = F, format.args = list(nsmall=2)) %>%
+			kable_styling(bootstrap_options = c("condensed", "striped")) %>%
+			scroll_box(height = "500px")
+	}
+
+	cat("## Ongoing\n")
+	if(isOngoingEmpty){
+		cat("No ongoing drawdowns\n")
+	} else {
+		for(i in 1:length(indices)){
+			cat("###", indices[i], "\n")
+			cat(kableTable[[i]])
+		}
+	}
+
+	cat("## Recovering\n")
+	if(isRecoveringEmpty){
+		cat("No recovering drawdowns\n")
+	} else {
+		for(i in 1:length(indices)){
+			cat("###", indices[i], "\n")
+			cat(kableTable2[[i]])
+		}
+	}
+}
+
+generateReport(asofDt - 365)
+generateReport(asofDt - 2*365)
+```
