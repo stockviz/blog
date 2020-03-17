@@ -92,12 +92,13 @@ subsetPxts <- pXts
 
 #Daily returns above and below SMA: density plot
 
-abvBlw <- merge(subsetPxts[subsetPxts[,'INDEX'] > subsetPxts[,'SMA'], 'D_RET_PCT'],
-                subsetPxts[subsetPxts[,'INDEX'] <= subsetPxts[,'SMA'], 'D_RET_PCT'])
+abvBlw <- merge(subsetPxts[subsetPxts[,'INDEX'] > subsetPxts[,'SMA'], 'D_RET_LAG'],
+                subsetPxts[subsetPxts[,'INDEX'] <= subsetPxts[,'SMA'], 'D_RET_LAG'])
 
 names(abvBlw) <- c('above', 'below')
 abvBlw <- merge(abvBlw, abvBlw['2010/',])
 names(abvBlw) <- c('above', 'below', 'above2010', 'below2010')
+abvBlw <- 100* abvBlw
 toPlot <- melt(data.frame(abvBlw))
 plotStart <- first(index(abvBlw))
 plotEnd <- last(index(abvBlw))
@@ -106,7 +107,7 @@ ggplot(toPlot) +
     theme_economist() +
     stat_density(aes(x=value, color=variable), geom="line", position = "identity", na.rm=T) +
     labs(y='density', x='returns (%)', fill='', color='', 
-         title = sprintf("%s Daily Return Density", indexName), 
+         title = sprintf("%s Next-Day Return Density", indexName), 
          subtitle = sprintf("%d-SMA [%s:%s]", smaLb, plotStart, plotEnd)) +
     annotate("text", x=min(toPlot$value, na.rm=T), y=0, label = "@StockViz", 
              hjust=0, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.9)
