@@ -112,7 +112,7 @@ ggplot(toPlot) +
     annotate("text", x=min(toPlot$value, na.rm=T), y=0, label = "@StockViz", 
              hjust=0, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.9)
 
-ggsave(sprintf("%s/%s.%d.SMA.daily-return.Density.png", reportPath, indexName, smaLb), tt1, width=16, height=8, units='in')
+ggsave(sprintf("%s/%s.%d.SMA.daily-return.Density.png", reportPath, indexName, smaLb), width=16, height=8, units='in')
 			 
 #Rolling returns above and below SMA and their standard deviation
 
