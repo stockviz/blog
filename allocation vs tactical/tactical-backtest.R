@@ -20,7 +20,7 @@ reportPath <- "D:/StockViz/public/blog/allocation vs tactical"
 
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-smaLb <- 50 #days
+smaLb <- 200 #days
 
 indexName <- "NIFTY 50 TR"
 startDate <- as.Date("2003-12-31")
@@ -54,4 +54,9 @@ btest <- ifelse(allXts[,1] > allXts[,2], allXts[,5], allXts[,6])
 toPlot <- merge(btest, allXts[,5], allXts[,6])
 names(toPlot) <- c('TACTICAL', 'EQUITY', 'BOND')
 
+Common.PlotCumReturns(toPlot$EQUITY, indexName, "", sprintf("%s/%s.%d.cumulative-return-actual.png", reportPath, indexName, smaLb), NULL)
+Common.PlotCumReturns(toPlot$BOND, "Short-term Bonds", "", sprintf("%s/Short-term Bonds.%d.cumulative-return-actual.png", reportPath, smaLb), NULL)
 Common.PlotCumReturns(toPlot, sprintf("Tactical %d-SMA: %s and Short-term Bonds", smaLb, indexName), "weekly rebalance", sprintf("%s/tactical.%d-SMA.%s-bonds.cumulative-return-actual.png", reportPath, smaLb, indexName), NULL)
+
+write.csv(data.frame(toPlot), sprintf("%s/tactical.%d-SMA.%s-bonds.cumulative-return-actual.csv", reportPath, smaLb, indexName), row.names=F)
+
