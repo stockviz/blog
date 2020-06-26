@@ -177,7 +177,30 @@ allocRet.annual2 <- merge(  allRets[,'SMA.RET'],
 
 names(allocRet.annual2) <- c('SMA.GROSS', 'SMA.NET-ST', 'ALLOC.NET-ST', 'EQ')
 
+allocRet.annual3 <- merge(  allRets[,'EQ.RET']*eqPct + allRets[,'BND.RET']*(1-eqPct), 
+							ifelse(allRets[,'SMA.RET'] > 0, 0.85*allRets[,'SMA.RET'], allRets[,'SMA.RET']),
+							allRets[,'EQ.RET'])
+
+names(allocRet.annual3) <- c('ALLOC.GROSS', 'SMA.NET-ST', 'EQ')
+allocRet.annual3 <- allocRet.annual3*100
+
 ##							
+
+toPlot <- data.frame(allocRet.annual3)
+toPlot$Y <- year(index(allocRet.annual3))
+toPlot <- melt(toPlot, id='Y')
+toPlot$Y <- factor(toPlot$Y, levels=unique(toPlot$Y))
+
+ggplot(toPlot, aes(x=Y, y=value, fill=variable)) +
+	theme_economist() +
+	scale_fill_viridis(discrete = TRUE) +
+	geom_bar(stat="identity", position=position_dodge()) +
+	labs(y='return (%)', x='', color='', fill='', title=sprintf("%s/Short-term Bonds SMA %d vs. %.0f/%.0f Allocation", indexName, 100*eqPct, 100*(1-eqPct), smaLb)) +
+	annotate("text", x=1, y=min(toPlot$value, na.rm=T), label = "@StockViz", hjust=0, vjust=-1, col="white", cex=6, fontface = "bold", alpha = 0.5)
+
+ggsave(sprintf("%s/%s-bonds.annual-return.%.0f.allocation.vs.SMA-%d.png", reportPath, indexName, 100*eqPct, smaLb), width=16, height=8, units="in")
+	
+
 Common.PlotCumReturns(allocRet.monthly, 
 			sprintf("%.0f/%.0f %s/Short-term Bonds Allocation", 100*eqPct, 100*(1-eqPct), indexName), 
 			"monthly rebalance", 
@@ -193,6 +216,5 @@ Common.PlotCumReturns(allocRet.annual2,
 			"annual rebalance", 
 			sprintf("%s/%s-bonds.cumulative-return-actual.annual rebalance.%.0f.allocation.SMA%d.png", reportPath, indexName, 100*eqPct, smaLb))
 
-Common.PlotCumReturns(allocRet.annual2, 
-			sprintf("%s/Short-term Bonds SMA %d vs. %.0f/%.0f Allocation", indexName, 100*eqPct, 100*(1-eqPct), smaLb), 
-			"annual rebalance", NULL)
+
+			
