@@ -72,3 +72,4 @@ plotIndex <- function(indexName){
 
 plotIndex("NIFTY 50 TR")
 plotIndex("NIFTY MIDCAP 150 TR")
+plotIndex("NIFTY GS 10YR")
