@@ -215,6 +215,4 @@ Common.PlotCumReturns(allocRet.annual2,
 			sprintf("%s/Short-term Bonds SMA %d vs. %.0f/%.0f Allocation", indexName, 100*eqPct, 100*(1-eqPct), smaLb), 
 			"annual rebalance", 
 			sprintf("%s/%s-bonds.cumulative-return-actual.annual rebalance.%.0f.allocation.SMA%d.png", reportPath, indexName, 100*eqPct, smaLb))
-
-
-			
+	
