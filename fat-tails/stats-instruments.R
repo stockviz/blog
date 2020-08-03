@@ -59,7 +59,7 @@ results <- rbind(results, c("MSCI US EQ", sprintf("%s:%s", strftime(first(index(
 results <- rbind(results, c("MSCI DM ex-US EQ",sprintf("%s:%s", strftime(first(index(worldMonthly)), "%Y-%m"), strftime(last(index(worldMonthly)), "%Y-%m")), getStats(worldMonthly)))
 results <- rbind(results, c("MSCI EM EQ",sprintf("%s:%s", strftime(first(index(emMonthly)), "%Y-%m"), strftime(last(index(emMonthly)), "%Y-%m")), getStats(emMonthly)))
 results <- rbind(results, c("MSCI INDIA EQ",sprintf("%s:%s", strftime(first(index(indiaMonthly)), "%Y-%m"), strftime(last(index(indiaMonthly)), "%Y-%m")), getStats(indiaMonthly)))
-results <- rbind(results, c("ICE AA US Corp BND",sprintf("%s:%s", strftime(first(index(corpBondMonthly)), "%Y-%m"), strftime(last(index(corpBondMonthly)), "%Y-%m")), getStats(corpBondMonthly)))
+results <- rbind(results, c("ICE AAA US Corp BND",sprintf("%s:%s", strftime(first(index(corpBondMonthly)), "%Y-%m"), strftime(last(index(corpBondMonthly)), "%Y-%m")), getStats(corpBondMonthly)))
 results <- rbind(results, c("GOLD", sprintf("%s:%s", strftime(first(index(goldMonthly)), "%Y-%m"), strftime(last(index(goldMonthly)), "%Y-%m")), getStats(goldMonthly)))
 
 results <- results[-1,]
