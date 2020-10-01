@@ -71,6 +71,7 @@ names(trXts) <- c('EQ_WT')
 
 toPlot <- merge(trXts, rets)
 Common.PlotCumReturns(toPlot, "Factor Equal Weight", "monthly rebalance", sprintf("%s/india-factor-eq-wt.monthly.png", reportPath), NULL)
+Common.PlotCumReturns(toPlot["2010/",], "Factor Equal Weight", "monthly rebalance", sprintf("%s/india-factor-eq-wt.monthly.2010.png", reportPath), NULL)
 
 toPlot <- rollapply(toPlot, 12, function(X) Return.annualized(X), by=12)
 toPlot <- na.omit(toPlot)
@@ -83,6 +84,7 @@ names(trXts) <- c('EQ_WT')
 
 toPlot <- merge(trXts, retsQ)
 Common.PlotCumReturns(toPlot, "Factor Equal Weight", "quarterly rebalance", sprintf("%s/india-factor-eq-wt.quarterly.png", reportPath), NULL)
+Common.PlotCumReturns(toPlot["2010/",], "Factor Equal Weight", "quarterly rebalance", sprintf("%s/india-factor-eq-wt.quarterly.2010.png", reportPath), NULL)
 
 toPlot <- rollapply(toPlot, 4, function(X) Return.annualized(X), by=4)
 toPlot <- na.omit(toPlot)
@@ -98,6 +100,7 @@ names(trXts) <- c('ALPHA/LOW-VOL')
 
 toPlot <- merge(trXts, rets)
 Common.PlotCumReturns(toPlot, "Alpha/Low-Volatility Factor Equal Weight", "monthly rebalance", sprintf("%s/india-alpha-low-vol-factor-eq-wt.monthly.png", reportPath), NULL)
+Common.PlotCumReturns(toPlot["2010/",], "Alpha/Low-Volatility Factor Equal Weight", "monthly rebalance", sprintf("%s/india-alpha-low-vol-factor-eq-wt.monthly.2010.png", reportPath), NULL)
 
 toPlot <- rollapply(toPlot, 12, function(X) Return.annualized(X), by=12)
 toPlot <- na.omit(toPlot)
@@ -110,6 +113,7 @@ names(trXts) <- c('ALPHA/LOW-VOL')
 
 toPlot <- merge(trXts, retsQ)
 Common.PlotCumReturns(toPlot, "Alpha/Low-Volatility Factor Equal Weight", "quarterly rebalance", sprintf("%s/india-alpha-low-vol-factor-eq-wt.quarterly.png", reportPath), NULL)
+Common.PlotCumReturns(toPlot["2010/",], "Alpha/Low-Volatility Factor Equal Weight", "quarterly rebalance", sprintf("%s/india-alpha-low-vol-factor-eq-wt.quarterly.2010.png", reportPath), NULL)
 
 toPlot <- rollapply(toPlot, 4, function(X) Return.annualized(X), by=4)
 toPlot <- na.omit(toPlot)
