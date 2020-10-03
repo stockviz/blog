@@ -24,7 +24,7 @@ endDate <- as.Date("2020-08-31")
 
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockViz", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-indices <- c('NIFTY 50 TR', 'NIFTY100 ALPHA 30 TR', 'NIFTY100 LOW VOLATILITY 30 TR', 'NIFTY200 QUALITY 30 TR')
+indices <- c('NIFTY 50 TR', 'NIFTY100 ALPHA 30 TR', 'NIFTY100 LOW VOLATILITY 30 TR', 'NIFTY200 QUALITY 30 TR', 'NIFTY500 VALUE 50 TR')
 pXts <- NULL
 for(i in indices){
 	pDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close from bhav_index where index_name='%s' and time_stamp >= '%s' and time_stamp <= '%s'", i, startDate, endDate))
