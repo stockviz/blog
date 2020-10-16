@@ -15,7 +15,7 @@ reportPath <- "."
 indexName1<-"NIFTY 50"
 indexName2<-"NIFTY MIDCAP 50"
 startDate<-as.Date("2004-01-01")
-endDate<-as.Date("2019-02-28")
+endDate<-as.Date("2020-09-30")
 lb<-220*5 #5 years
 
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
