@@ -37,11 +37,11 @@ lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid
 lconUs<-odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockVizUs", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
 startDate<-as.Date("2004-01-01")
-endDate<-as.Date("2018-09-30")
+endDate<-as.Date("2020-12-31")
 
 efLookback<-100 #in weeks
 initialInvestment<-1000000
-asset1Name<-"NIFTY MIDCAP 100"
+asset1Name<-"NIFTY MIDCAP 100 TR"
 asset1Px<-sqlQuery(lcon, sprintf("select time_stamp, px_close from bhav_index where index_name = '%s' and time_stamp >= '%s' and time_stamp <= '%s'", asset1Name, startDate, endDate))
 asset1Xts<-xts(asset1Px[,2], as.Date(asset1Px[,1], tz=TZ))
 
@@ -257,7 +257,7 @@ createTable2<-function(aT, tax){
 	ggsave(sprintf("%s/4-asset.%.0f.%s.%s.weights.png", reportPath, 100*aT, taxFlag, objectiveToggle), dpi=600, width=8, height=4, units="in")	
 }
 
-#runAnalysis()
-#createTable1()
+runAnalysis()
+createTable1()
 createTable2(0.2, 0)
 createTable2(0.8, 0)
