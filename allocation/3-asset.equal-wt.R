@@ -28,7 +28,7 @@ mytheme <- ttheme_default(
 lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 lconUs<-odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockVizUs", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-startDate<-as.Date("2004-01-01")
+startDate<-as.Date("2010-01-01")
 endDate<-as.Date("2018-09-30")
 
 initialInvestment<-1000000

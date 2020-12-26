@@ -24,7 +24,7 @@ lconUs2 <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;
 lmEquation <- function(df, x, y){
     m <- lm(as.formula(sprintf("%s ~ %s", y, x)), df)
 	eq <- sprintf('italic(y) == %+.4f %+.4f %%.%% italic(x)*"," ~~italic(r)^2~"="~%.4f', as.numeric(coef(m)[1]), as.numeric(coef(m)[2]), summary(m)$r.squared)
-	print(eq)
+	#print(eq)
     as.character(as.expression(eq))                 
 }
 
@@ -32,13 +32,13 @@ plotCorrelation<-function(mRetDf, nameFix){
 	plotStart<-first(rownames(mRetDf))
 	plotEnd<-last(rownames(mRetDf))
 	colNames<-colnames(mRetDf)
-	lmEquation<-lm_eqn(mRetDf, colNames[1], colNames[2])
+	lmEq<-lmEquation(mRetDf, colNames[1], colNames[2])
 	pdf(NULL)
 	ggplot(mRetDf, aes_string(x=colNames[1], y=colNames[2])) +
 		theme_economist() +
 		geom_point() +
 		geom_smooth() +
-		geom_text(x = 0.9*min(mRetDf[,1], na.rm=T), y = 0.9*max(mRetDf[,2], na.rm=T), label = lmEquation, parse = TRUE) +
+		geom_text(x = 0.9*min(mRetDf[,1], na.rm=T), y = 0.9*max(mRetDf[,2], na.rm=T), label = lmEq, parse = TRUE) +
 		labs(x = colNames[1], y=colNames[2], fill="", color="", title=sprintf("Correlation: %s vs %s", colNames[1], colNames[2], nameFix), subtitle=sprintf("%s returns [%s:%s]", nameFix, plotStart, plotEnd)) +
 		annotate("text", x=max(mRetDf[,1], na.rm=T), y=min(mRetDf[,2], na.rm=T), label = "@StockViz", hjust=1.1, vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.5)
 	ggsave(sprintf("%s/%s.%s.correlation.%s.%s.%s.png", reportPath, colNames[1], colNames[2], nameFix, plotStart, plotEnd), width=20, height=8, units="in")  
