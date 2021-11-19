@@ -1,3 +1,3 @@
 NIFTY 50 return [streaks](script-01.R). Read: [Streaks, Part I](https://stockviz.biz/index.php/2019/01/02/streaks-part-i/) \
 NIFTY 50 and NIFTY MIDCAP 100 [back-test](script-02.R) of a simple model based on monthly return streaks. Read: [Streaks, Part II – Backtest](https://stockviz.biz/2019/01/03/streaks-part-ii-backtest/) \
-Re-start [streaks](script-03.R). Read: [Direction vs. Magnitude](https://stockviz.biz/2021/11/19/direction-vs-magnitude/) \
+Restart [streaks](script-03.R). Read: [Direction vs. Magnitude](https://stockviz.biz/2021/11/19/direction-vs-magnitude/) 
