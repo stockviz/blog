@@ -42,7 +42,8 @@ tt1<-arrangeGrob(tableGrob(smlDist, rows=NULL, theme=tableTheme), ncol=1, top=te
 
 ggsave(sprintf("%s/closest-hamming.png", reportPath), tt1, width=3, height=nrow(smlDist)*0.5, units='in')
 
-matchEnd <- as.Date("2010-11-02")
+matchEnd <- as.Date(smlDist[2, 2])
+vixXts <- xts(vixDf[,2], vixDf[,1])
 
 toPlotXts <- vixXts[sprintf("%s/%s", matchEnd-100, matchEnd+100),]
 names(toPlotXts) <- c('VIX')
