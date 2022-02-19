@@ -123,26 +123,6 @@ ggplot(toPlot, aes(x=x, y=es)) +
 	  
 ggsave(sprintf("%s/volume-clock.10000.png", reportPath), width=12, height=6, units="in")	  
 
-q()
-	
-ivolDf <- data.frame(instrument_token = 0, h=0.0, l=0.0, V=0.0, s = 0, e = 0)
-for(i in 1:nrow(volDf)){
-	tdf <- niftyDf %>% filter(last_trade_tick >= volDf[i, 's'] & last_trade_tick <= volDf[i, 'e']) %>% group_by(instrument_token) %>% summarize(h=max(last_price), l=min(last_price), V = sum(last_quantity)) %>% as.data.frame()
-	tdf$s <- volDf[i, 's']
-	tdf$e <- volDf[i, 'e']
-	
-	ivolDf <- rbind(ivolDf, tdf)
-}
-ivolDf <- ivolDf[-1,]
-
-ivolDf$es <- strptime(ivolDf$e, '%Y%m%d%H%M%S') - strptime(ivolDf$s, '%Y%m%d%H%M%S')
-
-toPlot <- ivolDf
-toPlot$s <- factor(toPlot$s, levels = unique(toPlot$s))
-toPlot$instrument_token <- factor(toPlot$instrument_token, levels = unique(toPlot$instrument_token))
-
-ggplot(toPlot, aes(x=s, color=instrument_token, group=instrument_token)) +
-	geom_segment(aes(y=h, yend=l, xend=s))
 
 
 
