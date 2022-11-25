@@ -22,8 +22,8 @@ lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server
 startDate <- as.Date("2005-04-01")
 endDate <- as.Date("2013-12-31")
 
-#indexName <- "NIFTY MIDCAP150 MOMENTUM 50 TR"
-indexName <- "NIFTY200 MOMENTUM 30 TR"
+indexName <- "NIFTY MIDCAP150 MOMENTUM 50 TR"
+#indexName <- "NIFTY200 MOMENTUM 30 TR"
 
 nEod <- sqlQuery(lcon, sprintf("select px_close, time_stamp from bhav_index where index_name='%s' and time_stamp >= '%s' and time_stamp <= '%s'", indexName, startDate, endDate))
 
