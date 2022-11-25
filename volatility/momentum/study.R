@@ -127,6 +127,6 @@ backtest <- function(sdLb){
 	Common.PlotCumReturns(toPlot, sprintf("%s/%.3f %.3f %d-day std. dev.", indexName, maxRetSd, minDDSd, sdLb), "(EOM rebalance)", sprintf("%s/%s.max.%d.cumulative.2020.png", reportPath, indexName, sdLb))
 }
 
-sdLbs <- c(50, 100, 200) #days
+sdLbs <- c(10, 20, 50, 100, 200) #days
 
 lapply(sdLbs, function(X) backtest(X))
