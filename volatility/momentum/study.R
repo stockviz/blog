@@ -19,11 +19,11 @@ pdf(NULL)
 
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockViz", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-startDate <- as.Date("2005-04-01")
-endDate <- as.Date("2013-12-31")
+startDate <- as.Date("2010-01-01")
+endDate <- as.Date("2015-12-31")
 
-indexName <- "NIFTY MIDCAP150 MOMENTUM 50 TR"
-#indexName <- "NIFTY200 MOMENTUM 30 TR"
+#indexName <- "NIFTY MIDCAP150 MOMENTUM 50 TR"
+indexName <- "NIFTY200 MOMENTUM 30 TR"
 
 nEod <- sqlQuery(lcon, sprintf("select px_close, time_stamp from bhav_index where index_name='%s' and time_stamp >= '%s' and time_stamp <= '%s'", indexName, startDate, endDate))
 
@@ -88,22 +88,23 @@ backtest <- function(sdLb){
 	threshRets <- do.call(merge, lapply(sdThreshs, function(X) ifelse(nXts$SD200 > X, 0, nXts$RETM_LAG1)))
 
 	names(threshRets) <- sapply(sdThreshs, function(X) paste0("RETM", X))
+	
+	cumRets <- sort(apply(threshRets, 2, Return.cumulative), decreasing=T)
+	print(cumRets)
+
+	maxDDs <- sort(apply(threshRets, 2, maxDrawdown))
+
+	maxRetSd <- as.numeric(gsub("RETM", "", names(cumRets[1])))
+	minDDSd <- as.numeric(gsub("RETM", "", names(maxDDs[1])))
 
 	toPlot <- na.omit(merge(nXts$RETM_LAG1, threshRets))
 
 	Common.PlotCumReturns(toPlot, sprintf("%s/%d-day std. dev.", indexName, sdLb), "(EOM rebalance)", sprintf("%s/%s.%d.cumulative.png", reportPath, indexName, sdLb))
 
-	cumRets <- sort(apply(toPlot, 2, Return.cumulative), decreasing=T)
-	print(cumRets)
-
-	maxDDs <- sort(apply(toPlot, 2, maxDrawdown))
-
-	maxRetSd <- as.numeric(gsub("RETM", "", names(cumRets[1])))
-	minDDSd <- as.numeric(gsub("RETM", "", names(maxDDs[1])))
 
 	# forward test
 
-	startDate <- as.Date("2014-01-01")
+	startDate <- as.Date("2016-01-01")
 	endDate <- as.Date("2022-10-31")
 
 	nEod <- sqlQuery(lcon, sprintf("select px_close, time_stamp from bhav_index where index_name='%s' and time_stamp >= '%s' and time_stamp <= '%s'", indexName, startDate-360, endDate))
