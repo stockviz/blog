@@ -25,13 +25,16 @@ drag <- 0.2/100
 con <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", dbserver, dbname, dbuser, dbpassword), case = "nochange", believeNRows = TRUE)
 
 userId <- '30B18A87-D803-4476-8469-858454C2C49A'
-model <- c('D6663194-A965-4262-84F6-BB553B0B8998', 'Momentum')
-#model <- c('6CAECA7A-A2C9-4B9D-BD0B-397FCE9597D2', 'Velocity')
-#model <- c('A251E57D-B2B2-43CA-A457-E25C2CAD08A9', 'Acceleration')
+#model <- c('D6663194-A965-4262-84F6-BB553B0B8998', '1A6C40B8-BDF1-43E5-829C-E3265BDB7F1A', 'Momentum')
+#model <- c('6CAECA7A-A2C9-4B9D-BD0B-397FCE9597D2', 'AFD0DFFF-2EA7-4E4D-BA50-D9CC0E4B5052', 'Velocity')
+model <- c('A251E57D-B2B2-43CA-A457-E25C2CAD08A9', '22849AAA-554B-4859-B06E-760B1902104B', 'Acceleration')
 
 
 themeReturns <- Common.GetEquityThemeReturns(model[1], userId, top=NA, stt, brkg)
 themeReturns <- na.omit(themeReturns)
+
+momothemeReturns <- Common.GetEquityThemeReturns(model[2], userId, top=NA, stt, brkg)
+momothemeReturns <- na.omit(momothemeReturns)
 
 startTest <- as.Date("2016-01-01")
 endTest <- as.Date("2019-12-31")
@@ -65,7 +68,7 @@ names(retsAll) <- c('BH', smaNames)
 
 testRets <- na.omit(retsAll[paste0(startTest, '/', endTest)])
 
-Common.PlotCumReturns(testRets, sprintf("%s", model[2]), "(EOD rebalance)", sprintf("%s/%s.test.cumulative.png", reportPath, model[1]))
+Common.PlotCumReturns(testRets, sprintf("%s", model[3]), "(EOD rebalance)", sprintf("%s/%s.test.cumulative.png", reportPath, model[1]))
 
 cumRets <- sort(apply(testRets[, -1], 2, Return.cumulative), decreasing=T)
 maxDDs <- sort(apply(testRets[, -1], 2, maxDrawdown))
@@ -80,10 +83,17 @@ print(paste(maxRetSMA, '/', minDDSMA))
 ##### validate
 
 valRets <- retsAll[paste0(startValid, '/', endValid), c('BH', maxRetSMA, minDDSMA)]
-Common.PlotCumReturns(valRets, sprintf("%s", model[2]), "(EOD rebalance)", sprintf("%s/%s.validate.cumulative.png", reportPath, model[1]))
+valRets <- merge(valRets, momothemeReturns[paste0(startValid, '/', endValid), 'MODEL_RET_BRK'])
+names(valRets) <- c(model[3], maxRetSMA, minDDSMA, paste(model[3], '(momo)'))
+
+Common.PlotCumReturns(valRets, sprintf("%s", model[3]), "(EOD rebalance)", sprintf("%s/%s.validate.cumulative.png", reportPath, model[1]))
 
 ##### inspect
 
 insRets <- retsAll[paste0(startInspect, '/'), c('BH', maxRetSMA, minDDSMA)]
-Common.PlotCumReturns(insRets, sprintf("%s", model[2]), "(EOD rebalance)", sprintf("%s/%s.inspect.cumulative.png", reportPath, model[1]))
+insRets <- merge(insRets, momothemeReturns[paste0(startInspect, '/'), 'MODEL_RET_BRK'])
+
+names(insRets) <- c(model[3], maxRetSMA, minDDSMA, paste(model[3], '(momo)'))
+
+Common.PlotCumReturns(insRets, sprintf("%s", model[3]), "(EOD rebalance)", sprintf("%s/%s.inspect.cumulative.png", reportPath, model[1]))
 
