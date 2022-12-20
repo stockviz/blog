@@ -62,6 +62,7 @@ for(benchIndex in 1:length(indices)){
 fitDf <- data.frame(fitList)
 names(fitDf) <- c('Ax100', indices, 'ar2')
 fitDf$A <- fitDf$Ax100 * 100
+fitDf[is.na(fitDf)] <- ""
 
 png(sprintf("%s/%s.lm.table.png", reportPath, schemeName), height = 35*nrow(fitDf), width = 120*ncol(fitDf), bg="white")
 grid.table(fitDf, theme=ttheme_default(core=list(fg_params=list(hjust=1, x=0.9))), rows = NULL)
