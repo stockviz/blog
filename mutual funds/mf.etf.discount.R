@@ -61,8 +61,10 @@ dataDf$L<-dataDf$L*100.0
 dataDf$TIME_STAMP<-as.Date(dataDf$TIME_STAMP)
 firstDate<-min(dataDf$TIME_STAMP)
 
+dataDf2 <- dataDf[abs(dataDf$C) < 50,]
+
 #chart the boxplots of premium/discount
-doBoxPlots<-function(plotDf){
+doBoxPlots<-function(plotDf, nameFix){
 	pdf(NULL)
 	ggplot(plotDf, aes(SYMBOL, C)) +
 		theme_economist() +
@@ -72,7 +74,7 @@ doBoxPlots<-function(plotDf){
 		labs(x='', y='premium/discount (%)', color='', title="Premium/Discount of ETF over MF", subtitle=sprintf("Closing Price vs. NAV [%s:%s]", firstDate, lastDate)) +
 		annotate("text", x=0, y=max(plotDf$C), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=4, fontface = "bold")
 
-	ggsave(sprintf("%s/mf.etf.prem.disc.closing.BOX.png", reportPath), width=7, height=12, units="in")
+	ggsave(sprintf("%s/mf.etf.prem.disc.closing.BOX.%s.png", reportPath, nameFix), width=7, height=12, units="in")
 		
 	ggplot(plotDf, aes(SYMBOL, L)) +
 		theme_economist() +
@@ -82,7 +84,7 @@ doBoxPlots<-function(plotDf){
 		labs(x='', y='premium/discount (%)', color='', title="Premium/Discount of ETF over MF", subtitle=sprintf("Last Price vs. NAV [%s:%s]", firstDate, lastDate)) +
 		annotate("text", x=0, y=max(plotDf$L), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=4, fontface = "bold")
 
-	ggsave(sprintf("%s/mf.etf.prem.disc.last.BOX.png", reportPath), width=7, height=12, units="in")
+	ggsave(sprintf("%s/mf.etf.prem.disc.last.BOX.%s.png", reportPath, nameFix), width=7, height=12, units="in")
 }
 
 #chart the time-series of premium/discount
@@ -103,5 +105,6 @@ doTsCharts<-function(plotDf){
 	ggsave(sprintf("%s/mf.etf.prem.disc.last.TS.png", reportPath), dpi=600, width=12, height=6, units="in")
 }
 
-doBoxPlots(dataDf)
-doTsCharts(dataDf[dataDf$SYMBOL %in% c('M100', 'N100', 'RRSLGETF'),])   #for the The EQUAL-III Theme ETF portfolio
+doBoxPlots(dataDf, "RAW")
+doBoxPlots(dataDf2, "50")
+#doTsCharts(dataDf[dataDf$SYMBOL %in% c('M100', 'N100', 'RRSLGETF'),])   #for the The EQUAL-III Theme ETF portfolio
