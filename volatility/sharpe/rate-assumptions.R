@@ -68,6 +68,8 @@ avgStatDf[,3] <- round(as.numeric(avgStatDf[,3]), 4)
 toPlot <- data.frame(rollSRa)
 toPlot$T <- index(rollSRa)
 toPlot <- melt(toPlot, id='T')
+toPlot$T <- as.Date(toPlot$T)
+#toPlot$T <- factor(toPlot$T, levels=as.character(unique(toPlot$T)))
 
 plotStart <- first(index(tXts))
 plotEnd <- last(index(tXts))
@@ -79,6 +81,17 @@ ggplot(toPlot, aes(x=value, color=variable)) +
 	labs(x = "", y="", fill="", color="", title="Rolling Annualized Sharpe Ratio (Actual Rf)", subtitle=sprintf("%d-month rolling [%s:%s]", 60, plotStart, plotEnd)) +
 	annotate("text", x=min(toPlot$value), y=0, label = "@StockViz", hjust='left', vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8) +
 	annotate("table", x=max(toPlot$value), y=1.5, vjust='bottom', label=list(avgStatDf))
+
+ggsave(sprintf("%s/sharpe-actual-Rf.rolling.density.png", reportPath), width=12, height=6, units="in")
+	
+ggplot(toPlot, aes(x=T, y=value, color=variable)) +
+	theme_economist() +
+	theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+	geom_line(size=1.25) +
+	scale_x_date(date_breaks = "6 months", date_labels="%b-%Y") +
+	scale_color_viridis_d() +
+	labs(x = "", y="", fill="", color="", title="Rolling Annualized Sharpe Ratio (Actual Rf)", subtitle=sprintf("%d-month rolling [%s:%s]", 60, plotStart, plotEnd)) +
+	annotate("text", x=min(toPlot$T), y=min(toPlot$value), label = "@StockViz", hjust='left', vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8) 
 
 ggsave(sprintf("%s/sharpe-actual-Rf.rolling.png", reportPath), width=12, height=6, units="in")
 	
