@@ -82,7 +82,7 @@ ggplot(toPlot, aes(x=value, color=variable)) +
 	annotate("text", x=min(toPlot$value), y=0, label = "@StockViz", hjust='left', vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8) +
 	annotate("table", x=max(toPlot$value), y=1.5, vjust='bottom', label=list(avgStatDf))
 
-ggsave(sprintf("%s/sharpe-actual-Rf.rolling.density.png", reportPath), width=12, height=6, units="in")
+ggsave(sprintf("%s/sharpe-actual-Rf.rolling.density.png", reportPath), width=16, height=8, units="in")
 	
 ggplot(toPlot, aes(x=T, y=value, color=variable)) +
 	theme_economist() +
