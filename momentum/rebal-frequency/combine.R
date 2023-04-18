@@ -27,7 +27,7 @@ statsDf$ID <- row.names(statsDf)
 
 write.csv(statsDf, file=sprintf("%s/symStatsAll.csv", reportPath), row.names = F)
 
-configs <- statsDf %>% filter(ID != 'BENCH_0') %>% slice_max(SHARPE, n = 30) %>% slice_max(RET, n=5) %>% select(ID)
+configs <- statsDf %>% filter(ID != 'BENCH_0') %>% slice_max(SHARPE, n = 30) %>% slice_max(RET, n=6) %>% select(ID)
 
 toPlot <- symXts[, c(configs$ID, 'BENCH_0')]
 
