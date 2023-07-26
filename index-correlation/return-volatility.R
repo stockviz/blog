@@ -57,12 +57,14 @@ for(corLb in corLbs){
 
 	p1 <- ggplot(toPlot, aes(y=RET, x=.data[[corLbname]], fill=.data[[corLbname]])) +
 			theme_economist() +
+			scale_fill_viridis_d(option='C') +
 			geom_violin(position="dodge") +
 			labs(x="quintiles", y="daily returns", fill="quintile", title = "Daily Returns")
 		
 
 	p2 <- ggplot(toPlot, aes(y=VOL, x=.data[[corLbname]], fill=.data[[corLbname]])) +
 			theme_economist() +
+			scale_fill_viridis_d(option='C') +
 			geom_violin(position="dodge") +
 			labs(x="quintiles", y=sprintf("volatility (%d-day)", volLb), fill="quintile", title = sprintf("%d-day Volatility", volLb))
 	
@@ -84,12 +86,14 @@ for(qtnum in 1:5){
 
 	p1 <- ggplot(toPlot, aes(y=RET, x=variable, fill=variable)) +
 			theme_economist() +
+			scale_fill_viridis_d(option='C') +
 			geom_violin(position="dodge") +
 			labs(x="corr' look-backs (days)", y="daily returns", fill="correl-lb", title = "Daily Returns")
 		
 
 	p2 <- ggplot(toPlot, aes(y=VOL, x=variable, fill=variable)) +
 			theme_economist() +
+			scale_fill_viridis_d(option='C') +
 			geom_violin(position="dodge") +
 			labs(x="corr' look-backs (days)", y=sprintf("volatility (%d-day)", volLb), fill="correl-lb", title = sprintf("%d-day Volatility", volLb))
 	
