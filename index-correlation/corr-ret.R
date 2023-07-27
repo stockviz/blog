@@ -27,18 +27,16 @@ indexName <- "NIFTY 50"
 startDate <- as.Date("2015-01-01")
 
 corLbs <- c(5, 10, 20, 50, 100) #bus-days of look-back for correlation
-smaLb <- 50 #days
 tileLb <- 500 #days to calc tiles
 tileInspect <- 5
 
 pxDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close [Close] from bhav_index where index_name='%s' and time_stamp >= '%s'", indexName, startDate))
 pXts <- xts(pxDf[,-1], pxDf[,1])
 
-pXts <- merge(pXts, SMA(pXts, smaLb), dailyReturn(pXts))
-names(pXts) <- c("INDEX", "INDEX_SMA", "RET")
+pXts <- merge(pXts, dailyReturn(pXts))
+names(pXts) <- c("INDEX", "RET")
 pXts <- merge(pXts, stats::lag(pXts$RET, -1))
-names(pXts) <- c("INDEX", "INDEX_SMA", "RET", "RET_1")
-pXts$SMA_RET <- ifelse(pXts$INDEX > pXts$INDEX_SMA, pXts$RET_1, 0)
+names(pXts) <- c("INDEX", "RET", "RET_1")
  
 for(corLb in corLbs){
 	corName <- c(paste0('T', corLb))
@@ -51,12 +49,12 @@ for(corLb in corLbs){
 	
 	allXts <- na.omit(merge(pXts, corTile))
 	
-	allXts$SMA_COR_LO <- ifelse(allXts$INDEX >= allXts$INDEX_SMA & allXts[, corName] < tileInspect, allXts$RET_1, 0)
-	allXts$SMA_COR_LS <- ifelse(allXts$INDEX >= allXts$INDEX_SMA & allXts[, corName] < tileInspect, allXts$RET_1, ifelse(allXts$INDEX < allXts$INDEX_SMA & allXts[, corName] >= tileInspect, -allXts$RET_1, 0))
+	allXts$COR_LO <- ifelse(allXts[, corName] < tileInspect, allXts$RET_1, 0)
+	allXts$COR_LS <- ifelse(allXts[, corName] < tileInspect, allXts$RET_1, -allXts$RET_1)
 	
-	Common.PlotCumReturns(allXts[, c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
-							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
+	Common.PlotCumReturns(allXts[, c('COR_LO', 'COR_LS', 'RET_1')], 
+							sprintf("%s Correlation Timing", indexName), 
 							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
-							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							sprintf("%s/%s.%d-cor.%d-tile.png", reportPath, indexName, corLb, tileInspect), NULL)
 }
 
