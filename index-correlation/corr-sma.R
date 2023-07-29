@@ -58,5 +58,15 @@ for(corLb in corLbs){
 							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
 							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
 							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							
+	Common.PlotCumReturns(allXts["/2020-01-31", c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
+							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
+							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
+							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.pre.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							
+	Common.PlotCumReturns(allXts["2020-05-01/", c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
+							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
+							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
+							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.post.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
 }
 
