@@ -27,8 +27,8 @@ indexName <- "NIFTY 50"
 startDate <- as.Date("2015-01-01")
 
 corLbs <- c(5, 10, 20, 50, 100) #bus-days of look-back for correlation
-smaLb <- 50 #days
-tileLb <- 100 #days to calc tiles
+smaLb <- 20 #days
+tileLb <- 500 #days to calc tiles
 tileInspect <- 5
 
 pxDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close [Close] from bhav_index where index_name='%s' and time_stamp >= '%s'", indexName, startDate))
