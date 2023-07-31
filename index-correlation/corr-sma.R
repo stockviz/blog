@@ -28,7 +28,7 @@ startDate <- as.Date("2015-01-01")
 
 corLbs <- c(5, 10, 20, 50, 100) #bus-days of look-back for correlation
 smaLb <- 50 #days
-tileLb <- 500 #days to calc tiles
+tileLb <- 100 #days to calc tiles
 tileInspect <- 5
 
 pxDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close [Close] from bhav_index where index_name='%s' and time_stamp >= '%s'", indexName, startDate))
@@ -57,16 +57,16 @@ for(corLb in corLbs){
 	Common.PlotCumReturns(allXts[, c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
 							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
 							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
-							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.%d.png", reportPath, indexName, smaLb, corLb, tileInspect, tileLb), NULL)
 							
 	Common.PlotCumReturns(allXts["/2020-01-31", c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
 							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
 							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
-							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.pre.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.pre.%d.png", reportPath, indexName, smaLb, corLb, tileInspect, tileLb), NULL)
 							
 	Common.PlotCumReturns(allXts["2020-05-01/", c('SMA_RET', 'SMA_COR_LO', 'SMA_COR_LS', 'RET_1')], 
 							sprintf("%s %d-SMA w/ Correlation", indexName, smaLb), 
 							sprintf("%d-corr' %d-tile", corLb, tileInspect), 
-							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.post.png", reportPath, indexName, smaLb, corLb, tileInspect), NULL)
+							sprintf("%s/%s.%d-sma.%d-cor.%d-tile.post.%d.png", reportPath, indexName, smaLb, corLb, tileInspect, tileLb), NULL)
 }
 
