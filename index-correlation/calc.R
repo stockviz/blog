@@ -2,6 +2,9 @@ library('RODBC')
 library('RPostgres')
 library('quantmod')
 
+source("d:/stockviz/r/config.r")
+reportPath <- "."
+
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 pgCon <- dbConnect(RPostgres::Postgres(), host='sweden', user=ldbuser2, password=ldbpassword2, dbname='StockVizDyn', sslmode='allow')
 
@@ -49,7 +52,7 @@ for(corLb in corLbs){
 			constXts <- merge.xts(constXts, pxRet)
 		}
 		
-		constXts <- head(constXts[-1,])
+		constXts <- constXts[-1,]
 		corMat <- cor(constXts)
 		medianPairwiseCor <- median(corMat[lower.tri(corMat)],na.rm=TRUE)
 		
