@@ -67,4 +67,4 @@ ggplot(data=subIndexPxts, aes(x=Index, y=MIDCAP100))+
 	xlab("") +
 	ggtitle(sprintf("%s  [%s:%s] @StockViz", indexName, index(first(subIndexPxts)), index(last(subIndexPxts))))
 
-	ggsave(sprintf("%s/%s.high-low.%d.2013-.png", reportPath, indexName, lb), dpi=600, width=12, height=6, units="in")  
+ggsave(sprintf("%s/%s.high-low.%d.2013-.png", reportPath, indexName, lb), dpi=600, width=12, height=6, units="in")  

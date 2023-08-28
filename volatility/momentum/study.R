@@ -11,7 +11,6 @@ library('lubridate')
 library('tidyverse')
 library('reshape2')
 library('ggthemes')
-library('MetBrewer')
 
 options(stringsAsFactors = FALSE)
 options("scipen"=100)

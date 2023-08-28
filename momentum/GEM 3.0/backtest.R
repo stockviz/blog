@@ -161,7 +161,6 @@ ggplot(data=gemSp500InstDf, aes(x=T, y=I)) +
   annotate("text", x=lastDate, y=min(gemSp500InstDf$I), label = "@StockViz", hjust=1.1, vjust=-.5, col="white", cex=6, fontface = "bold", alpha = 0.5)
 
 ggsave(sprintf("%s/%s.%s.GEM.instruments.png", reportPath, baseIndex, worldIndex), width=20, height=8, units="in")  
-q()
 
 indexClass(gemSp500Xts) <- "Date"
 
