@@ -20,7 +20,7 @@ options("scipen"=100)
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 pcon <- dbConnect(RPostgres::Postgres(), host=ldbserver2, user= ldbuser2, password=ldbpassword2, dbname=ldbname2)
 
-pxLb <- 500
+pxLb <- 1000
 
 bhavDate <- sqlQuery(lcon, "select max(time_stamp) from BHAV_EQ_FUT")[[1]]
 futSyms <- sqlQuery(lcon, sprintf("select distinct(symbol) from BHAV_EQ_FUT where time_stamp='%s'", bhavDate))[,1]

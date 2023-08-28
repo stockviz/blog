@@ -95,37 +95,49 @@ plotDentistyCharts<-function(plotXts, bhPlotXts){
 	for(j in 1:length(probBrackets)){
 		areas<-areaList[[j]]
 		areas<-areas[-1,]
+		
+#		areas[, 3]<-as.numeric(areas[, 3])
+#		areas[, 4]<-as.numeric(areas[, 4])
+		
+#		ggplot(data=areas, aes(x=KEY, y=HP)) + 
+#			theme_economist() +
+#			geom_point(aes(size=LT_5, colour=HP, alpha=0.2)) +
+#			geom_point(aes(size=GT_15, colour=paste0(HP, HP), alpha=0.2)) +
+#			scale_size(range=range(min(areas[,3]), min(areas[,4]), max(areas[,3]), max(areas[,4])))+
+#			guides(size=F, alpha=F, colour=F) +
+#			labs(x='', y='Holding Period')
+		
 		tt2<-arrangeGrob(tableGrob(areas, rows=NULL, theme=mytheme), ncol=1, 
 			top = textGrob(sprintf("Probability %d:%d", startYr, endYr),gp=gpar(fontsize=12, fontfamily='Segoe UI')), 
 			bottom=textGrob("@StockViz", gp=gpar(fontsize=10, col='grey', fontfamily='Segoe UI')))
-		ggplot2::ggsave(sprintf('%s/table.%s.%d-%d.%d-%d.png', reportPath, indexName, startYr, endYr, probBrackets[[j]][1], probBrackets[[j]][2]), tt2, width=3.5, height=12, units='in')
+		ggplot2::ggsave(sprintf('%s/table.annualized.%s.%d-%d.%d-%d.png', reportPath, indexName, startYr, endYr, probBrackets[[j]][1], probBrackets[[j]][2]), tt2, width=3.5, height=12, units='in')
 	}
 	
-	png(sprintf("%s/%s.lows.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
-	par(family='Segoe UI')
-	plot(range(lowsDensities[,1], bhDensities[,1]), range(lowsDensities[,2], bhDensities[,2]), type = "n", xlab = "Returns", ylab = "Density", main=sprintf('%s Lows Returns Density @StockViz', indexName))
-	for(i in 1:length(bhDensities[,1])){
-		lines(bhDensities[i,], col = ctrlColors[i], lwd=2)
-	}
-	for(i in 1:length(lowsDensities[,1])){
-		lines(lowsDensities[i,], col = colors[i])
-	}
-	mtext(text=sprintf("%d:%d", startYr, endYr), family='Segoe UI')
-	legend('topleft', legend=c(names(bhPlotXts), gsub("LOW_", "", lowColNames)), col=c(ctrlColors, colors), lty=1)
-	dev.off()
+	# png(sprintf("%s/%s.lows.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
+	# par(family='Segoe UI')
+	# plot(range(lowsDensities[,1], bhDensities[,1]), range(lowsDensities[,2], bhDensities[,2]), type = "n", xlab = "Returns", ylab = "Density", main=sprintf('%s Lows Returns Density @StockViz', indexName))
+	# for(i in 1:length(bhDensities[,1])){
+		# lines(bhDensities[i,], col = ctrlColors[i], lwd=2)
+	# }
+	# for(i in 1:length(lowsDensities[,1])){
+		# lines(lowsDensities[i,], col = colors[i])
+	# }
+	# mtext(text=sprintf("%d:%d", startYr, endYr), family='Segoe UI')
+	# legend('topleft', legend=c(names(bhPlotXts), gsub("LOW_", "", lowColNames)), col=c(ctrlColors, colors), lty=1)
+	# dev.off()
 	
-	png(sprintf("%s/%s.highs.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
-	par(family='Segoe UI')
-	plot(range(highsDensities[,1], bhDensities[,1]), range(highsDensities[,2], bhDensities[,2]), type = "n", xlab = "Returns", ylab = "Density", main=sprintf('%s Highs Returns Density @StockViz', indexName))
-	for(i in 1:length(bhDensities[,1])){
-		lines(bhDensities[i,], col = ctrlColors[i], lwd=2)
-	}
-	for(i in 1:length(highsDensities[,1])){
-		lines(highsDensities[i,], col = colors[i])
-	}
-	mtext(text=sprintf("%d:%d", startYr, endYr), family='Segoe UI')
-	legend('topleft', legend=c(names(bhPlotXts), gsub("HIGH_", "", highColNames)), col=c(ctrlColors, colors), lty=1)
-	dev.off()
+	# png(sprintf("%s/%s.highs.%d.%d.png", reportPath, indexName, startYr, endYr), bg='white', width=1200, height=700)
+	# par(family='Segoe UI')
+	# plot(range(highsDensities[,1], bhDensities[,1]), range(highsDensities[,2], bhDensities[,2]), type = "n", xlab = "Returns", ylab = "Density", main=sprintf('%s Highs Returns Density @StockViz', indexName))
+	# for(i in 1:length(bhDensities[,1])){
+		# lines(bhDensities[i,], col = ctrlColors[i], lwd=2)
+	# }
+	# for(i in 1:length(highsDensities[,1])){
+		# lines(highsDensities[i,], col = colors[i])
+	# }
+	# mtext(text=sprintf("%d:%d", startYr, endYr), family='Segoe UI')
+	# legend('topleft', legend=c(names(bhPlotXts), gsub("HIGH_", "", highColNames)), col=c(ctrlColors, colors), lty=1)
+	# dev.off()
 	
 	
 }
@@ -138,7 +150,10 @@ tNames<-c('INDEX', 'DAILY_RETURN')
 names(indexPxts2)<-tNames
 
 for(lDay in periodDays){
-	indexPxts2<-merge(indexPxts2, rollapply(indexPxts2[,2], lDay, Return.cumulative))
+	functionToRun<-Return.cumulative
+	if(lDay > 200) functionToRun<-Return.annualized
+	
+	indexPxts2<-merge(indexPxts2, rollapply(indexPxts2[,2], lDay, functionToRun))
 }
 rNames<-sapply(periodDays, function(x) sprintf("RET_%d", x))
 names(indexPxts2)<-c(tNames, rNames)
@@ -173,5 +188,5 @@ for(i in 1:length(periodDays)){
 }
 
 plotDentistyCharts(retXts, indexPxts[,rlNames])
-plotDentistyCharts(retXts["2010/",], indexPxts["2010/",rlNames])
+#plotDentistyCharts(retXts["2010/",], indexPxts["2010/",rlNames])
 

@@ -5,6 +5,7 @@ library('lubridate')
 library('ggplot2')
 library('ggthemes')
 library('reshape2')
+library('viridis')
 
 source("d:/stockviz/r/config.r")
 
@@ -16,9 +17,10 @@ indexName1<-"NIFTY 50"
 indexName2<-"NIFTY MIDCAP 50"
 startDate<-as.Date("2004-01-01")
 endDate<-as.Date("2020-09-30")
-lb<-220*5 #5 years
+mavgYrs <- 5
+lb<-220*mavgYrs 
 
-lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
 plotRatio<-function(ratioName){
 	nDf1<-sqlQuery(lcon, sprintf("select TIME_STAMP, %s from INDEX_NSE_VALUATION where index_name='%s' and time_stamp >= '%s' and time_stamp <= '%s'", ratioName, indexName1, startDate, endDate))
@@ -29,12 +31,19 @@ plotRatio<-function(ratioName){
 
 	allXts<-merge(nXts1, nXts2)
 	names(allXts)<-c(indexName1, indexName2)
+	allXts[,1] <- na.locf(allXts[,1])
+	allXts[,2] <- na.locf(allXts[,2])
 	relXts<-nXts2/nXts1
+	
 	names(relXts)<-c('RELATIVE')
 	relXts$avg <-rollapply(relXts$RELATIVE, lb, mean)
 	relXts$avgPsd <- relXts$avg + rollapply(relXts$RELATIVE, lb, sd)
 	relXts$avgMsd<- relXts$avg - rollapply(relXts$RELATIVE, lb, sd)
 
+	mavg <- merge(rollapply(allXts, lb, mean), rollapply(allXts, lb, sd))
+	allXts <- merge(allXts, mavg[,1], mavg[,2], mavg[,1]+mavg[,3], mavg[,1]-mavg[,3], mavg[,2]+mavg[,4], mavg[,2]-mavg[,4])
+	names(allXts) <- c(indexName1, indexName2, paste0(indexName1, '-', mavgYrs, 'yrs'), paste0(indexName2, '-', mavgYrs, 'yrs'), 'i1a', 'i1b', 'i2a', 'i2b')
+	
 	############
 	
 	firstDate<-first(index(allXts))
@@ -43,14 +52,21 @@ plotRatio<-function(ratioName){
 
 	ctr2Df<-data.frame(allXts)
 	ctr2Df$T<-as.Date(index(allXts))
-
-	ctr2Melt<-melt(ctr2Df, id='T')
-
+	ctr2Names <- names(ctr2Df)
+	
 	pdf(NULL)
-	ggplot(ctr2Melt, aes(x=T, y=value, color=variable)) +
+	ggplot(ctr2Df, aes(x=T)) +
 		theme_economist() +
-		geom_line() +
+		scale_color_viridis() +
+		scale_fill_viridis() +
+		geom_line(data=ctr2Df[, c('T', ctr2Names[1])], aes_string(y=ctr2Names[1], color='1')) +
+		geom_line(data=ctr2Df[, c('T', ctr2Names[2])], aes_string(y=ctr2Names[2], color='2')) +
+		geom_line(data=ctr2Df[, c('T', ctr2Names[3])], aes_string(y=ctr2Names[3], color='1'), linetype = "dashed") +
+		geom_line(data=ctr2Df[, c('T', ctr2Names[4])], aes_string(y=ctr2Names[4], color='2'), linetype = "dashed") +
+		geom_ribbon(data=ctr2Df[, c('T', 'i1a', 'i1b')], aes_string(ymin = 'i1b', ymax='i1a', fill='1'), alpha=0.3) +
+		geom_ribbon(data=ctr2Df[, c('T', 'i2a', 'i2b')], aes_string(ymin = 'i2b', ymax='i2a', fill='2'), alpha=0.3) +
 		scale_x_date(breaks = xAxisTicks) +
+		guides(color=F, fill=F) +
 		labs(x='', y=ratioName, color='', title=sprintf("%s/%s %s Ratio", indexName1, indexName2, ratioName), subtitle=sprintf("[%s:%s]", firstDate, lastDate)) +
 		annotate("text", x=lastDate, y=min(allXts, na.rm=T), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=6, fontface = "bold", alpha = 0.8)
 			

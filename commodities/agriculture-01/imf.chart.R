@@ -15,7 +15,7 @@ options("scipen"=100)
 reportPath <- "."
 
 #series <- c("PCPS:PFERT:IX", "PCPS:PCERE:IX", "PCPS:PRICENPQ:IX", "PCPS:PWHEAMT:IX")
-series <- c("PCPS:PFERT:IX", "PCPS:PFOOD:IX")
+#series <- c("PCPS:PFERT:IX", "PCPS:PFOOD:IX")
 
 lconUs <- odbcDriverConnect(sprintf("Driver={ODBC Driver 13 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockVizUs", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 

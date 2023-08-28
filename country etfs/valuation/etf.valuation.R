@@ -36,10 +36,17 @@ for(i in 1:nrow(etfs)){
 	etfs$NAME[i]<-etfName
 }
 
+etfLastUpdate<-mcon$aggregate('[{"$group": { "_id": "$etfTicker" , "updated": { "$max": "$downloadDate" } } }]')
+
 fundaDf<-data.frame()
 for(i in 1:nrow(etfs)){
 	ticker<-etfs$TICKER[i]
-	info<-mcon$find(sprintf('{ "etfTicker": "%s", "download.title": "Fundamentals" }', ticker), '{"download.title.$": 1}')
+	
+	lastUpdate<-as.Date(etfLastUpdate[etfLastUpdate[,1] == ticker, 2])
+	
+	print(paste(ticker, lastUpdate))
+	
+	info<-mcon$find(query = sprintf('{ "etfTicker": "%s", "download.title": "Fundamentals" }', ticker, lastUpdate-1), fields = '{"downloadDate": 1, "download.title.$": 1}', sort = '{"downloadDate": -1}', limit=1)
 	funda<-info$download[[1]]$info[[1]]
 	funda$k<-trimws(gsub("\\(.*?\\)", "", funda$k))
 	
@@ -47,10 +54,12 @@ for(i in 1:nrow(etfs)){
 		fundaDf<-data.frame(matrix(funda$v, nrow=1))
 		names(fundaDf)<-funda$k
 		fundaDf$TICKER<-ticker
+		fundaDf$AS_OF<-as.Date(info$downloadDate)
 	} else {
 		tempDf<-data.frame(matrix(funda$v, nrow=1))
 		names(tempDf)<-funda$k
 		tempDf$TICKER<-ticker
+		tempDf$AS_OF<-as.Date(info$downloadDate)
 		
 		tryCatch({
 			fundaDf<-rbind(fundaDf, tempDf)
@@ -61,7 +70,7 @@ for(i in 1:nrow(etfs)){
 	}
 }
 
-fundaDf2<-subset(fundaDf, select=c(-`Dividend Yield TTM`, -`30-Day SEC Yield`, -`7-Day SEC Yield`, -`Number of Holdings`))
+fundaDf2<-subset(fundaDf, select=c(-`Dividend Yield TTM`, -`30-Day SEC Yield`, -`7-Day SEC Yield`, -`Number of Holdings`, -`AS_OF`))
 fundaDf2<-fundaDf2[order(fundaDf2$TICKER),]
 
 valNames<-names(fundaDf2)[names(fundaDf2) != 'TICKER']
