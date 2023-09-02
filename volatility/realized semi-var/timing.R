@@ -31,6 +31,8 @@ indices <- c('NIFTY 50', 'NIFTY MIDCAP 50')
 
 statsDf <- data.frame(INAME = "", LB = 0, SR_PRE = 0.0, SR_POST = 0.0)
 
+allRsv <- NULL
+
 for(i in 1:length(indices)){
 	indexName <- indices[i]
 
@@ -45,7 +47,9 @@ for(i in 1:length(indices)){
 
 	rsvXts <- rSVar(pXts, alignBy = 'minutes', alignPeriod = 5, makeReturns = T)
 	index(rsvXts) <- as.Date(index(rsvXts))
-
+	
+	allRsv <- merge.xts(allRsv, rsvXts)
+	
 	indexDf <- sqlQuery(lcon, sprintf("select px_close, time_stamp from bhav_index where index_name = '%s' and time_stamp >= '%s'", indexName, startDate))
 	iXts <- xts(indexDf[,1], indexDf[,2])
 	iRetXts <- dailyReturn(iXts)
@@ -65,6 +69,19 @@ for(i in 1:length(indices)){
 		statsDf <- rbind(statsDf, c(indexName, rSmaLb, sraPre, sraPost))
 	}
 }
+
+names(allRsv) <- do.call(paste0, expand.grid(c("dn_", "up_"), indices))
+allRsvTp <- data.frame(allRsv)
+allRsvTp <- melt(allRsvTp)
+
+ggplot(allRsvTp, aes(x=value, color=variable)) +
+	theme_economist() +
+	stat_density(size=1.25, geom="line", position="identity") +
+	scale_color_viridis_d() +
+	labs(x = "", y="", fill="", color="", title="Realized Semi-Var Density", subtitle=sprintf("%s:%s", first(index(allRsv)), last(index(allRsv)))) +
+	annotate("text", x=min(allRsvTp$value), y=0, label = "@StockViz", hjust='left', vjust=0, col="white", cex=6, fontface = "bold", alpha = 0.8) 
+
+ggsave(sprintf("%s/realized-semi-var.density.png", reportPath), width=12, height=6, units="in")
 
 statsDf <- statsDf[-1,]
 
