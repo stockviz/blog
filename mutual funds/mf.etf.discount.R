@@ -1,7 +1,7 @@
 library('RODBC')
 library('quantmod')
 library('PerformanceAnalytics')
-library('extrafont')
+library('tidyverse')
 library('lubridate')
 library('ggplot2')
 library('ggthemes')
@@ -11,47 +11,33 @@ options("scipen"=100)
 options(stringsAsFactors = FALSE)
 
 reportPath <- "."
-dataPath <- "."
-
 #reportPath <- "D:/StockViz/public/blog/mutual funds"
-#dataPath <- "D:/StockViz/public/blog/mutual funds"
+
 
 source("d:/stockviz/r/config.r")
 
-lcon <- odbcDriverConnect(sprintf("Driver={SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
 
-mfEtfMap<-read.csv(file=sprintf("%s/mf.etf.map.csv", dataPath))
+lastDate <- sqlQuery(lcon, "select max(time_stamp) from px_history")[[1]]
+cutoff <- lastDate - 3*365
+etfFunds <- sqlQuery(lcon, sprintf("select t.SYMBOL, n.SCHEME_CODE, n.SCHEME_NAME from ETF_TICKER t, MF_NAV_HISTORY n 
+									where t.ISIN=n.ISIN_PAYOUT_GROWTH 
+									and SCHEME_NAME like '%%etf%%' 
+									and AS_OF='%s'
+									and DATE_LISTING <= '%s'", lastDate, cutoff))
 
-mfEtfMap$PX_FIRST_DT<-NA
-mfEtfMap$PX_LAST_DT<-NA
+etfDates <- sqlQuery(lcon, sprintf("select SYMBOL, min(time_stamp) stdt, max(time_stamp) eddt from px_history where symbol in ('%s') group by symbol", paste(etfFunds$SYMBOL, collapse="','")))
+etfDates <- etfDates[etfDates$eddt == lastDate,]
 
-for(i in 1:length(mfEtfMap[,1])){
-	pxFirstLast<-sqlQuery(lcon, sprintf("select min(time_stamp), max(time_stamp) from px_history where symbol='%s'", mfEtfMap$NSE_SYMBOL[i]))
-	mfEtfMap$PX_FIRST_DT[i]<-toString(pxFirstLast[1,1])
-	mfEtfMap$PX_LAST_DT[i]<-toString(pxFirstLast[1,2])
-}
+mfEtfMap <- etfDates %>% inner_join(etfFunds, by='SYMBOL')
 
-mfEtfMap$PX_FIRST_DT<-as.Date(mfEtfMap$PX_FIRST_DT)
-mfEtfMap$PX_LAST_DT<-as.Date(mfEtfMap$PX_LAST_DT)
+dataDf<-data.frame(SYMBOL="", TIME_STAMP=Sys.Date(), C=0.0, L=0.0)
 
-lastDate<-max(mfEtfMap$PX_LAST_DT, na.rm=T)
-mfEtfMapFinal<-mfEtfMap[mfEtfMap$PX_LAST_DT == lastDate,]
-mfEtfMapFinal<-mfEtfMapFinal[mfEtfMapFinal$PX_FIRST_DT < lastDate-365,]
-mfEtfMapFinal<-na.omit(mfEtfMapFinal)
-
-mfEtfMapFinal$PX_CLOSE<-0.0
-mfEtfMapFinal$PX_LAST<-0.0
-mfEtfMapFinal$NAV<-0.0
-
-navDate<-as.Date(sqlQuery(lcon, sprintf("select max(as_of) from MF_NAV_HISTORY where scheme_code in (%s)", paste(mfEtfMapFinal$SCHEME_CODE, collapse=',')))[[1]])
-
-dataDf<-data.frame(SYMBOL="", TIME_STAMP="", C=0.0, L=0.0)
-
-for(i in 1:length(mfEtfMapFinal[,1])){
+for(i in 1:nrow(mfEtfMap)){
 	premDisc<-sqlQuery(lcon, sprintf("select SYMBOL, TIME_STAMP, PX_CLOSE/NAV-1 C, PX_LAST/NAV-1 L from PX_HISTORY P, MF_NAV_HISTORY M
 									WHERE symbol='%s' and (series='eq' or series='be')
 									AND scheme_code=%d and as_of=time_stamp
-									and time_stamp >= '%s'", mfEtfMapFinal$NSE_SYMBOL[i], mfEtfMapFinal$SCHEME_CODE[i], lastDate-365))
+									and time_stamp >= '%s'", mfEtfMap$SYMBOL[i], mfEtfMap$SCHEME_CODE[i], cutoff))
 	
 	dataDf<-rbind(dataDf, premDisc[, c('SYMBOL', 'TIME_STAMP', 'C', 'L')])
 }
@@ -74,7 +60,7 @@ doBoxPlots<-function(plotDf, nameFix){
 		labs(x='', y='premium/discount (%)', color='', title="Premium/Discount of ETF over MF", subtitle=sprintf("Closing Price vs. NAV [%s:%s]", firstDate, lastDate)) +
 		annotate("text", x=0, y=max(plotDf$C), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=4, fontface = "bold")
 
-	ggsave(sprintf("%s/mf.etf.prem.disc.closing.BOX.%s.png", reportPath, nameFix), width=7, height=12, units="in")
+	ggsave(sprintf("%s/mf.etf.prem.disc.closing.BOX.%s.png", reportPath, nameFix), width=7, height=14, units="in")
 		
 	ggplot(plotDf, aes(SYMBOL, L)) +
 		theme_economist() +
@@ -84,7 +70,7 @@ doBoxPlots<-function(plotDf, nameFix){
 		labs(x='', y='premium/discount (%)', color='', title="Premium/Discount of ETF over MF", subtitle=sprintf("Last Price vs. NAV [%s:%s]", firstDate, lastDate)) +
 		annotate("text", x=0, y=max(plotDf$L), label = "@StockViz", hjust=1.1, vjust=-1.1, col="white", cex=4, fontface = "bold")
 
-	ggsave(sprintf("%s/mf.etf.prem.disc.last.BOX.%s.png", reportPath, nameFix), width=7, height=12, units="in")
+	ggsave(sprintf("%s/mf.etf.prem.disc.last.BOX.%s.png", reportPath, nameFix), width=7, height=14, units="in")
 }
 
 #chart the time-series of premium/discount
