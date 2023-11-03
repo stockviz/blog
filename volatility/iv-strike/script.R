@@ -101,11 +101,11 @@ ivDt <- ivData %>% pivot_wider(id_cols = c(T), names_from=strike, names_prefix =
 
 ivDiffs <- (ivData %>% filter(strike > 0)) %>% inner_join(ivData %>% filter(strike < 0) %>% mutate(strike = -strike), by=join_by(T, strike)) %>% mutate(ivr = iv.x/iv.y) %>% select(T, strike, ivr)
 
-maxT1 <- (ivDiffs %>% filter(strike == numStrikes) %>% filter(ivr == max(ivr)) %>% select(T))[[1]]
-minT1 <- (ivDiffs %>% filter(strike == numStrikes) %>% filter(ivr == min(ivr)) %>% select(T))[[1]]
-minT2 <- (ivDt %>% mutate(S17 = S1/`S-7`) %>% filter(S17 == min(S17)) %>% select(T))[[1]]
+minT1 <- (ivDt %>% mutate(S77 = S7/`S-7`) %>% filter(S77 == min(S77)) %>% select(T))[[1]]
+minT2 <- (ivDt %>% mutate(S37 = S3/`S-3`) %>% filter(S37 == min(S37)) %>% select(T))[[1]]
+minT3 <- (ivDt %>% mutate(S17 = S1/`S-7`) %>% filter(S17 == min(S17)) %>% select(T))[[1]]
 
-ivData %>% filter(T %in% c(maxT1, minT1, minT2)) %>% mutate(T = factor(T)) %>%
+ivData %>% filter(T %in% c(minT1, minT2, minT3)) %>% mutate(T = factor(T)) %>%
 	ggplot(aes(x=strike, y=iv, color = T, group = T)) +
 	theme_economist() +
 	geom_line(linewidth=1) +
