@@ -12,7 +12,6 @@ library('tidyverse')
 library('reshape2')
 library('viridis')
 library('ggthemes')
-library('ggrepel')
 
 options(stringsAsFactors = FALSE)
 options("scipen"=100)
