@@ -20,7 +20,7 @@ endTime <- hms("15:30:00")
 reportPath <- "."
 source("d:/stockviz/r/config.r")
 
-symbol <- "INFY"
+symbol <- "HDFCBANK"
 startDate <- as.Date("2018-01-01")
 
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockViz", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
@@ -73,6 +73,7 @@ for(i in 1:nrow(r1daysIday)){
 	cat(paste(i, "... "))
 	rm1 <- as.Date(r1daysIday$rm1[i])
 	rm1Xts <- getIntradayXts(rm1)
+	if(is.null(rm1Xts)) next
 	rm1All <- rbind.xts(rm1All, rm1Xts)
 	index(rm1Xts) <- as.POSIXct(paste("1990-01-01", strftime(index(rm1Xts), "%H:%M:S", tz="UTC")), format="%Y-%m-%d %H:%M:S", tz="UTC")
 	
@@ -204,7 +205,7 @@ plotVolume <- function(rm1Vol, rp1Vol, rmVol, vol, plotTitle, plotFileName) {
 
 	propXts[,1] <- na.locf(propXts[,1])
 	propXts[,2] <- na.locf(propXts[,2])
-	propXts[nrow(propXts),3] <- 0
+	if(is.na(propXts[nrow(propXts),3])) propXts[nrow(propXts),3] <- 0
 	propXts <- na.omit(propXts)
 
 	tp <- data.frame(propXts)
