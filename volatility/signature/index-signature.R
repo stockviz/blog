@@ -39,8 +39,6 @@ for(indexName in indices){
 
 volDf <- volDf[-1,]
 
-toPlot <- melt(volDf, id=c("INAME", "LB"))
-
 toPlot <- volDf
 toPlot$INAME <- factor(toPlot$INAME, levels = unique(toPlot$INAME))
 toPlot$LB <- factor(toPlot$LB, levels = unique(toPlot$LB))
