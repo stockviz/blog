@@ -5,6 +5,10 @@ library('PortfolioAnalytics')
 library('tidyverse')
 library('lubridate')
 
+library('ggthemes')
+library('viridis')
+
+pdf(NULL)
 options("scipen"=100)
 options(stringsAsFactors = FALSE)
 
@@ -17,6 +21,20 @@ load(sprintf("%s/symRets-weekly.Rdata", reportPath)) #symRets
 
 symRets$RET <- as.numeric(symRets$RET)
 symRets$OVERLAP <- as.numeric(symRets$OVERLAP)
+
+counts <- symRets %>% filter(STRATEGY != "BENCH") %>% group_by(STRATEGY) %>% summarize(total = n())
+
+symRets %>% filter(STRATEGY != "BENCH") %>%
+	ggplot(aes(x=as.integer(OVERLAP*100), fill=STRATEGY)) +
+		geom_histogram(position="identity", binwidth=10) +
+		theme_economist() +
+		scale_fill_viridis_d() +
+		labs(x = "overlap (%)", y="count", fill="", color="", size="", 
+				title="Weekly Portfolio Overlap", 
+				subtitle=sprintf("N = %d; [%s:%s]", min(counts$total), min(symRets$PERIOD_END), max(symRets$PERIOD_END)), 
+				caption='@StockViz') 
+
+ggsave(sprintf("%s/symRets-weekly.overlap.png", reportPath), width=12, height=6, units="in")
 
 stratNames <- unique(symRets$STRATEGY)
 symXts <- do.call(merge.xts, lapply(stratNames, function(X) xts(symRets[symRets$STRATEGY == X,]$RET, symRets[symRets$STRATEGY == X,]$PERIOD_END)))
