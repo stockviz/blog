@@ -28,7 +28,7 @@ endDate <- last(index(iXts))
 
 garch_spec <- ugarchspec(variance.model=list(model="sGARCH", garchOrder=c(1,1)), mean.model=list(armaOrder=c(0,0))) #GARCH(1,1) is good enough. https://archive.aessweb.com/index.php/5002/article/view/2072
 
-forecastStatsDf <- data.frame(TIME_STAMP="", PROPHET=0.0, GARCH_11=0.0, LOCF=0.0)
+forecastStatsDf <- data.frame(TIME_STAMP="", PROPHET=0.0, GARCH_11=0.0, LOCF=0.0, AVG=0.0)
 for(ii in (lookback+1):(nrow(iXts) - forecastDays)){
 	trainData <- coredata(iXts[(ii-lookback):ii])
 	fcastVix <- iXts[(ii+1):(ii+forecastDays)]
@@ -41,21 +41,27 @@ for(ii in (lookback+1):(nrow(iXts) - forecastDays)){
 
 	future <- data.frame(ds = c(trainDf$ds, index(fcastVix)))
 	nextDf <- predict(lModel1, future)
-	predVix <- tail(nextDf$yhat, forecastDays)
+	predVix1 <- tail(nextDf$yhat, forecastDays)
 	
-	rmseProp <- sqrt(mean((actVix - predVix)^2))
+	rmseProp <- sqrt(mean((actVix - predVix1)^2))
 	
 	#predict garch
 	lModel2 <- ugarchfit(spec = garch_spec, data = trainData)
 	
-	predVix <- ugarchforecast(lModel2, n.ahead = 20)
-	rmseGarch11 <- sqrt(mean((actVix - as.numeric(predVix@forecast$series))^2))
+	predVix2 <- ugarchforecast(lModel2, n.ahead = 20)
+	predVix2 <- as.numeric(predVix2@forecast$series)
+	rmseGarch11 <- sqrt(mean((actVix - predVix2)^2))
 	
 	#locf
-	rmseLocf <- sqrt(mean((actVix - rep(as.numeric(xts::last(fcastVix)), forecastDays))^2))
+	predVix3 <- rep(as.numeric(xts::last(fcastVix)), forecastDays)
+	rmseLocf <- sqrt(mean((actVix - predVix3)^2))
+	
+	#avg
+	predVixAvg <- unlist(lapply(1:forecastDays, function(X) (predVix1[X] + predVix2[X] + predVix3[X])/3))
+	rmseAvg <- sqrt(mean((actVix - predVixAvg)^2))
 	
 	#save results
-	forecastStatsDf <- rbind(forecastStatsDf, c(toString(index(xts::last(fcastVix))), rmseProp, rmseGarch11, rmseLocf))
+	forecastStatsDf <- rbind(forecastStatsDf, c(toString(index(xts::last(fcastVix))), rmseProp, rmseGarch11, rmseLocf, rmseAvg))
 }
 
 forecastStatsDf <- forecastStatsDf[-1,]
@@ -63,6 +69,7 @@ forecastStatsDf$TIME_STAMP <- as.Date(forecastStatsDf$TIME_STAMP)
 forecastStatsDf$PROPHET <- as.numeric(forecastStatsDf$PROPHET)
 forecastStatsDf$GARCH_11 <- as.numeric(forecastStatsDf$GARCH_11)
 forecastStatsDf$LOCF <- as.numeric(forecastStatsDf$LOCF)
+forecastStatsDf$AVG <- as.numeric(forecastStatsDf$AVG)
 
 save(forecastStatsDf, file=sprintf("%s/forecastStatsDf.Rdata", reportPath))
 
