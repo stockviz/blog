@@ -10,7 +10,8 @@ options("scipen"=100)
 options(stringsAsFactors = FALSE)
 
 reportPath <- "."
-source("d:/stockviz/r/config.r")
+#source("d:/stockviz/r/config.r")
+source("/mnt/hollandr/config.r")
 
 pgCon <- dbConnect(RPostgres::Postgres(), host='sweden', user=ldbuser2, password=ldbpassword2, dbname='StockVizDyn', sslmode='allow')
 lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
@@ -59,7 +60,9 @@ getReturns <- function(syms, startDate, endDate, expectedTs, pSize){
 	return(list(rets, periodRet))
 }
 
-svm_linear_spec <- svm_poly(degree = 1) %>%
+svmDegree <- 5
+
+svm_linear_spec <- svm_poly(degree = svmDegree) %>%
 	set_mode("regression") %>%
 	set_engine("kernlab", scaled = FALSE)
 	
@@ -149,5 +152,5 @@ symRets <- symRets[-1,]
 symRets$PERIOD_END <- as.Date(symRets$PERIOD_END)
 symRets$RET <- as.numeric(symRets$RET)
 
-save(symRets, file=sprintf("%s/simple-svm.Rdata", reportPath))
+save(symRets, file=sprintf("%s/simple-svm.%d.Rdata", reportPath, svmDegree))
 
