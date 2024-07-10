@@ -12,11 +12,12 @@ pdf(NULL)
 options("scipen"=100)
 options(stringsAsFactors = FALSE)
 
-source("D:/StockViz/public/blog/common/plot.common.R")
+#source("D:/StockViz/public/blog/common/plot.common.R")
+source("/mnt/hollandr/plot.common.R")
 
 reportPath <- "."
 
-suffix <- "-tuned"
+suffix <- ".5"
 load(sprintf("%s/simple-svm%s.Rdata", reportPath, suffix)) #symRets
 
 symRets$RET <- as.numeric(symRets$RET)
