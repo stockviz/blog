@@ -38,7 +38,7 @@ for(indexName in indices){
 	ggplot(rle01df, aes(x=as.factor(lengths), group=as.factor(values), fill=as.factor(values))) +
 		theme_economist() +
 		geom_histogram(position='dodge', stat="count") +
-		stat_count(binwidth = 1, geom = 'text', color = 'black', aes(label = paste0(round(..count../sum(..count..)*100, 2), '%')), position=position_dodge(width = 1), vjust = -0.2) +
+		stat_count(binwidth = 1, geom = 'text', color = 'black', aes(label = paste0(round(..count../tapply(..count.., ..group.. ,sum)[..group..]*100, 2), '%')), position=position_dodge(width = 1), vjust = -0.2) +
 		scale_fill_viridis_d() +
 		labs(y='count', x='streak length (days)', fill='down/up', color='', title=sprintf("%s Return Streaks", indexName), subtitle=sprintf("%s:%s; N = %d", first(index(dRet)), last(index(dRet)), nrow(dRet)), caption = '@StockViz')
 		
