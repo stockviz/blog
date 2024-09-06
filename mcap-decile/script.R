@@ -48,6 +48,24 @@ mktCaps <- sqlQuery(lcon, sprintf("select s1.SYMBOL, s1.MKT_CAP_CR CAP_START, s2
 mktCaps$DECILE_START <- ntile(mktCaps$CAP_START, 10)
 mktCaps$DECILE_END <- ntile(mktCaps$CAP_END, 10)
 
+
+mktCapFf <- sqlQuery(lcon, sprintf("select s1.SYMBOL, s1.MKT_CAP_CR, s1.FF_MKT_CAP_CR from EQUITY_MISC_INFO s1 where s1.TIME_STAMP = '%s'", startDate))
+		
+mktCapFf$DECILE_START <- ntile(mktCapFf$MKT_CAP_CR, 10)
+
+ggplot() +
+	theme_economist() +
+	geom_bar(data = mktCapFf %>% group_by(DECILE_START) %>% summarize(FULL_FLOAT = sum(MKT_CAP_CR), FREE_FLOAT = sum(FF_MKT_CAP_CR)) %>% pivot_longer(-DECILE_START),
+		mapping = aes(x=factor(DECILE_START), y = value, fill = name), stat="identity", position=position_dodge()) +
+	scale_y_sqrt() + 
+	geom_text(data = mktCapFf %>% group_by(DECILE_START) %>% summarize(FULL_FLOAT = sum(MKT_CAP_CR), PCT = 100*sum(FF_MKT_CAP_CR)/sum(MKT_CAP_CR)), 
+		mapping = aes(x = factor(DECILE_START), y = FULL_FLOAT, label = sprintf("%.2f%%", PCT))) +
+	scale_fill_viridis_d() +
+	labs(x = "", y="sqrt market-cap (Rs. crores)", fill="", color="", size="", 
+		title="Market-cap by Decile", subtitle=sprintf("2020 Jan; N = %d", nrow(mktCapFf)))
+
+ggsave(sprintf("%s/decile-free.full-float.png", reportPath), width=12, height=6, units="in")	
+
 mktCaps$EBIT_START <- NA
 mktCaps$EBIT_END <- NA
 for(i in 1:nrow(mktCaps)){
