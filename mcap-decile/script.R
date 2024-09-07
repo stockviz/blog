@@ -147,10 +147,22 @@ p2 <- capChanges %>% select(DECILE_START, CAP_CHG, CTR_BEGIN, CTR_END) %>%
 	scale_y_sqrt() + 
 	scale_fill_viridis_d() +
 	labs(x = "market-cap deciles", y="sqrt change (%)", fill="", color="", size="", 
-		title="Changes in Total Market-cap by Decile", subtitle=sprintf("2020 Jan - 2024 August; N = %d", nrow(mktCaps)), caption='@StockViz') 
+		title="Changes in Total Market-cap by Decile", subtitle=sprintf("2020 Jan - 2024 August; N = %d", nrow(mktCaps))) 
 
-p1 + p2 + plot_layout(nrow=2)		
-ggsave(sprintf("%s/decile-cap.png", reportPath), width=12, height=12, units="in")
+p3 <- mktCaps %>% filter(DECILE_START >= 1 & DECILE_START <= 10 & DECILE_END >= 1 & DECILE_END <= 10 & CAP_START > 0) %>% 
+			mutate(CAP_CHG =  100*(CAP_END/CAP_START - 1)) %>% 
+				ggplot(aes(x=factor(DECILE_START), y = CAP_CHG, fill = factor(DECILE_START))) +
+				theme_economist() +
+				geom_violin(alpha = 0.75) +
+				geom_point(position = position_jitter(seed = 1, width = 0.2)) +
+				scale_y_sqrt() + 
+				scale_fill_viridis_d() +
+				labs(x = "market-cap deciles", y="sqrt change (%)", fill="", color="", size="", 
+					title="Changes in Total Market-cap by Decile", subtitle=sprintf("2020 Jan - 2024 August; N = %d", nrow(mktCaps)), caption='@StockViz') 
+
+		
+p1 + p2 + p3 + plot_layout(nrow=3)		
+ggsave(sprintf("%s/decile-cap.png", reportPath), width=12, height=18, units="in")
 		
 capTransition <- mktCaps %>% filter(DECILE_START >= 1 & DECILE_START <= 10 & DECILE_END >= 1 & DECILE_END <= 10) %>% 
 				filter(DECILE_END > DECILE_START) %>%
