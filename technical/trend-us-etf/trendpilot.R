@@ -25,6 +25,7 @@ smaLbs <- c(5, 10, 20, 50, 100, 200)
 symbols <- list()
 symbols[[1]] <- c('PTLC', 'SPY')
 symbols[[2]] <- c('PTNQ', 'QQQ')
+symbols[[3]] <- c('PTMC', 'VO')
 
 for(i in 1: length(symbols)){
 	pxDf1 <- sqlQuery(lconUs2, sprintf("select time_stamp, c from BHAV_EQ_TD where SYMBOL='%s' and time_stamp >= '%s'", symbols[[i]][1], startDate))
