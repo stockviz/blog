@@ -39,6 +39,7 @@ for(i in 1: length(symbols)){
 	benchRetL1 <- stats::lag(benchRet, -1)
 	
 	dXts <- na.omit(merge(eRet, benchRet))
+	names(dXts) <- symbols[[i]]
 	dXts <- dXts[-1,]
 	
 	sharpe <- SharpeRatio.annualized(dXts)
