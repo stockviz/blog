@@ -129,7 +129,7 @@ for(lb in lbs){
 			labs(x = "", y='change (%)', fill="", color="",  title='Holds') 
 
 	p1 + p2 + p3 + plot_layout(ncol=1) + 
-				plot_annotation(title = sprintf("%d-day %s Returns on FOMC Dates", lb, indexName), 
+				plot_annotation(title = sprintf("%d-day %s change on FOMC Dates", lb, indexName), 
 					subtitle = sprintf("[%s:%s]", first(index(vixXts)), last(index(vixXts))),
 					caption='@StockViz') 
 
@@ -145,7 +145,7 @@ for(lb in lbs){
 			geom_vline(xintercept=0, linetype="dashed", color = "grey", linewidth=1) +
 			guides(color='none', size='none') +
 			scale_color_viridis() +
-			labs(x = "pre-FOMC returns", y='post-FOMC returns', fill="", color="",  title="Hikes") 
+			labs(x = "pre-FOMC change", y='post-FOMC change', fill="", color="",  title="Hikes") 
 			
 	p2 <- fomcEffectDf %>% filter(CHG < 0) %>% select(ends_with(paste0('_', lb))) %>% rename_with(~str_remove(., paste0('_', lb))) %>%
 		ggplot(., aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
@@ -155,7 +155,7 @@ for(lb in lbs){
 			geom_vline(xintercept=0, linetype="dashed", color = "grey", linewidth=1) +
 			guides(color='none', size='none') +
 			scale_color_viridis() +
-			labs(x = "pre-FOMC returns", y='post-FOMC returns', fill="", color="",  title="Cuts") 
+			labs(x = "pre-FOMC change", y='post-FOMC change', fill="", color="",  title="Cuts") 
 			
 	p3 <- fomcEffectDf %>% filter(CHG == 0) %>% select(ends_with(paste0('_', lb))) %>% rename_with(~str_remove(., paste0('_', lb))) %>%
 		ggplot(., aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
@@ -165,10 +165,10 @@ for(lb in lbs){
 			geom_vline(xintercept=0, linetype="dashed", color = "grey", linewidth=1) +
 			guides(color='none', size='none') +
 			scale_color_viridis() +
-			labs(x = "pre-FOMC returns", y='post-FOMC returns', fill="", color="",  title="Holds") 
+			labs(x = "pre-FOMC change", y='post-FOMC change', fill="", color="",  title="Holds") 
 			
 	p1 + p2 + p3 + plot_layout(ncol=1) + 
-				plot_annotation(title = sprintf("%d-day %s Returns around FOMC Dates", lb, indexName), 
+				plot_annotation(title = sprintf("%d-day %s Changes around FOMC Dates", lb, indexName), 
 					subtitle = sprintf("[%s:%s]", first(index(vixXts)), last(index(vixXts))),
 					caption='@StockViz') 
 
