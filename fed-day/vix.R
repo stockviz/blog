@@ -97,13 +97,13 @@ for(i in 1:nrow(fomcAnalXts)){
 }
 
 fomcEffectDf <- fomcAnal
-fomcEffectDf$DATE_STAMP <- index(fomcAnal)
+fomcEffectDf$DATE_STAMP <- index(fomcAnalXts)
 
 write.csv(fomcEffectDf, file=sprintf("%s/%s.fomcEffect.returns.csv", reportPath, indexName))
 
 for(lb in lbs){
-	p1 <- fomcEffectDf %>% filter(CHG > 0) %>% select(c(DATE_STAMP, ends_with(paste0('_', lb)))) %>% rename_with(~str_remove(., paste0('_', lb))) %>% pivot_longer(-DATE_STAMP) %>%
-		ggplot(., aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
+	p1 <- fomcEffectDf %>% filter(CHG > 0) %>% select(c(DATE_STAMP, ends_with(paste0('_', lb)))) %>% rename_with(~str_remove(., paste0('_', lb))) %>% pivot_longer(-DATE_STAMP) %>% 
+		ggplot(aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
 			theme_economist() +
 			theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
 			geom_bar(stat="identity", position=position_dodge()) +
@@ -111,7 +111,7 @@ for(lb in lbs){
 			labs(x = "", y='change (%)', fill="", color="",  title="Hikes") 
 				
 	p2 <- fomcEffectDf %>% filter(CHG < 0) %>% select(c(DATE_STAMP, ends_with(paste0('_', lb)))) %>% pivot_longer(-DATE_STAMP) %>%
-		ggplot(., aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
+		ggplot(aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
 			theme_economist() +
 			theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
 			geom_bar(stat="identity", position=position_dodge()) +
@@ -120,7 +120,7 @@ for(lb in lbs){
 			labs(x = "", y='change (%)', fill="", color="",  title="Cuts") 
 				
 	p3 <- fomcEffectDf %>% filter(CHG == 0) %>% select(c(DATE_STAMP, ends_with(paste0('_', lb)))) %>% pivot_longer(-DATE_STAMP) %>%
-		ggplot(., aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
+		ggplot(aes(x=factor(DATE_STAMP), y=100*value, fill=name)) + 
 			theme_economist() +
 			theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
 			geom_bar(stat="identity", position=position_dodge()) +
@@ -138,7 +138,7 @@ for(lb in lbs){
 
 for(lb in lbs){
 	p1 <- fomcEffectDf %>% filter(CHG > 0) %>% select(ends_with(paste0('_', lb))) %>% rename_with(~str_remove(., paste0('_', lb))) %>%
-		ggplot(., aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
+		ggplot(aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
 			theme_economist() +
 			geom_point() +
 			geom_hline(yintercept=0, linetype="dashed", color = "grey", linewidth=1) +
@@ -148,7 +148,7 @@ for(lb in lbs){
 			labs(x = "pre-FOMC change", y='post-FOMC change', fill="", color="",  title="Hikes") 
 			
 	p2 <- fomcEffectDf %>% filter(CHG < 0) %>% select(ends_with(paste0('_', lb))) %>% rename_with(~str_remove(., paste0('_', lb))) %>%
-		ggplot(., aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
+		ggplot(aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
 			theme_economist() +
 			geom_point() +
 			geom_hline(yintercept=0, linetype="dashed", color = "grey", linewidth=1) +
@@ -158,7 +158,7 @@ for(lb in lbs){
 			labs(x = "pre-FOMC change", y='post-FOMC change', fill="", color="",  title="Cuts") 
 			
 	p3 <- fomcEffectDf %>% filter(CHG == 0) %>% select(ends_with(paste0('_', lb))) %>% rename_with(~str_remove(., paste0('_', lb))) %>%
-		ggplot(., aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
+		ggplot(aes(x=100*PRE, y=100*POST, color=POST-PRE, size=POST-PRE)) + 
 			theme_economist() +
 			geom_point() +
 			geom_hline(yintercept=0, linetype="dashed", color = "grey", linewidth=1) +
