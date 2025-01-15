@@ -99,5 +99,5 @@ avgRets <- merge(avgSmaRets, avgBhRets)
 names(avgRets) <- c('AVG_SMA', 'AVG_BH')
 
 sharpe <- SharpeRatio.annualized(avgRets)
-Common.PlotCumReturns(singleRet, "Avg. SMA vs. B&H", sprintf("SR: %s", paste(round(sharpe,2), collapse="/")), 
+Common.PlotCumReturns(avgRets, "Avg. SMA vs. B&H", sprintf("SR: %s", paste(round(sharpe,2), collapse="/")), 
                       sprintf("%s/sma.all.png", reportPath), NULL)
