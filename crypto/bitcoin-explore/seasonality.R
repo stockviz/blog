@@ -99,10 +99,23 @@ p + plot_annotation(
 
 ggsave(sprintf("%s/bitcoin-volatility.decomposition.all.png", reportPath), width=18, height=12, units="in")
 
-iTs <- tsbox::ts_tsibble(iXts["/2019-12-01"])
-decomp <- iTs %>% model(STL(value)) %>% components()
+decomp %>% mutate(md = as.Date(format(time, "1999-%m-%d")), y = year(time)) %>% arrange(.model, time, md) %>% {
+  ggplot(., aes(x=md, y=season_year, color=factor(y, levels=unique(y)))) +
+    scale_x_date(date_breaks='1 months', date_labels='%b') +
+    scale_color_viridis_d() +
+    theme_economist() +
+    geom_point() +
+    labs(color="", x="", 
+         title = "Bitcoin Volatility Seasonality by month", 
+         subtitle = sprintf("yang.zhang; %s:%s", first(index(iXts)), last(index(iXts))),
+         caption = '@StockViz')
+}
 
-p <- decomp %>% autoplot() +
+ggsave(sprintf("%s/bitcoin-volatility.seasonality.month.all.png", reportPath), width=14, height=8, units="in")
+
+decomp2 <- decomp %>% filter(time <= as.Date("2019-12-01"))
+
+p <- decomp2 %>% autoplot() +
   theme_economist() +
   theme(axis.text.x=element_text(angle=90, hjust=1)) +
   labs(x="") +
@@ -111,16 +124,29 @@ p <- decomp %>% autoplot() +
 p + plot_annotation(
   theme = theme_economist(),
   title = "Bitcoin volatility (pre-COVID)",
-  subtitle = sprintf("yang.zhang; %s:%s", first(index(iXts)), last(index(iXts))), 
+  subtitle = sprintf("yang.zhang; %s:%s", min(decomp2$time), max(decomp2$time)), 
   caption = '@StockViz'
 )
 
 ggsave(sprintf("%s/bitcoin-volatility.decomposition.pre.png", reportPath), width=18, height=12, units="in")
 
-iTs <- tsbox::ts_tsibble(iXts["2020-05-01/"])
-decomp <- iTs %>% model(STL(value)) %>% components()
+decomp2 %>% mutate(md = as.Date(format(time, "1999-%m-%d")), y = year(time)) %>% arrange(.model, time, md) %>% {
+  ggplot(., aes(x=md, y=season_year, color=factor(y, levels=unique(y)))) +
+    scale_x_date(date_breaks='1 months', date_labels='%b') +
+    scale_color_viridis_d() +
+    theme_economist() +
+    geom_point() +
+    labs(color="", x="", 
+         title = "Bitcoin Volatility Seasonality by month (pre-COVID)", 
+         subtitle = sprintf("yang.zhang; %s:%s", min(decomp2$time), max(decomp2$time)),
+         caption = '@StockViz')
+}
 
-p <- decomp %>% autoplot() +
+ggsave(sprintf("%s/bitcoin-volatility.seasonality.month.pre.png", reportPath), width=14, height=8, units="in")
+
+decomp2 <- decomp %>% filter(time >= as.Date("2020-05-01"))
+
+p <- decomp2 %>% autoplot() +
   theme_economist() +
   theme(axis.text.x=element_text(angle=90, hjust=1)) +
   labs(x="") +
@@ -129,10 +155,24 @@ p <- decomp %>% autoplot() +
 p + plot_annotation(
   theme = theme_economist(),
   title = "Bitcoin volatility (post-COVID)",
-  subtitle = sprintf("yang.zhang; %s:%s", first(index(iXts)), last(index(iXts))), 
+  subtitle = sprintf("yang.zhang; %s:%s", min(decomp2$time), max(decomp2$time)), 
   caption = '@StockViz'
 )
 
 ggsave(sprintf("%s/bitcoin-volatility.decomposition.post.png", reportPath), width=18, height=12, units="in")
+
+decomp2 %>% mutate(md = as.Date(format(time, "1999-%m-%d")), y = year(time)) %>% arrange(.model, time, md) %>% {
+  ggplot(., aes(x=md, y=season_year, color=factor(y, levels=unique(y)))) +
+    scale_x_date(date_breaks='1 months', date_labels='%b') +
+    scale_color_viridis_d() +
+    theme_economist() +
+    geom_point() +
+    labs(color="", x="", 
+         title = "Bitcoin Volatility Seasonality by month (post-COVID)", 
+         subtitle = sprintf("yang.zhang; %s:%s", min(decomp2$time), max(decomp2$time)),
+         caption = '@StockViz')
+}
+
+ggsave(sprintf("%s/bitcoin-volatility.seasonality.month.post.png", reportPath), width=14, height=8, units="in")
 
 
