@@ -77,7 +77,9 @@ annDf %>%
              apply_to = 'text') %>%
   tab_options(table.font.size = '130%') %>%
   cols_label('SYMBOL' = '',
-             'fund' = '') %>%
+             'fund' = '',
+             'ANN_RET' = 'Returns',
+             'ANN_SHARPE' = 'Sharpe') %>%
   gtsave(sprintf("%s/etf.annual.returns.html", reportPath))
 
 webshot2::webshot(
@@ -121,7 +123,9 @@ annDf %>%
              apply_to = 'text') %>%
   tab_options(table.font.size = '130%') %>%
   cols_label('SYMBOL' = '',
-             'fund' = '') %>%
+             'fund' = '',
+             'ANN_RET' = 'Returns',
+             'ANN_SHARPE' = 'Sharpe') %>%
   gtsave(sprintf("%s/etf.annual.returns.post-GFC.html", reportPath))
 
 webshot2::webshot(
