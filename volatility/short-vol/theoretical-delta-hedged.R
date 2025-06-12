@@ -28,7 +28,7 @@ lcon <- odbcDriverConnect(
   believeNRows = TRUE
 )
 
-symbol <- "NIFTY"
+symbol <- "BANKNIFTY"
 startDt <- as.Date("2015-01-01")
 volLb <- 30 #days
 numDaysYr <- 242 #number of days in a year
@@ -213,6 +213,8 @@ meanIV |>
 
 ggsave(sprintf("%s/%s.atm.iv.png", reportPath, symbol), width = 16, height = 8, units = "in")
 
+#q()
+
 # ivRelDf2 |> filter(D2E == 30) |> inner_join(volDf, join_by(TIME_STAMP == T)) |>
 #   select(TIME_STAMP, BS_IV, VOL_CC, VOL_YZ) |>
 #   filter(TIME_STAMP >= as.Date("2022-01-01")) |>
@@ -249,27 +251,27 @@ ggplot(shortVolCePL, aes(x = PL)) +
 
 ggsave(sprintf("%s/%s.short-vol.call.theoretical.%d-%d.png", reportPath, symbol, tradeStartD2e, tradeEndD2e), width = 16, height = 8, units = "in")
 
-
-tradeStartD2e <- 30
-tradeEndD2e <- 2
-startCE <- greeksCeDf |> filter(d2eDays == tradeStartD2e) |> select(expiry, vega, iv)
-endCE <- greeksCeDf |> filter(d2eDays == tradeEndD2e) |> select(expiry, iv)
-
-shortVolCePL <- startCE |> inner_join(endCE, join_by(expiry)) |>
-  mutate(PL = -vega * (iv.y - iv.x))
-
-#shortVolCePL |> arrange(PL)
-
-ggplot(shortVolCePL, aes(x = PL)) +
-  theme_economist() +
-  geom_histogram(binwidth = 20) +
-  annotate('text', x = min(shortVolCePL$PL), y = 10, label = sprintf("total: %.2f", sum(shortVolCePL$PL)), hjust=0) +
-  labs(x = 'p&l', y='count', color='',
-       title = sprintf('%s Short Volatilty Theoretical Maximum P&L (%d, %d)', symbol, tradeStartD2e, tradeEndD2e),
-       subtitle = sprintf("delta-hedged short ATM call [%s:%s]", min(ivRelDf2$TIME_STAMP), max(ivRelDf2$TIME_STAMP)),
-       caption = '@StockViz')
-
-ggsave(sprintf("%s/%s.short-vol.call.theoretical.%d-%d.png", reportPath, symbol, tradeStartD2e, tradeEndD2e), width = 16, height = 8, units = "in")
+# 
+# tradeStartD2e <- 30
+# tradeEndD2e <- 2
+# startCE <- greeksCeDf |> filter(d2eDays == tradeStartD2e) |> select(expiry, vega, iv)
+# endCE <- greeksCeDf |> filter(d2eDays == tradeEndD2e) |> select(expiry, iv)
+# 
+# shortVolCePL <- startCE |> inner_join(endCE, join_by(expiry)) |>
+#   mutate(PL = -vega * (iv.y - iv.x))
+# 
+# #shortVolCePL |> arrange(PL)
+# 
+# ggplot(shortVolCePL, aes(x = PL)) +
+#   theme_economist() +
+#   geom_histogram(binwidth = 20) +
+#   annotate('text', x = min(shortVolCePL$PL), y = 10, label = sprintf("total: %.2f", sum(shortVolCePL$PL)), hjust=0) +
+#   labs(x = 'p&l', y='count', color='',
+#        title = sprintf('%s Short Volatilty Theoretical Maximum P&L (%d, %d)', symbol, tradeStartD2e, tradeEndD2e),
+#        subtitle = sprintf("delta-hedged short ATM call [%s:%s]", min(ivRelDf2$TIME_STAMP), max(ivRelDf2$TIME_STAMP)),
+#        caption = '@StockViz')
+# 
+# ggsave(sprintf("%s/%s.short-vol.call.theoretical.%d-%d.png", reportPath, symbol, tradeStartD2e, tradeEndD2e), width = 16, height = 8, units = "in")
 
 tradeStartD2e <- 30
 tradeEndD2e <- 7

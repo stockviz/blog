@@ -23,7 +23,7 @@ lconUs2 <- odbcDriverConnect(
   case = "nochange", believeNRows = TRUE
 )
 
-startDate <- as.Date("2020-05-01")
+startDate <- as.Date("2010-05-01")
 endDate <- Sys.Date()
 
 minDt <- sqlQuery(lconUs2, sprintf("select min(time_stamp) from bhav_eq_td where symbol='SPY' and time_stamp >= '%s'", startDate))[[1]]
