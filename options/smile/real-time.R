@@ -22,7 +22,7 @@ pgCon <- dbConnect(
 
 symbol <- "NIFTY"
 tzone <- "Asia/Kolkata"
-asof <- as.POSIXct("2025-07-25", tz=tzone)
+asof <- as.POSIXct("2025-07-24", tz=tzone)
 
 dbTs <- c()
 for(h in 10:15){
@@ -119,7 +119,8 @@ expiry <- expiries[eIndex]
                  label = list(predDf)) +
         labs(x = 'strike (%)', y = 'iv', color = '', 
              title = sprintf('%s %s Option IV', symbol, expiry),
-             subtitle = as.POSIXct(sampleTs))
+             subtitle = as.POSIXct(sampleTs),
+             caption = '@StockViz')
       
       ggsave(sprintf("%s/%s.%s.%d.png", reportPath, symbol, expiry, sampleTs), width = 12, height = 6, units = "in")
     }
