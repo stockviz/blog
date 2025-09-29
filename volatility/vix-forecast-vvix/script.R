@@ -130,9 +130,9 @@ p1 / p2 + plot_layout(axes = "collect") +
 ggsave(sprintf("%s/vix-vs-error.png", reportPath), width=12, height=12, units="in")
 
 for(i in 1:predLf){
-  toPlotXts <- na.omit(merge(laggedIndex[,i], vixPredXts[, i]))
+  toPlotXts <- na.omit(merge(laggedIndex[,i], vixPredXts[, i], locfXts[, i]))
   toPlot <- data.frame(toPlotXts)
-  colnames(toPlot) <- c("INDEX", "PRED")
+  colnames(toPlot) <- c("INDEX", "PRED", "LOCF")
   toPlot$T <- index(toPlotXts)
   
   toPlot |> pivot_longer(-T) |>
