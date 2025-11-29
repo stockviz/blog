@@ -105,7 +105,7 @@ p1 <- rollTb |> select(segEnd, rollSpread, actualSpread) |>
       geom_line() +
       scale_color_viridis_d() +
       scale_x_datetime(date_breaks="15 min", date_labels = "%H:%M", timezone = tzone) +
-      labs(x='', y="variance '000000", color='',
+      labs(x='', y="spread '000000", color='',
            title = "bid/ask Spread")
 
 
@@ -117,7 +117,7 @@ p2 <- rollTb |> select(segEnd, rollFundaVar, actualFundaVar) |>
   geom_line() +
   scale_color_viridis_d() +
   scale_x_datetime(date_breaks="15 min", date_labels = "%H:%M", timezone = tzone) +
-  labs(x='', y="spread '000000", color='', title = "Fundamental Variance")
+  labs(x='', y="variance '000000", color='', title = "Fundamental Variance")
 
 p1/p2 + plot_layout(axes = 'collect_x') +
   plot_annotation(title = sprintf("%s Roll's vs. Actual", symbol),
