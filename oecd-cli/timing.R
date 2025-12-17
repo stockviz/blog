@@ -191,3 +191,37 @@ Common.PlotCumReturns(toPlot,
                       "When India CLI is Accelerating", 
                       "NIFTY 50", #NULL)
                       sprintf("%s/india.accel.png", reportPath))
+
+
+########################
+
+indices <- c("NIFTY 50 TR", "NIFTY MIDCAP 100 TR", "NIFTY SMALLCAP 50 TR")
+mRets <- NULL
+for(i in 1:length(indices)){
+  pDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close from bhav_index where index_name='%s'", indices[i]))
+  
+  pXts <- xts(pDf[,2], pDf[,1])
+  mRet <- monthlyReturn(pXts)
+  index(mRet) <- as.Date(sprintf("%d-%d-%d", year(index(mRet)), month(index(mRet)), days_in_month(index(mRet))))
+  
+  mRets <- merge.xts(mRets, mRet)
+}
+
+names(mRets) <- indices
+
+mRet_1 <- do.call(merge.xts, lapply(1:length(indices), \(x) stats::lag(mRets[,x], -1)))
+allXts <- merge(indCLIXts, mRet_1)
+allXts$IND_ACCEL <- allXts$IND - stats::lag(allXts$IND, 1)
+
+scen5 <- do.call(merge.xts, lapply(make.names(indices), \(x) ifelse(allXts$IND_ACCEL > 0, allXts[,x], 0)))
+names(scen5) <- indices
+
+for(i in 1:length(indices)){
+  toPlot <- na.omit(merge(scen5[,i], mRet_1[,i]))
+  names(toPlot) <- c('ACCEL', 'BH')
+  Common.PlotCumReturns(toPlot, 
+                        "When India CLI is Accelerating", 
+                        indices[i], #NULL)
+                        sprintf("%s/india.accel.%s.png", reportPath, indices[i]))
+  
+}
