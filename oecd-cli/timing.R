@@ -53,7 +53,7 @@ p1 <- oecdLatest |>
   select(AREA, VAL, YM) |>
   ggplot(aes(x=YM, y = VAL, color = AREA)) +
     theme_economist() +
-    geom_line() +
+    geom_line(linewidth = 1) +
     scale_color_viridis_d() +
     labs(x='', y='OECD CLI', subtitle = "w/ outliers")
 
@@ -62,7 +62,7 @@ p2 <- oecdLatest |>
   select(AREA, VAL, YM) |>
   ggplot(aes(x=YM, y = VAL, color = AREA)) +
   theme_economist() +
-  geom_line() +
+  geom_line(linewidth = 1) +
   scale_color_viridis_d() +
   guides(color='none') +
   labs(x='', y='OECD CLI', subtitle = "w/o outliers")
@@ -72,6 +72,13 @@ p1/p2 + plot_layout(axes = 'collect') +
                   subtitle = sprintf("%s:%s", min(oecdLatest$YM), max(oecdLatest$YM)),
                   caption = '@StockViz',
                   theme = theme_economist())
+
+ggsave(
+  sprintf("%s/india-g7.oecd-cli.png", reportPath),
+  width = 16,
+  height = 16,
+  units = "in"
+)
 
 indCLI <- oecdLatest |> 
   filter(AREA %in% c('G7', 'IND')) |> 
