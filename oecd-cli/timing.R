@@ -195,7 +195,7 @@ Common.PlotCumReturns(toPlot,
 
 ########################
 
-indices <- c("NIFTY 50 TR", "NIFTY MIDCAP 100 TR", "NIFTY SMALLCAP 50 TR")
+indices <- c("NIFTY 50 TR", "NIFTY MIDCAP 100 TR", "NIFTY SMALLCAP 50 TR", "NIFTY MICROCAP 250 TR")
 mRets <- NULL
 for(i in 1:length(indices)){
   pDf <- sqlQuery(lcon, sprintf("select time_stamp, px_close from bhav_index where index_name='%s'", indices[i]))
