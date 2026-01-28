@@ -1,0 +1,210 @@
+library('RODBC')
+library("RSQLite")
+library("DBI") 
+library('quantmod')
+library('PerformanceAnalytics')
+library('tidyverse')
+library('ggthemes')
+library('patchwork')
+library('viridis')
+library('ggrepel')
+library('gtExtras')
+library('ggpmisc')
+
+pdf(NULL)
+options("scipen" = 100)
+options(stringsAsFactors = FALSE)
+
+reportPath <- "."
+source("/mnt/hollandC/StockViz/R/config.r")
+source("/mnt/data/blog/common/plot.common.r")
+
+lcon <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, ldbname, ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+lconUs <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockVizUs", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+lconUs2 <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;", ldbserver, "StockVizUs2", ldbuser, ldbpassword), case = "nochange", believeNRows = TRUE)
+
+getSymbols("FPCPITOTLZGIND", src="FRED") #india annual inflation
+getSymbols("DEXINUS", src="FRED") #USDINR daily
+
+fredGoldId <- sqlQuery(lconUs, sprintf("select id from FRED_SERIES where series_id='%s'", 'GOLDPMGBD228NLBM'))[[1]]
+fredGoldDf <- sqlQuery(lconUs, sprintf("select val, time_stamp from FRED_OBSERVATION where series_id=%d", fredGoldId))
+fredGoldXts <- xts(fredGoldDf$val, fredGoldDf$time_stamp)
+
+wmCon <- dbConnect(RSQLite::SQLite(), "/mnt/siberia/data/westmetall.db", flags = RSQLite::SQLITE_RO)
+wmGoldDf <-  dbGetQuery(wmCon, "select TIME_STAMP, PX from PRICE_HISTORY where NAME = 'GOLD_LONDON_FIXING'")
+dbDisconnect(wmCon)
+
+wmGoldXts <- xts(wmGoldDf$PX, as.Date(strptime(wmGoldDf$TIME_STAMP, "%Y%m%d")))
+
+goldXts <- merge(fredGoldXts, wmGoldXts)
+goldXts <- xts(rowMeans(goldXts, na.rm=TRUE), index(goldXts))
+
+goldInrXts <- goldXts * DEXINUS
+goldInrXts <- na.locf(goldInrXts)
+goldInrXts <- merge(goldInrXts, stats::lag(dailyReturn(goldInrXts), -1))
+goldInrXts[abs(goldInrXts[, 2]) > 0.95, 1] <- NA #remove outliers
+
+goldAnnRet <- annualReturn(goldInrXts[,1])
+goldAnnRet <- goldAnnRet[-nrow(goldAnnRet)]
+
+niftyDf <- sqlQuery(lcon, "select px_close, time_stamp from bhav_index where index_name='NIFTY 50 TR'")
+niftyXts <- xts(niftyDf[,1], niftyDf[,2])
+niftyAnnRet <- annualReturn(niftyXts)
+niftyAnnRet <- niftyAnnRet[-1]
+niftyAnnRet <- niftyAnnRet[-nrow(niftyAnnRet)]
+
+#########################
+
+index(FPCPITOTLZGIND)<-as.Date(sprintf("%s-12-15", year(FPCPITOTLZGIND)))
+index(goldAnnRet)<-as.Date(sprintf("%s-12-15", year(goldAnnRet)))
+index(niftyAnnRet)<-as.Date(sprintf("%s-12-15", year(niftyAnnRet)))
+
+
+#plot usdinr and inflation
+toPlot <- data.frame(FPCPITOTLZGIND)
+colnames(toPlot) <- c("INFLATION")
+toPlot$Y <- year(index(FPCPITOTLZGIND))
+
+p1 <- ggplot(toPlot, aes(x=Y, y=INFLATION)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge(), fill = viridis_pal()(1)) +
+  labs(x = '', y='%', subtitle = "Annual")
+
+cumInflation <- cumprod(1 + FPCPITOTLZGIND/100)
+toPlot <- data.frame(cumInflation)
+colnames(toPlot) <- "INFLATION"
+toPlot$Y <- year(index(cumInflation))
+
+p2 <- ggplot(toPlot, aes(x=Y, y=INFLATION, label=round(INFLATION, 2))) +
+  theme_economist() +
+  geom_line() +
+  stat_peaks(colour = "red", geom = "text_repel", size = 2, span=NULL) +
+  labs(x = '', y='cumulative', subtitle = "Cumulative")
+
+
+p1/p2 + 
+  plot_layout(axes = 'collect_x') +
+  plot_annotation(title = "Annual India Inflation", 
+                  subtitle = sprintf("%d:%d", min(year(FPCPITOTLZGIND)), max(year(FPCPITOTLZGIND))),
+                  caption = '@StockViz',
+                  theme = theme_economist())
+
+ggsave(sprintf("%s/inflation.png", reportPath), units = "in", height=2*6, width=12)
+
+ggplot(toPlot, aes(x=Y, y=INFLATION)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge(), fill = viridis_pal()(1)) +
+  labs(x = '', y='inflation(%)', 
+       title = "Annual India Inflation",
+       subtitle = sprintf("%d:%d", min(year(FPCPITOTLZGIND)), max(year(FPCPITOTLZGIND))),
+       caption = '@StockViz')
+
+toPlot <- data.frame(DEXINUS)
+colnames(toPlot) <- c("USDINR")
+toPlot$TS <- index(DEXINUS)
+
+ggplot(toPlot, aes(x=TS, y=USDINR, label=USDINR)) +
+  theme_economist() +
+  geom_line() +
+  stat_peaks(colour = "red", geom = "point", size = 2, span=500) + 
+  stat_peaks(colour = "red", geom = "text_repel", size = 2, span=500) +
+  stat_peaks(colour = "red", geom = "text_repel", size = 2, span=NULL) +
+  labs(x = '', y='USDINR', 
+       title = "USDINR",
+       subtitle = sprintf("%d:%d", min(year(DEXINUS)), max(year(DEXINUS))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/usdinr.png", reportPath), units = "in", height=6, width=12)
+
+#################
+
+annRets <- na.trim(merge(FPCPITOTLZGIND/100, goldAnnRet), side='left')
+names(annRets) <- c("INFLATION", "GOLD")
+
+annRetDf <- data.frame(annRets)
+
+ggplot(annRetDf, aes(x=INFLATION*100, y=GOLD*100)) +
+  theme_economist() +
+  geom_point() +
+  labs(x = 'inflation (%)', y='gold annual returns (%)',
+       title = "Gold vs. Inflation (India)",
+       subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/gold-inflation.png", reportPath), units = "in", height=6, width=12)
+
+annRets <- na.trim(merge(niftyAnnRet, goldAnnRet), side='left')
+names(annRets) <- c("NIFTY", "GOLD")
+
+annRetDf <- data.frame(annRets)
+
+ggplot(annRetDf, aes(x=NIFTY*100, y=GOLD*100)) +
+  theme_economist() +
+  geom_point() +
+  labs(x = 'nifty (%)', y='gold annual returns (%)', 
+       title = "Gold vs. NIFTY 50 TR",
+       subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/gold-nifty.png", reportPath), units = "in", height=6, width=12)
+
+annRets <- na.trim(merge(FPCPITOTLZGIND/100, niftyAnnRet, goldAnnRet), side='left')
+names(annRets) <- c("INFLATION", "NIFTY", "GOLD")
+
+annRets3 <- rollapply(annRets, 3, Return.cumulative, by.column = FALSE)
+annRets5 <- rollapply(annRets, 5, Return.cumulative, by.column = FALSE)
+
+names(annRets3) <- names(annRets)
+names(annRets5) <- names(annRets)
+  
+toPlot <- data.frame(annRets)
+toPlot$Y <- year(index(annRets))
+
+p1 <- ggplot(toPlot |> pivot_longer(cols=-Y), aes(x=Y, y=value*100, fill=name)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge()) +
+  scale_fill_viridis_d() +
+  labs(x = '', y='returns (%)', fill='', subtitle = "1-year")
+
+toPlot <- data.frame(annRets3)
+toPlot$Y <- year(index(annRets3))
+
+p2 <- ggplot(toPlot |> pivot_longer(cols=-Y), aes(x=Y, y=value*100, fill=name)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge()) +
+  scale_fill_viridis_d() +
+  guides(fill='none') +
+  labs(x = '', y='returns (%)', fill='', subtitle = "3-year")
+
+
+toPlot <- data.frame(annRets5)
+toPlot$Y <- year(index(annRets5))
+
+p3 <- ggplot(toPlot |> pivot_longer(cols=-Y), aes(x=Y, y=value*100, fill=name)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge()) +
+  scale_fill_viridis_d() +
+  guides(fill='none') +
+  labs(x = '', y='returns (%)', fill='', subtitle = "5-year")
+
+p1/p2/p3 + 
+  plot_layout(axes = 'collect') +
+  plot_annotation(title = "Rolling Inflation, Gold and NIFTY 50 TR", 
+                  subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
+                  caption = '@StockViz',
+                  theme = theme_economist())
+
+ggsave(sprintf("%s/rolling.ann.ret.png", reportPath), units = "in", height=3*6, width=12)
+##################
+
+annRets <- na.trim(merge(FPCPITOTLZGIND/100, niftyAnnRet, goldAnnRet), side='left')
+names(annRets) <- c("INFLATION", "NIFTY", "GOLD")
+
+goldNiftyXts <- na.trim(merge(niftyXts, goldInrXts[,1]), side='left')
+goldNiftyXts <- na.locf(goldNiftyXts)
+niftySr <- as.numeric(SharpeRatio.annualized(monthlyReturn(goldNiftyXts[,1])))
+goldSr <- as.numeric(SharpeRatio.annualized(monthlyReturn(goldNiftyXts[,2])))
+
+Common.PlotCumReturns(annRets, "Inflation, Gold and NIFTY 50 TR", 
+                      sprintf("SR: nifty=%0.2f; gold=%0.2f", niftySr, goldSr),
+                      sprintf("%s/cum.ret.png", reportPath))
