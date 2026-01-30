@@ -26,6 +26,9 @@ lconUs2 <- odbcDriverConnect(sprintf("Driver={ODBC Driver 17 for SQL Server};Ser
 getSymbols("FPCPITOTLZGIND", src="FRED") #india annual inflation
 getSymbols("DEXINUS", src="FRED") #USDINR daily
 
+usdInrAnnRet <- annualReturn(DEXINUS)
+usdInrAnnRet <- usdInrAnnRet[-nrow(usdInrAnnRet)]
+
 fredGoldId <- sqlQuery(lconUs, sprintf("select id from FRED_SERIES where series_id='%s'", 'GOLDPMGBD228NLBM'))[[1]]
 fredGoldDf <- sqlQuery(lconUs, sprintf("select val, time_stamp from FRED_OBSERVATION where series_id=%d", fredGoldId))
 fredGoldXts <- xts(fredGoldDf$val, fredGoldDf$time_stamp)
@@ -58,7 +61,7 @@ niftyAnnRet <- niftyAnnRet[-nrow(niftyAnnRet)]
 index(FPCPITOTLZGIND)<-as.Date(sprintf("%s-12-15", year(FPCPITOTLZGIND)))
 index(goldAnnRet)<-as.Date(sprintf("%s-12-15", year(goldAnnRet)))
 index(niftyAnnRet)<-as.Date(sprintf("%s-12-15", year(niftyAnnRet)))
-
+index(usdInrAnnRet)<-as.Date(sprintf("%s-12-15", year(usdInrAnnRet)))
 
 #plot usdinr and inflation
 toPlot <- data.frame(FPCPITOTLZGIND)
@@ -118,6 +121,39 @@ ggsave(sprintf("%s/usdinr.png", reportPath), units = "in", height=6, width=12)
 
 #################
 
+#inflation vs USDINR
+annRets <- na.trim(merge(FPCPITOTLZGIND/100, usdInrAnnRet), side='left')
+names(annRets) <- c("INFLATION", "USDINR")
+
+annRetDf <- data.frame(annRets)
+
+ggplot(annRetDf, aes(x=INFLATION*100, y=USDINR*100)) +
+  theme_economist() +
+  geom_point() +
+  labs(x = 'inflation (%)', y='USDINR (%)',
+       title = "USDINR vs. Inflation (India)",
+       subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/usdinr-inflation.png", reportPath), units = "in", height=6, width=12)
+
+#gold vs USDINR
+annRets <- na.trim(merge(goldAnnRet, usdInrAnnRet), side='left')
+names(annRets) <- c("GOLD", "USDINR")
+
+annRetDf <- data.frame(annRets)
+
+ggplot(annRetDf, aes(x=GOLD*100, y=USDINR*100)) +
+  theme_economist() +
+  geom_point() +
+  labs(x = 'gold (%)', y='USDINR (%)',
+       title = "USDINR vs. Gold (India)",
+       subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/usdinr-gold.png", reportPath), units = "in", height=6, width=12)
+
+#inflation vs gold
 annRets <- na.trim(merge(FPCPITOTLZGIND/100, goldAnnRet), side='left')
 names(annRets) <- c("INFLATION", "GOLD")
 
@@ -126,13 +162,14 @@ annRetDf <- data.frame(annRets)
 ggplot(annRetDf, aes(x=INFLATION*100, y=GOLD*100)) +
   theme_economist() +
   geom_point() +
-  labs(x = 'inflation (%)', y='gold annual returns (%)',
+  labs(x = 'inflation (%)', y='gold (%)',
        title = "Gold vs. Inflation (India)",
        subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
        caption = '@StockViz')
 
 ggsave(sprintf("%s/gold-inflation.png", reportPath), units = "in", height=6, width=12)
 
+#nifty vs. gold
 annRets <- na.trim(merge(niftyAnnRet, goldAnnRet), side='left')
 names(annRets) <- c("NIFTY", "GOLD")
 
@@ -141,13 +178,16 @@ annRetDf <- data.frame(annRets)
 ggplot(annRetDf, aes(x=NIFTY*100, y=GOLD*100)) +
   theme_economist() +
   geom_point() +
-  labs(x = 'nifty (%)', y='gold annual returns (%)', 
+  labs(x = 'nifty (%)', y='gold (%)', 
        title = "Gold vs. NIFTY 50 TR",
        subtitle = sprintf("%d:%d", min(year(annRets)), max(year(annRets))),
        caption = '@StockViz')
 
 ggsave(sprintf("%s/gold-nifty.png", reportPath), units = "in", height=6, width=12)
 
+##################
+
+#rolling returns of inflation, nifty, gold
 annRets <- na.trim(merge(FPCPITOTLZGIND/100, niftyAnnRet, goldAnnRet), side='left')
 names(annRets) <- c("INFLATION", "NIFTY", "GOLD")
 
@@ -195,7 +235,10 @@ p1/p2/p3 +
                   theme = theme_economist())
 
 ggsave(sprintf("%s/rolling.ann.ret.png", reportPath), units = "in", height=3*6, width=12)
+
 ##################
+
+#cumulative returns of inflation, nifty and gold
 
 annRets <- na.trim(merge(FPCPITOTLZGIND/100, niftyAnnRet, goldAnnRet), side='left')
 names(annRets) <- c("INFLATION", "NIFTY", "GOLD")
