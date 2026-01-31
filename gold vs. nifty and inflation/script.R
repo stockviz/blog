@@ -35,9 +35,11 @@ fredGoldXts <- xts(fredGoldDf$val, fredGoldDf$time_stamp)
 
 wmCon <- dbConnect(RSQLite::SQLite(), "/mnt/siberia/data/westmetall.db", flags = RSQLite::SQLITE_RO)
 wmGoldDf <-  dbGetQuery(wmCon, "select TIME_STAMP, PX from PRICE_HISTORY where NAME = 'GOLD_LONDON_FIXING'")
+wmGoldEurDf <-  dbGetQuery(wmCon, "select TIME_STAMP, PX from PRICE_HISTORY where NAME = 'GOLD_EUR_KG'")
 dbDisconnect(wmCon)
 
 wmGoldXts <- xts(wmGoldDf$PX, as.Date(strptime(wmGoldDf$TIME_STAMP, "%Y%m%d")))
+wmGoldEurXts <- xts(wmGoldEurDf$PX, as.Date(strptime(wmGoldEurDf$TIME_STAMP, "%Y%m%d")))
 
 goldXts <- merge(fredGoldXts, wmGoldXts)
 goldXts <- xts(rowMeans(goldXts, na.rm=TRUE), index(goldXts))
@@ -93,14 +95,6 @@ p1/p2 +
                   theme = theme_economist())
 
 ggsave(sprintf("%s/inflation.png", reportPath), units = "in", height=2*6, width=12)
-
-ggplot(toPlot, aes(x=Y, y=INFLATION)) +
-  theme_economist() +
-  geom_bar(stat = 'identity', position=position_dodge(), fill = viridis_pal()(1)) +
-  labs(x = '', y='inflation(%)', 
-       title = "Annual India Inflation",
-       subtitle = sprintf("%d:%d", min(year(FPCPITOTLZGIND)), max(year(FPCPITOTLZGIND))),
-       caption = '@StockViz')
 
 toPlot <- data.frame(DEXINUS)
 colnames(toPlot) <- c("USDINR")
@@ -251,3 +245,85 @@ goldSr <- as.numeric(SharpeRatio.annualized(monthlyReturn(goldNiftyXts[,2])))
 Common.PlotCumReturns(annRets, "Inflation, Gold and NIFTY 50 TR", 
                       sprintf("SR: nifty=%0.2f; gold=%0.2f", niftySr, goldSr),
                       sprintf("%s/cum.ret.png", reportPath))
+
+
+###################
+
+#gold, silver and equity ETFs
+spyUsd <- sqlQuery(lconUs2, "select time_stamp, c from TIINGO_DATA where ticker='SPY'")
+spyUsdXts <- xts(spyUsd$c, spyUsd$time_stamp)
+
+gldUsd <- sqlQuery(lconUs2, "select time_stamp, c from TIINGO_DATA where ticker='GLD'")
+gldUsdXts <- xts(gldUsd$c, gldUsd$time_stamp)
+
+slvUsd <- sqlQuery(lconUs2, "select time_stamp, c from TIINGO_DATA where ticker='SLV'")
+slvUsdXts <- xts(slvUsd$c, slvUsd$time_stamp)
+
+gsFutUsd <- na.trim(merge(spyUsdXts, gldUsdXts, slvUsdXts), sides='left')
+gsFutUsd <- na.locf(gsFutUsd)
+
+gsFutUsdRetDaily <- merge(dailyReturn(gsFutUsd[,1]), dailyReturn(gsFutUsd[,2]), dailyReturn(gsFutUsd[,3]))
+names(gsFutUsdRetDaily) <- c('SPY', 'GLD', 'SLV')
+
+maxDD <- paste(round(maxDrawdown(gsFutUsdRetDaily["2024-11-01/"])*100, 2), collapse="/")
+Common.PlotCumReturns(gsFutUsdRetDaily["2024-11-01/"], 
+                      "US ETFs", 
+                      sprintf("max dd: %s", maxDD),
+                      sprintf("%s/gold-silver-spy.2025.png", reportPath))
+
+maxDD <- paste(round(maxDrawdown(gsFutUsdRetDaily)*100, 2), collapse="/")
+Common.PlotCumReturns(gsFutUsdRetDaily, 
+                      "US ETFs", 
+                      sprintf("max dd: %s", maxDD),
+                      sprintf("%s/gold-silver-spy.2008.png", reportPath))
+
+
+#####################
+
+#gold returns in different currencies
+
+goldTemp <- merge(goldXts, stats::lag(dailyReturn(goldXts), -1))
+goldTemp[abs(goldTemp[, 2]) > 0.95, 1] <- NA #remove outliers
+
+goldDailyRetCur <- na.trim(merge(dailyReturn(goldInrXts[,1]), dailyReturn(goldTemp[,1]), dailyReturn(wmGoldEurXts)), sides='left')
+names(goldDailyRetCur) <- c('INR', 'USD', 'EUR')
+
+maxDD <- paste(round(maxDrawdown(goldDailyRetCur)*100, 2), collapse="/")
+Common.PlotCumReturns(goldDailyRetCur, 
+                      "Gold Returns in Currencies", 
+                      sprintf("max dd: %s", maxDD),
+                      sprintf("%s/gold-cur.png", reportPath))
+
+
+###################
+
+#gold returns in INR since 1970's
+
+toPlot <- dailyReturn(goldInrXts[,1])
+names(toPlot) <- c("GOLD_INR")
+
+maxDD <- paste(round(maxDrawdown(toPlot)*100, 2), collapse="/")
+Common.PlotCumReturns(toPlot, 
+                      "Gold in INR", 
+                      sprintf("max dd: %s", maxDD),
+                      sprintf("%s/gold-INR.cum.png", reportPath))
+
+
+annRet <- annualReturn(goldInrXts[,1])
+annRet <- annRet[-1]
+annRet <- annRet[-nrow(annRet)]
+
+toPlot <- data.frame(annRet)
+colnames(toPlot) <- c("GOLD_INR")
+toPlot$TS <- index(annRet)
+
+ggplot(toPlot, aes(x=TS, y=GOLD_INR*100)) +
+  theme_economist() +
+  geom_bar(stat = 'identity', position=position_dodge(), fill = viridis_pal()(1)) +
+  labs(x = '', y='(%)', 
+       title = "Gold Returns in INR",
+       subtitle = sprintf("%d:%d", min(year(annRet)), max(year(annRet))),
+       caption = '@StockViz')
+
+ggsave(sprintf("%s/gold-INR.annual.png", reportPath), units = "in", height=6, width=12)
+
