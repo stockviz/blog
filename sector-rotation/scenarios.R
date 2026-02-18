@@ -116,35 +116,35 @@ Common.PlotCumReturns(toPlot, "Sector Inverse-Volatility Weight", sprintf("sr: %
 
 #VAR, no tx cost
 
-pspec <- portfolio.spec(assets = colnames(sectorIndexMonthlyRets))
-
-pspec <- add.constraint(portfolio = pspec, type = "box", min = 0, max = 0.1)
-pspec <- add.constraint(portfolio = pspec, type = "weight_sum", min_sum=0.99, max_sum=1.01)
-pspec <- add.constraint(portfolio = pspec, type = "long_only")
-pspec <- add.constraint(portfolio = pspec, type = "transaction_cost", ptc = drag)
-
-minVar <- add.objective(portfolio=pspec, type="risk", name="ETL")
-
-weightsXts <- rollapply(sectorIndexMonthlyRets, 6, \(x){
-  wts <- optimize.portfolio(R = x, portfolio = minVar, optimize_method = "random")$weights
-  asof <- last(index(x))
-  ret <- tibble(wts)
-  ret$index_name <- names(wts)
-  xts(ret |> pivot_wider(names_from = index_name, values_from=wts), asof)
-}, by.column = FALSE )
-
-minVolRet <- NULL
-for(i in 1:length(xtsColNames)){
-  minVolRet <- cbind.xts(minVolRet, weightsXts[, xtsColNames[i]] * nextMonthReturns[, xtsColNames[i]])
-}
-
-minVolPortRet <- xts(rowSums(minVolRet, na.rm = TRUE), index(minVolRet))
-names(minVolPortRet) <- c("MIN_VOL_WT_GROSS")
-
-toPlot <- merge(stats::lag(minVolPortRet, 1), mktCapMonthlyRet)
-sr <- paste(round(SharpeRatio.annualized(toPlot), 2), collapse="/")
-Common.PlotCumReturns(toPlot, "Sector Min-Volatility Weight", sprintf("sr: %s", sr),
-                      sprintf("%s/min-vol-wt.gross.png", reportPath))
+# pspec <- portfolio.spec(assets = colnames(sectorIndexMonthlyRets))
+# 
+# pspec <- add.constraint(portfolio = pspec, type = "box", min = 0, max = 0.1)
+# pspec <- add.constraint(portfolio = pspec, type = "weight_sum", min_sum=0.99, max_sum=1.01)
+# pspec <- add.constraint(portfolio = pspec, type = "long_only")
+# pspec <- add.constraint(portfolio = pspec, type = "transaction_cost", ptc = drag)
+# 
+# minVar <- add.objective(portfolio=pspec, type="risk", name="ETL")
+# 
+# weightsXts <- rollapply(sectorIndexMonthlyRets, 6, \(x){
+#   wts <- optimize.portfolio(R = x, portfolio = minVar, optimize_method = "random")$weights
+#   asof <- last(index(x))
+#   ret <- tibble(wts)
+#   ret$index_name <- names(wts)
+#   xts(ret |> pivot_wider(names_from = index_name, values_from=wts), asof)
+# }, by.column = FALSE )
+# 
+# minVolRet <- NULL
+# for(i in 1:length(xtsColNames)){
+#   minVolRet <- cbind.xts(minVolRet, weightsXts[, xtsColNames[i]] * nextMonthReturns[, xtsColNames[i]])
+# }
+# 
+# minVolPortRet <- xts(rowSums(minVolRet, na.rm = TRUE), index(minVolRet))
+# names(minVolPortRet) <- c("MIN_VOL_WT_GROSS")
+# 
+# toPlot <- merge(stats::lag(minVolPortRet, 1), mktCapMonthlyRet)
+# sr <- paste(round(SharpeRatio.annualized(toPlot), 2), collapse="/")
+# Common.PlotCumReturns(toPlot, "Sector Min-Volatility Weight", sprintf("sr: %s", sr),
+#                       sprintf("%s/min-vol-wt.gross.png", reportPath))
 
 #########################################################
 
@@ -172,12 +172,12 @@ mom6Index <- rollapply(trailing6Rets, 1, \(x) max.col(x, ties.method = 'first'),
 mom6IndexChg <- mom6Index - stats::lag(mom6Index, 1)
 mom6IndexChg <- ifelse(mom6IndexChg == 0, 0, 1)
 mom6RetNet <- mom6Ret - drag * mom6IndexChg
-names(mom6RetNet) <- c('MOM_12_NET')
+names(mom6RetNet) <- c('MOM_6_NET')
 
 toPlot <- na.omit(merge(stats::lag(mom6RetNet), stats::lag(mom6Ret, 1), mktCapMonthlyRet))
 sr <- paste(round(SharpeRatio.annualized(toPlot), 2), collapse="/")
 Common.PlotCumReturns(toPlot, "6-month Sector Momentum", sprintf("sr: %s", sr),
-                      sprintf("%s/momentum-6mo.gross.png", reportPath))
+                      sprintf("%s/momentum-6mo.png", reportPath))
 
 
 #########################################################
@@ -246,6 +246,7 @@ inverseVolPortRet <- xts(rowSums(inverseVolRet, na.rm = TRUE), index(inverseVolR
 names(inverseVolPortRet) <- c(sprintf("SMA_%d_INV_VOL_WT_GROSS", lb))
 
 toPlot <- na.trim(merge(stats::lag(inverseVolPortRet, 1), mktCapMonthlyRet), sides='left')
+
 sr <- paste(round(SharpeRatio.annualized(toPlot), 2), collapse="/")
 Common.PlotCumReturns(toPlot, sprintf("Sector Inverse-Volatility Weight %d-day SMA", lb), sprintf("sr: %s", sr),
                       sprintf("%s/sma-%d.inv-vol-wt.gross.png", reportPath, lb))
