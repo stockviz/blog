@@ -1,0 +1,109 @@
+# Newsletter R Script Conventions
+
+Patterns and conventions for R scripts in `/mnt/data/blog/newsletter/`.
+
+## Library imports (standard set)
+```r
+library('RODBC')          # SQL Server via ODBC
+library('RPostgres')      # PostgreSQL
+library('quantmod')
+library('PerformanceAnalytics')
+library('tidyverse')
+library('ggthemes')
+library('patchwork')
+library('viridis')
+library('data.table')     # rleid
+```
+Import order: database drivers first, then analytics, then viz.
+
+## Boilerplate header
+```r
+pdf(NULL)                              # suppress Rplots.pdf
+options("scipen" = 100)                # no scientific notation
+options(stringsAsFactors = FALSE)
+
+reportPath <- "."                      # output directory
+source("/mnt/hollandC/StockViz/R/config.r")   # credentials
+source("/mnt/data/blog/common/plot.common.r") # shared plot functions
+```
+
+## Database connections
+
+### SQL Server (RODBC)
+```r
+lcon <- odbcDriverConnect(
+  sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;",
+          ldbserver, ldbname, ldbuser, ldbpassword),
+  case = "nochange", believeNRows = TRUE)
+
+lconUs2 <- odbcDriverConnect(
+  sprintf("Driver={ODBC Driver 17 for SQL Server};Server=%s;Database=%s;Uid=%s;Pwd=%s;",
+          ldbserver, "StockVizUs2", ldbuser, ldbpassword),
+  case = "nochange", believeNRows = TRUE)
+```
+
+### PostgreSQL (RPostgres)
+```r
+pgCon <- dbConnect(
+  RPostgres::Postgres(),
+  host = 'sweden',
+  user = ldbuser2,
+  password = ldbpassword2,
+  dbname = 'StockVizDyn',
+  sslmode = 'allow'
+)
+```
+
+Credential variables come from `/mnt/hollandC/StockViz/R/config.r`:
+- `ldbserver`, `ldbname`, `ldbuser`, `ldbpassword` — SQL Server
+- `ldbuser2`, `ldbpassword2` — PostgreSQL
+
+## Database query patterns
+
+### SQL Server
+```r
+val <- sqlQuery(lcon, "select max(time_stamp) from TABLE")[[1]]          # single scalar
+vals <- sqlQuery(lcon, "select symbol from TABLE where ...")[,1]          # column vector
+df <- sqlQuery(lcon, sprintf("select * from TABLE where dt = '%s'", dt))  # data frame
+```
+
+### PostgreSQL
+```r
+pxDf <- dbGetQuery(pgCon, "select * from table where coin=$1", params = list(coin))
+```
+
+## Plot conventions
+
+### Theme
+- `theme_economist()` from ggthemes
+- `scale_fill_viridis_d()` / `viridis_pal()` for colors
+- Axis text: `element_text(angle = 45, hjust = 1, vjust = 1)` or 90° for bar charts
+
+### Labels
+```r
+labs(x='', y='(%)', fill='',
+     title = sprintf("Descriptive Title %s", var),
+     subtitle = sprintf("%s:%s", startDate, endDate),
+     caption = '@StockViz')
+```
+
+### Saving
+```r
+ggsave(sprintf("%s/filename.%s.png", reportPath, suffix), width = 12, height = 6, units="in")
+```
+
+### Time series
+- Convert to xts for financial calculations: `xts(df[,1], df[,2])`
+- Use `dailyReturn()`, `annualReturn()`, `SharpeRatio.annualized()`
+- Merge with `merge.xts()` (left join)
+
+## Data wrangling
+- `tidyverse` pipes: `|>` (native R pipe), `mutate()`, `filter()`, `group_by()`, `summarise()`, `pivot_longer()`
+- `data.table::rleid()` for run-length encoding
+- `lubridate::wday()`, `year()`, `month()`, `hour()`
+
+## Common pitfalls
+- Use `na.omit()` before passing to PerformanceAnalytics functions
+- Set first return to 0 in cumulative charts: `toPlot[1,] <- 0.0`
+- Avoid `select()` conflicts between MASS and dplyr — use explicit `dplyr::select()` if needed
+- `sprintf` format for dates: `'%Y-%m-%d'`, `'%4d-%2d-01'` for year-month
