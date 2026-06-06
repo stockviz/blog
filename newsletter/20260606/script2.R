@@ -153,7 +153,7 @@ idx_returns <- res_df |>
   pivot_longer(-IndexName, names_to = "Period", values_to = "Return") |>
   mutate(
     Return = Return * 100,
-    Period = if_else(Period == "IdxPre", "1 Year Before Launch", "1 Year After Launch")
+    Period = if_else(Period == "IdxPre", "Index Return\n(year before)", "Index Return\n(year after)")
   )
 
 n_idx <- n_distinct(idx_returns$IndexName)
@@ -165,11 +165,11 @@ ggplot(idx_returns, aes(x = Period, y = Return, fill = Period)) +
   guides(fill = "none") +
   labs(
     x = "", y = "Return (%)",
-    title = "Index TR Returns Around Launch Date",
-    subtitle = sprintf("%d indices with data | Median: pre=%.1f%%, post=%.1f%%",
+    title = "Index TR Returns: The Year Before vs After Launch",
+    subtitle = sprintf("%d indices | Median: pre-launch %.1f%%, post-launch %.1f%%",
                        n_idx,
-                       median(idx_returns$Return[idx_returns$Period == "1 Year Before Launch"], na.rm = TRUE),
-                       median(idx_returns$Return[idx_returns$Period == "1 Year After Launch"], na.rm = TRUE)),
+                       median(res_df$IdxPre, na.rm = TRUE) * 100,
+                       median(res_df$IdxPost, na.rm = TRUE) * 100),
     caption = "@StockViz"
   )
 
@@ -184,9 +184,7 @@ fund_returns <- res_df |>
   pivot_longer(-IndexName, names_to = "Period", values_to = "Return") |>
   mutate(
     Return = Return * 100,
-    Period = if_else(Period == "FundPre",
-                     "1 Year Before Fund\n(Index TR as proxy)",
-                     "1 Year After Fund\n(Actual Fund NAV)")
+    Period = if_else(Period == "FundPre", "Index Return\n(year before)", "Fund Return\n(first year)")
   )
 
 n_fund <- n_distinct(fund_returns$IndexName)
@@ -198,8 +196,11 @@ ggplot(fund_returns, aes(x = Period, y = Return, fill = Period)) +
   guides(fill = "none") +
   labs(
     x = "", y = "Return (%)",
-    title = "First Index Fund: Year Before vs After Fund Launch",
-    subtitle = sprintf("%d indices | Before = index TR proxy | After = actual fund NAV", n_fund),
+    title = "Index Funds: The Year Before vs Their First Year",
+    subtitle = sprintf("%d funds | Median: pre-launch %.1f%%, post-launch %.1f%%",
+                       n_fund,
+                       median(res_df$FundPre, na.rm = TRUE) * 100,
+                       median(res_df$FundPost, na.rm = TRUE) * 100),
     caption = "@StockViz"
   )
 
@@ -224,7 +225,8 @@ ggplot(prepost_all, aes(x = PrePct, y = PostPct)) +
   scale_color_viridis_d() +
   guides(color = guide_legend(nrow = 1)) +
   labs(
-    x = "1 Year Before Launch (%)", y = "1 Year After Launch (%)",
+    x = "Index Return\n(year before, %)", 
+    y = "Index Return\n(year after, %)",
     color = "Launch",
     title = "Index TR Returns: Year Before vs After Launch",
     subtitle = sprintf("%d indices | Above diagonal = post > pre | Median: pre=%.1f%%, post=%.1f%%",
@@ -254,8 +256,8 @@ ggplot(fund_prepost, aes(x = PrePct, y = PostPct)) +
   scale_color_viridis_d() +
   guides(color = guide_legend(nrow = 1)) +
   labs(
-    x = "Market Return the Year Before\n(index TR, %)", 
-    y = "Fund Return in its First Year\n(actual NAV, %)",
+    x = "Index Return\n(year before, %)", 
+    y = "Fund Return\n(first year, %)",
     color = "Fund Start",
     title = "First Year of an Index Fund vs the Year Before It Launched",
     subtitle = sprintf("%d funds | Above diagonal = first year > year before | Median: pre=%.1f%%, post=%.1f%%",
