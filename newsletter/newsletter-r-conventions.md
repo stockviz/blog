@@ -13,6 +13,7 @@ library('ggthemes')
 library('patchwork')
 library('viridis')
 library('data.table')     # rleid
+library('ggrepel')        # end-of-line labels
 ```
 Import order: database drivers first, then analytics, then viz.
 
@@ -91,6 +92,39 @@ labs(x='', y='(%)', fill='',
 ```r
 ggsave(sprintf("%s/filename.%s.png", reportPath, suffix), width = 12, height = 6, units="in")
 ```
+
+### End-of-line labels (replaces legend)
+
+For line charts with many categories, use `geom_text_repel` at the last data point:
+
+```r
+geom_text_repel(
+  data = df |> filter(date_col == max(date_col)),
+  aes(label = category),
+  direction = "y", nudge_x = 30, hjust = 0,
+  size = 3.5, fontface = "bold", segment.color = NA
+)
+```
+
+Pair with:
+- `scale_x_date(expand = expansion(mult = c(0.02, 0.25)))` — push axis 25% past last point for label room
+- `coord_cartesian(clip = "off")` — prevent clipping text outside panel
+- `scale_color_*(guide = "none")` — suppress the legend
+- `plot.margin = margin(5, 70, 5, 5)` — extra right margin
+
+### Factor ordering in facets
+
+When faceting by a label column derived from a lookup vector, preserve order by creating a proper factor:
+
+```r
+short_labels <- c('Long Name' = 'Short', ...)
+label_order <- unname(short_labels[original_categories])
+df <- df |> mutate(
+  cat_label = factor(short_labels[as.character(original_col)], levels = label_order)
+)
+```
+
+Then use `cat_label` directly in all charts — no inline `mutate()` in ggplot calls.
 
 ### Time series
 - Convert to xts for financial calculations: `xts(df[,1], df[,2])`

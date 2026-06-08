@@ -103,3 +103,18 @@ lcon <- odbcDriverConnect(
           ldbserver, ldbname, ldbuser, ldbpassword),
   case = "nochange", believeNRows = TRUE)
 ```
+
+## Newsletter 20260613 — Fund Flows from AMFI Monthly
+
+### script.R
+- Connects to StockViz via RODBC
+- Queries `AMFI_MONTHLY_STATS` for 6 categories: Large Cap, Mid Cap, Small Cap, Flexi Cap, Sectoral/Thematic, Gold ETF
+- Generates 5 charts: monthly net flow (faceted), cumulative net flow, rolling 12-month net flow, inflows vs outflows (last 24 months), net flow as % of AUM
+- Uses `rollapply(..., 12, sum)` for rolling 12-month
+- End-of-line labels via `geom_text_repel` on cumulative and rolling charts
+- All charts use 6-month date breaks with `%b\n%Y` format
+- Category order is fixed via factor levels: Large → Mid → Small → Flexi Cap → Sectoral/Thematic → Gold ETF
+
+### Data source
+- `dbo.AMFI_MONTHLY_STATS` — PERIOD (date), SCHEME_CATEGORY, SECTION='A', FUNDS_MOBILIZED, REPURCHASES, NET_FLOW, AUM
+- Date range: 2019-04-30 to present
