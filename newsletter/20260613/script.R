@@ -122,7 +122,7 @@ p1 <- df |>
   )
 
 ggsave(file.path(reportPath, "flow-net-monthly.png"), p1,
-       width = 12, height = 10, units = "in", dpi = 100)
+       width = 12, height = 10, units = "in")
 
 # ---------------------------------------------------------------------------
 # Chart 2: Cumulative Net Flow
@@ -156,7 +156,7 @@ p2 <- df |>
   )
 
 ggsave(file.path(reportPath, "flow-net-cumulative.png"), p2,
-       width = 12, height = 7, units = "in", dpi = 100)
+       width = 12, height = 7, units = "in")
 
 # ---------------------------------------------------------------------------
 # Chart 3: Rolling 12-month Net Flow
@@ -191,7 +191,7 @@ p3 <- df |>
   )
 
 ggsave(file.path(reportPath, "flow-net-rolling12.png"), p3,
-       width = 12, height = 7, units = "in", dpi = 100)
+       width = 12, height = 7, units = "in")
 
 # ---------------------------------------------------------------------------
 # Chart 4: Inflow vs Outflow — stacked bar (latest 24 months)
@@ -226,7 +226,7 @@ p4 <- df_bar |>
   )
 
 ggsave(file.path(reportPath, "flow-in-out-monthly.png"), p4,
-       width = 12, height = 10, units = "in", dpi = 100)
+       width = 12, height = 10, units = "in")
 
 # ---------------------------------------------------------------------------
 # Chart 5: Net Flow as % of AUM
@@ -255,7 +255,7 @@ p5 <- df |>
   )
 
 ggsave(file.path(reportPath, "flow-net-pct.png"), p5,
-       width = 12, height = 10, units = "in", dpi = 100)
+       width = 12, height = 10, units = "in")
 
 # ---------------------------------------------------------------------------
 # Summary
