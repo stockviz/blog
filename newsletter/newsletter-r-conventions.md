@@ -79,13 +79,16 @@ pxDf <- dbGetQuery(pgCon, "select * from table where coin=$1", params = list(coi
 - `theme_economist()` from ggthemes
 - `scale_fill_viridis_d()` / `viridis_pal()` for colors
 - Axis text: `element_text(angle = 45, hjust = 1, vjust = 1)` or 90° for bar charts
+- **No pie charts** — use bars, dot plots, heatmaps instead
+- **No dual-axis charts** — no `sec.axis` ever
+- X-axis date breaks: minimum 6 months apart (`date_breaks = "6 months"`)
+- No explicit `dpi` in `ggsave` — use the default (300)
 
-### Labels
+### Caption
+- `@StockViz` always bottom-right:
 ```r
-labs(x='', y='(%)', fill='',
-     title = sprintf("Descriptive Title %s", var),
-     subtitle = sprintf("%s:%s", startDate, endDate),
-     caption = '@StockViz')
+plot.caption = element_text(size = 8, color = "grey50", hjust = 1),
+plot.caption.position = "plot"
 ```
 
 ### Saving
@@ -114,7 +117,7 @@ Pair with:
 
 ### Factor ordering in facets
 
-When faceting by a label column derived from a lookup vector, preserve order by creating a proper factor:
+When faceting by a label column derived from a lookup vector, preserve order by creating a proper factor. Categories with explicit ordering must maintain it across all charts:
 
 ```r
 short_labels <- c('Long Name' = 'Short', ...)
@@ -125,6 +128,13 @@ df <- df |> mutate(
 ```
 
 Then use `cat_label` directly in all charts — no inline `mutate()` in ggplot calls.
+
+**Gold ETF** must always be last in category ordering.
+
+### Titles and subtitles
+- Title: short, descriptive (e.g. "Monthly Net Fund Flows")
+- Subtitle: date range + context; fund/scheme name goes here, not in title
+- Format: `labs(title = "Short Title", subtitle = dateLabel, caption = '@StockViz')`
 
 ### Time series
 - Convert to xts for financial calculations: `xts(df[,1], df[,2])`
