@@ -32,7 +32,7 @@ lconUs2 <- odbcDriverConnect(
 
 startDate <- as.Date("2018-01-01")
 fwdDate <- as.Date("2019-02-01")
-drag <- 0.5/100
+drag <- 0.05/100
 
 pDf <- sqlQuery(lconUs2, sprintf("select c, time_stamp from TIINGO_DATA where ticker='SPY' and time_stamp >= '%s'",
                                  startDate))
