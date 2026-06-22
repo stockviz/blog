@@ -2,6 +2,8 @@
 
 **Blog post:** [Macro: Computing DTWEXM before the FRED](https://stockviz.biz/index.php/?p=2093463)
 
+> Addressed the timing problem where FRED publishes currency indices after NIFTY closes by computing DTWEXM directly from underlying currencies and their weights. The approach proved viable with only a few outliers, enabling same-day prediction.
+
 ## Summary
 
 applies Support Vector Regression to predict equity returns using currency and macroeconomic features

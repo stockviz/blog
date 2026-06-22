@@ -2,6 +2,8 @@
 
 **Blog post:** [Is there a correlation between USDINR and Tech stocks? [Update]](https://stockviz.biz/index.php/?p=2100503)
 
+> Updated a 2015 analysis of correlations between USDINR currency moves and NIFTY IT index performance. Reconfirmed that there is no direct relationship between currency fluctuations and subsequent IT index returns in either weekly or monthly timeframes.
+
 ## Summary
 
 analyzes the relationship between USDINR, dollar indices, and equity returns

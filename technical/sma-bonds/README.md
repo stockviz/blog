@@ -2,6 +2,8 @@
 
 **Blog post:** [Trend-following Bonds](https://stockviz.biz/index.php/?p=40890382)
 
+> Tested trend-following strategies on Indian and US bonds. For Indian bonds, buy-and-hold was superior after transaction costs and taxes; for US bond ETFs (TLT, IEF, SHY), a 100-day SMA filter showed some pre-cost benefit but after-cost advantages were questionable.
+
 ## Summary
 
 backtests SMA trend-following strategies applied to fixed income and bond ETFs

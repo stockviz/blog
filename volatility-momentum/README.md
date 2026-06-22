@@ -2,6 +2,8 @@
 
 **Blog post:** [Volatility, Volatility of Volatility, and Momentum](https://stockviz.biz/index.php/?p=40890203)
 
+> Investigated combining momentum with low-volatility and low volatility-of-volatility filters. Found that sorting by low-volatility first, then momentum (VOLxMOM), yields better risk-adjusted returns than pure momentum; the sort order did not significantly affect Sharpe ratios but VOLxMOM had slightly better returns.
+
 ## Summary
 
 examines the interaction between volatility regimes and momentum returns

@@ -2,6 +2,8 @@
 
 **Blog post:** [Nifty Gaps](https://stockviz.biz/index.php/?p=2093663)
 
+> Analyzed time-alignment issues between NIFTY and global markets, comparing Monday vs. regular-day opening gaps and close-to-close vs. open-to-close returns. Found significant differences in holding overnight vs. buying at the open, with Monday opens being no different from other trading days on average.
+
 ## Summary
 
 analyzes overnight price gaps and their relationship with subsequent trading session returns

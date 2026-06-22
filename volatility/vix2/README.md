@@ -2,6 +2,8 @@
 
 **Blog post:** [VIX and Equity Index Returns, Part II](https://stockviz.biz/index.php/?p=2092133)
 
+> Extended VIX analysis to test different holding periods beyond one day and used VIX changes (returns) to time the index. Found no determinable predictive pattern from VIX changes, suggesting VIX and the equity index may be co-incident rather than one predictively leading the other.
+
 ## Summary
 
 extended analysis of VIX changes, levels, and their relationship with forward equity returns

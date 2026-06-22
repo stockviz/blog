@@ -2,6 +2,8 @@
 
 **Blog post:** [Mitigating Sequence Risk through Asset Allocation](https://stockviz.biz/index.php/?p=2129303)
 
+> Explored sequence-of-returns risk in the NIFTY 50, showing through bootstrapped simulations that there is a non-trivial chance of negative 10-year returns even with unchanged return distributions. Recommended diversification into bonds and tactical trend-following as practical mitigations.
+
 ## Summary
 
 backtests static and tactical asset allocation strategies with different asset mixes, rebalancing frequencies, and tax drag

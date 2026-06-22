@@ -2,6 +2,8 @@
 
 **Blog post:** [VIX and Equity Index Returns, Part I](https://stockviz.biz/index.php/?p=2092033)
 
+> Bucketed VIX into quintiles and analyzed subsequent S&P 500 and NIFTY 50 returns. Found counter-intuitively that the highest VIX quintile produced higher subsequent returns with smaller negative outliers than low-VIX periods; a strategy going long only during high-VIX quintiles outperformed.
+
 ## Summary
 
 analyzes the relationship between VIX levels, changes, and subsequent equity index returns

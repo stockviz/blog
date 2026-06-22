@@ -2,6 +2,8 @@
 
 **Blog post:** [Is Skewness a Timing Signal?](https://stockviz.biz/index.php/?p=2089723)
 
+> Tested whether the skewness of one-year daily returns can serve as a timing signal for the value factor, replicating and extending an external study to evaluate its predictive power.
+
 ## Summary
 
 tests whether return skewness can serve as a market timing signal across indices

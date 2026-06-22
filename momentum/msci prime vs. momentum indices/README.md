@@ -2,6 +2,8 @@
 
 **Blog post:** [MSCI: Momentum trumps Value](https://stockviz.biz/index.php/?p=2098133)
 
+> Compared MSCI Prime Value and Momentum factor indices going back to 1995. Momentum indices consistently and significantly outperformed value indices over the long term, addressing the perennial question of which factor strategy to bet on.
+
 ## Summary
 
 compares MSCI momentum indices with value/prime factor indices across global markets

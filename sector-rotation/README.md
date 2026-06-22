@@ -2,6 +2,8 @@
 
 **Blog post:** [Sector Momentum](https://stockviz.biz/index.php/?p=40890483)
 
+> Tested sector momentum rotation on 16 Indian sector indices using a 6-month look-back, finding higher absolute returns but lower Sharpe ratios, with virtually all outperformance concentrated post-2020. Alternative weighting schemes (equal-weight, inverse-volatility, trend-filtered) did not justify the added costs.
+
 ## Summary
 
 backtests sector rotation strategies using momentum ranking of sectoral indices

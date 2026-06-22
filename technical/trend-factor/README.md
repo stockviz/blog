@@ -2,6 +2,8 @@
 
 **Blog post:** [Trend Factor](https://stockviz.biz/index.php/?p=40890438)
 
+> Tested a paper's trend factor (combining short, intermediate, and long-term moving-average price trends) on Indian equities and found it underperformed a naïve momentum strategy with negative long-short returns, even after tuning look-back periods. Conclusion: Momentum beats trend-following for Indian stocks.
+
 ## Summary
 
 analyzes trend as a factor and its performance across different market environments

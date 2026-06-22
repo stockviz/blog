@@ -2,6 +2,8 @@
 
 **Blog post:** [Charts: Yield Curves](https://stockviz.biz/index.php/?p=2089683)
 
+> Examined yield curve dynamics, highlighting that near-zero short-term U.S. rates and the credit spread demanded by corporate bond investors are key signals for assessing economic conditions.
+
 ## Summary
 
 visualizes and analyzes yield curve dynamics across different maturities

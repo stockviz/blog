@@ -2,6 +2,8 @@
 
 **Blog post:** [Trends with (No) Benefits](https://stockviz.biz/index.php/?p=40890442)
 
+> Examined trend-following ETFs (PTLC, PTNQ) versus their benchmarks and found both had worse Sharpe ratios, with naïve SMA-based trend strategies showing Sharpe below 1.0 and high drawdowns. The indices themselves may not be amenable to trend-following; if the simplest approach fails, adding complexity won't help.
+
 ## Summary
 
 backtests trend-following strategies on US-listed ETFs

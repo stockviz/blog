@@ -2,6 +2,8 @@
 
 **Blog post:** [SVM for Momentum](https://stockviz.biz/index.php/?p=40890435)
 
+> Explored using SVM (Support Vector Machines) to drive momentum portfolios and found that while a 5th-degree polynomial kernel SVM can be tuned to show good backtest results, the extensive parameter and feature tweaking required makes these models unreliable in practice. Concluded with strong skepticism of AI-driven investment strategies, noting that for every published model there are thousands hidden away.
+
 ## Summary
 
 applies Support Vector Machines to classify momentum continuation vs reversal

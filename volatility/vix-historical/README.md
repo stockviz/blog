@@ -2,6 +2,8 @@
 
 **Blog post:** [Historical vs. Implied Volatility](https://stockviz.biz/index.php/?p=40890383)
 
+> Compared India VIX (implied 30-day volatility) against actual historical volatility to assess forecasting accuracy. Found the relationship is directionally true only sometimes; implied volatility does not reliably match realized volatility and may reflect more immediate expectations.
+
 ## Summary
 
 compares historical realized volatility with implied volatility (VIX) and analyzes the volatility risk premium

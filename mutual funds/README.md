@@ -4,6 +4,10 @@
 - [Mutual Funds: A quick note on performance metrics](https://stockviz.biz/index.php/?p=2088663)
 - [ETF Premium/Discount to NAV](https://stockviz.biz/index.php/?p=2090123)
 
+> Demonstrated that common mutual fund performance metrics such as alpha, beta, and information ratio exhibit zero stability over time and across market environments, making them unreliable for fund selection.
+
+> Investigated the premium/discount at which Indian ETFs trade relative to their NAV, highlighting structural differences between ETFs and mutual funds that create pricing inefficiencies for ETF investors.
+
 ## Summary
 
 analyzes mutual fund and ETF performance metrics including tracking error, premium/discount, and return attribution
@@ -28,7 +32,7 @@ analyzes mutual fund and ETF performance metrics including tracking error, premi
 
 ### `mf.index.drawdowns.returns.R`
 
-analyzes historical drawdowns across indices and their relationship with subsequent returns
+analyzes mutual fund and ETF performance metrics including tracking error, premium/discount, and return attribution
 
 ### `tracking-difference.R`
 

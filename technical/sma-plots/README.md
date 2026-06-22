@@ -2,6 +2,8 @@
 
 **Blog post:** [Risk Management is Not Free](https://stockviz.biz/index.php/?p=2124543)
 
+> Argued that risk management inherently costs money and will trail buy-and-hold over long periods, similar to insurance. Simple SMA-based strategies (being long only when above the SMA) can help manage downside without the complications of hedging instruments like futures and options.
+
 ## Summary
 
 generates comprehensive SMA strategy performance charts including rolling returns, trade analysis, and density plots

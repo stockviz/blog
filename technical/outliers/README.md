@@ -2,6 +2,8 @@
 
 **Blog post:** [Chart: One and Two Percent Moves](https://stockviz.biz/index.php/?p=2100993)
 
+> Analyzed the frequency of 1% and 2% intraday and overnight moves in NIFTY 50 and BANK NIFTY across different price components. Noted that overnight and intraday ranges have been declining, possibly an artifact of the bull market that could revert.
+
 ## Summary
 
 analyzes outliers related financial data

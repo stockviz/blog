@@ -4,6 +4,10 @@
 - [Country ETF Returns 2018](https://stockviz.biz/index.php/?p=2095663)
 - [Country Index Returns 2018](https://stockviz.biz/index.php/?p=2096543)
 
+> Reviewed 2018 performance of country-specific equity ETFs against the Vanguard Total World Stock ETF (VT). Very few country markets managed to stay positive in 2018, with most underperforming the global benchmark in what were described as 'interesting times.'
+
+> Compared 2018 country-specific total-return indices using NASDAQ OMX same-currency data. Russia surprisingly delivered one of the best equity returns despite US sanctions and a stalling economy, while most other markets struggled.
+
 ## Summary
 
 analyzes country ETF returns, volatility, correlations, and momentum across global markets

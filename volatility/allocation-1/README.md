@@ -2,6 +2,8 @@
 
 **Blog post:** [Volatility and Returns](https://stockviz.biz/index.php/?p=2104363)
 
+> Examined the return-volatility tradeoff between NIFTY MIDCAP 100 and NIFTY 50. A 75% MIDCAP + 25% bonds portfolio has almost always had lower volatility than an all-NIFTY portfolio, but sacrifices about 2% annualized returns — no free lunch.
+
 ## Summary
 
 allocates portfolio weights based on volatility estimates to optimize risk-adjusted returns

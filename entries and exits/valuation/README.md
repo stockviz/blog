@@ -4,6 +4,10 @@
 - [Index Valuations, Part I](https://stockviz.biz/index.php/?p=2101263)
 - [Index Valuations, Part II](https://stockviz.biz/index.php/?p=2101573)
 
+> Charted historical PE and PB ratios for NIFTY 50 and NIFTY MIDCAP 50 indices using a decade of NSE data, along with their relative valuation ratios, laying groundwork for valuation-based timing strategies.
+
+> Backtested portfolios weighted by relative PE and PB ratios between NIFTY 50 and MIDCAP 50. Found PB-weighted portfolios are less volatile, recover faster from drawdowns, and outperform equal-weight portfolios; PE-based weighting was more volatile.
+
 ## Summary
 
 analyzes valuation related financial data

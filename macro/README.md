@@ -5,6 +5,12 @@
 - [Macro: NIFTY vs. INR/OIL Correlation, Part II](https://stockviz.biz/index.php/?p=2090593)
 - [Macro: NIFTY vs. INR/OIL Correlation, Part III](https://stockviz.biz/index.php/?p=2090703)
 
+> Studied the correlation between NIFTY 50, USDINR, and crude oil prices in response to common media narratives, providing an empirical examination of how these macro variables actually move together.
+
+> Quantified the correlations using weekly returns, finding a -0.54 correlation between NIFTY 50 and USDINR but only 0.21 with oil, suggesting INR movements matter far more for Indian equities than oil prices.
+
+> Explored why linear regression models failed to capture the NIFTY-USDINR relationship, concluding that weekly return frequency may be inappropriate and that non-linear or lower-frequency approaches are needed.
+
 ## Summary
 
 analyzes macroeconomic indicators (currencies, oil, interest rates) and their predictive relationship with equity returns

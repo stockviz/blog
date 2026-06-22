@@ -4,6 +4,10 @@
 - [Principal Component Analysis, Part I](https://stockviz.biz/index.php/?p=2087633)
 - [Principal Component Analysis, Part II](https://stockviz.biz/index.php/?p=2089493)
 
+> Applied Principal Component Analysis to NASDAQOMX India TR financial sector indices to identify common underlying factors that explain most of the variance across Bank, Private Bank, and PSU Bank indices.
+
+> Updated the PCA analysis of NASDAQOMX India TR indices by using rolling returns to reduce daily noise, revealing more stable factor structures in Indian sector indices.
+
 ## Summary
 
 performs Principal Component Analysis on index returns to identify common risk factors

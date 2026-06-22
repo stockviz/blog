@@ -2,6 +2,8 @@
 
 **Blog post:** [Projecting Future Returns](https://stockviz.biz/index.php/?p=2097113)
 
+> Used Generalized Lambda Distribution and 10,000 simulations over 20-year horizons to project expected returns for lumpsum and SIP investments in NIFTY 50 (both rupee and dollar terms). Demonstrated the importance of modeling path dependency and non-normal return distributions when planning long-term investments.
+
 ## Summary
 
 compares lump-sum vs Systematic Investment Plan returns under different market entry timing and holding periods

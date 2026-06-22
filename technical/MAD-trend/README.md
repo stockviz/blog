@@ -4,6 +4,10 @@
 - [MAD Moving Average Distance](https://stockviz.biz/index.php/?p=40890395)
 - [Multiple MADs](https://stockviz.biz/index.php/?p=40890399)
 
+> Backtested the MAD (Moving Average Distance) crossover strategy from Avramov, Kaplanski, and Subrahmanyam on Indian stocks. Found it works in India, with COVID turbo-charging returns; adding a volatility filter reduced maximum drawdown from ~25% to sub-20% while sacrificing only ~2 percentage points of returns.
+
+> Conducted an exhaustive parameter search on the MAD crossover strategy to test whether the published 21/200 lookback parameters were data-mined. Found the 21/200 parameters appeared legitimate pre-COVID but did not rank in the top 5 post-COVID, and removing the sigma threshold parameter significantly reduced post-COVID returns.
+
 ## Summary
 
 backtests trend-following strategies using Simple Moving Average distance and crossover signals

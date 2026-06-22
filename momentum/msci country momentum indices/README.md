@@ -2,6 +2,8 @@
 
 **Blog post:** [MSCI Country-wise Momentum Indices](https://stockviz.biz/index.php/?p=2098003)
 
+> Compared MSCI momentum indices across countries, finding a strikingly narrow difference between India and World momentum indices. USA Momentum exhibited notably shallower drawdowns compared to all other country momentum indices.
+
 ## Summary
 
 analyzes cross-country momentum patterns in MSCI country indices

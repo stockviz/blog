@@ -4,6 +4,10 @@
 - [Momentum Rebalance Frequency](https://stockviz.biz/index.php/?p=40890233)
 - [Momentum Rebalance Frequency, Part II](https://stockviz.biz/index.php/?p=40890425)
 
+> Compared monthly vs. semi-annual rebalancing for momentum portfolios. The traditional monthly rebalance (12_1) was quantifiably better, but the performance give-up from semi-annual rebalancing was modest, and when factoring in tax advantages and low index-fund costs, current momentum index funds look reasonable.
+
+> Tested weekly rebalancing frequencies for momentum portfolios, noting momentum stock returns tail off after two weeks. Found bi-weekly rebalancing offers an advantage over monthly, but with higher annualized transaction costs (~5% vs. ~3%); the lower portfolio overlap at higher frequencies drives up costs, which are permanent and immediate.
+
 ## Summary
 
 evaluates how rebalancing frequency affects momentum strategy returns

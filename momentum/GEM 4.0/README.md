@@ -2,6 +2,8 @@
 
 **Blog post:** [Global Equities Momentum, Part IV](https://stockviz.biz/index.php/?p=2098483)
 
+> Tested alternative momentum formation periods (6-12 months) for the GEM strategy with a focus on drawdowns. Found that averaging across all formation periods reduces drawdowns compared to the traditional 12-month version, offering a way to mitigate data-mining concerns.
+
 ## Summary
 
 backtests Global Equities Momentum strategies across country and US equity ETFs with various leverage levels

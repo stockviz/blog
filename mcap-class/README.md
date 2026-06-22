@@ -2,6 +2,8 @@
 
 **Blog post:** [Market-cap Classification and Illiquidity](https://stockviz.biz/index.php/?p=40890402)
 
+> Analyzed the impact of AMFI's semi-annual market-cap reclassification on stock liquidity using Amihud's ILLIQ measure. Found stocks promoted from mid-cap to large-cap became slightly more illiquid, but most other migrations had negligible impact on forward six-month illiquidity, despite large baseline liquidity differences across cap classes.
+
 ## Summary
 
 computes Amihud illiquidity metrics across market-cap deciles and analyzes their relationship with circuit limits

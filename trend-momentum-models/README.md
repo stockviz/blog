@@ -4,6 +4,10 @@
 - [Trending Momentum Models](https://stockviz.biz/index.php/?p=40889093)
 - [Trending Momo Models](https://stockviz.biz/index.php/?p=40889163)
 
+> Tested trend overlays on homegrown momentum models (Momentum, Velocity, Acceleration) against their momo (trailing stop-loss) versions. Trend-overlay strategies avoided drawdowns better and outperformed momo counterparts overall; Momentum and Acceleration saw large performance pickups, while Velocity's trend overlay reduced drawdowns but came with a steep performance penalty.
+
+> Extended trend-filter testing to the Momo (stop-loss) versions of homegrown momentum models. Found that trended momentum side-steps deep drawdowns, but raw returns favor monthly rebalanced approaches, and the higher turnover of trend strategies increases operational risk and requires automated trading systems.
+
 ## Summary
 
 backtests trend-following strategies using Simple Moving Average distance and crossover signals

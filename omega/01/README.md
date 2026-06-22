@@ -2,6 +2,8 @@
 
 **Blog post:** [The Omega Ratio](https://stockviz.biz/index.php/?p=2096853)
 
+> Introduced the Omega Ratio as an alternative to the Sharpe Ratio that better accounts for fat tails, skew, and kurtosis in market return distributions. Presented rolling 5-year Omega calculations for S&P 500 and NIFTY 50 dollar indices.
+
 ## Summary
 
 computes the Omega ratio and related performance metrics for strategy evaluation

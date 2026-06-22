@@ -2,6 +2,8 @@
 
 **Blog post:** [Dual Momentum: NIFTY vs MIDCAP](https://stockviz.biz/index.php/?p=2101173)
 
+> Applied dual momentum to toggle between NIFTY 50, MIDCAP 100, and bonds. A model using 'any' lookback signal (3-4 months) delivers lower drawdowns and better returns than NIFTY 50, though pure buy-and-hold midcaps still win for investors who can tolerate the pain.
+
 ## Summary
 
 implements dual momentum switching between indices based on relative trailing returns

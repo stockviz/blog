@@ -2,6 +2,8 @@
 
 **Blog post:** [The futility of market timing?](https://stockviz.biz/index.php/?p=2098673)
 
+> Replicated Albert Bridge Capital's S&P 500 market timing study on the NIFTY 50, comparing returns from buying at yearly highs, lows, and random days over 10- and 20-year rolling periods. Unlike the S&P 500, the NIFTY 50's extreme volatility creates wide gaps in terminal wealth, keeping the temptation to time the market alive.
+
 ## Summary
 
 evaluates the efficacy of market timing strategies and their sensitivity to parameter selection
