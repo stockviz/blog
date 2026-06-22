@@ -2,6 +2,8 @@
 
 **Blog post:** [SMA Strategy Transaction Cost Analysis](https://stockviz.biz/index.php/?p=2105353)
 
+> Added transaction cost analysis (0.2% per trade) to SMA strategy backtests across NIFTY indices. Found that 20-day SMA surprisingly beats 10-day SMA on both gross and net returns, and while SMA strategies underperform in uptrends, they protect capital during downturns.
+
 ## Summary
 
 analyzes the impact of transaction costs and slippage on SMA trend-following strategy returns

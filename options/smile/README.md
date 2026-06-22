@@ -2,6 +2,8 @@
 
 **Blog post:** [The Smirk, Part II](https://stockviz.biz/index.php/?p=40890462)
 
+> Explored tracking the volatility smirk's instability across expiries by fitting a parabola (y = ax² + bx + c) to implied volatilities, using the quadratic coefficient as a measure of smirk steepness. Sampling and tracking these coefficients over time can help distinguish normal patterns from trading opportunities.
+
 ## Summary
 
 analyzes options market data including volatility smiles, skew patterns, and payoff structures

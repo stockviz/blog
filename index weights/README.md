@@ -2,6 +2,8 @@
 
 **Blog post:** [It Is Not Your Father&#8217;s NIFTY](https://stockviz.biz/index.php/?p=2106083)
 
+> Highlighted how the NIFTY 50's sector composition shifted dramatically from 2009 to 2019, with banks and financials now dominating index performance. Suggested the NEXT 50 index for investors seeking more diversified exposure.
+
 ## Summary
 
 analyzes how index constituent weights and rebalancing effects impact returns

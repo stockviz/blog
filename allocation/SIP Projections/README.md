@@ -2,6 +2,8 @@
 
 **Blog post:** [SIP: Expected Returns](https://stockviz.biz/index.php/?p=2093333)
 
+> Deconstructed the 'Rs. 5,000 monthly SIP makes you a crorepati' claim by modeling realistic asset allocations. Under a static 60/40 equity-bond allocation using historical returns, the expected corpus is only ~Rs. 60 lakhs; a glide-path that progressively reduces equity exposure over 20 years better mitigates downside risk.
+
 ## Summary
 
 simulates Systematic Investment Plan returns under various market entry conditions

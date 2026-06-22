@@ -2,6 +2,8 @@
 
 **Blog post:** [USDINR and Dollar Indices, Part II](https://stockviz.biz/index.php/?p=2091263)
 
+> Extended the USDINR-dollar index analysis by forcing zero-intercept linear regressions between currency pairs, revealing structural relationships that inform currency hedging decisions.
+
 ## Summary
 
 analyzes the relationship between USDINR, dollar indices, and equity returns

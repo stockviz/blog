@@ -2,6 +2,8 @@
 
 **Blog post:** [Mahalanobis Distance with Trend](https://stockviz.biz/index.php/?p=40890173)
 
+> Added a trend filter to the Mahalanobis distance regime-switching model. The composite model achieved superior Sharpe ratios, but the alpha primarily came from earning the risk-free rate during unfavorable periods and going long equities only when conditions were favorable — if staying in cash instead of bonds, a simple trend model sufficed.
+
 ## Summary
 
 backtests trend-following strategies using Simple Moving Average distance and crossover signals

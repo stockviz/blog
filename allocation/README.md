@@ -6,6 +6,14 @@
 - [Allocating a Three-Asset Portfolio, Optimized](https://stockviz.biz/index.php/?p=2089033)
 - [Allocating a Four-Asset Portfolio](https://stockviz.biz/index.php/?p=2089263)
 
+> Explored how different allocation decisions impact a two-asset equity-bond portfolio, showing that asset allocation and rebalancing discipline are the primary drivers of risk-adjusted returns.
+
+> Extended the two-asset allocation analysis to an equal-weighted three-asset portfolio, demonstrating how adding a third asset class alters the risk-return profile and diversification benefits.
+
+> Compared optimized versus equal-weighted three-asset portfolio allocations, finding that using optimization during rebalancing can improve risk-adjusted returns beyond simple equal weighting.
+
+> Added gold as a fourth asset to the portfolio allocation framework and tested various scenarios, showing how the inclusion of gold further reduces portfolio volatility through its low correlation to equities and bonds.
+
 ## Summary
 
 backtests static and tactical asset allocation strategies with different asset mixes, rebalancing frequencies, and tax drag

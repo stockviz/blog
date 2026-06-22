@@ -4,6 +4,10 @@
 - [Prophet for Momentum](https://stockviz.biz/index.php/?p=40890420)
 - [Prophet for Momentum, Part II](https://stockviz.biz/index.php/?p=40890427)
 
+> Tested Meta's Prophet forecasting library for predicting next-month stock returns to build a momentum portfolio. Results were better than a simple linear model but still trailed naïve momentum performance.
+
+> Tested higher-frequency rebalancing with Prophet-based momentum portfolios. Found no benefit to rebalancing more frequently than monthly, even before costs; Prophet portfolios have low overlap which amplifies transaction costs, and monthly rebalancing works best — another win for keeping it simple.
+
 ## Summary
 
 uses Facebook Prophet models to predict momentum signal persistence

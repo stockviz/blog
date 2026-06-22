@@ -5,6 +5,12 @@
 - [Systematic Buy-the-Dip, SMA crosses](https://stockviz.biz/index.php/?p=2088383)
 - [Daily vs. Monthly SIP](https://stockviz.biz/index.php/?p=2088593)
 
+> Updated a June 2016 comparison of systematic 'buy the dip' vs. daily SIP strategies, concluding that dip-buying approaches do not produce a significant advantage over simply investing every day via SIP.
+
+> Tested a dip-buying strategy based on SMA crossover signals against a baseline daily SIP, finding that the SMA-based approach fails to deliver any meaningful outperformance over systematic investing.
+
+> Compared daily versus monthly SIP frequencies and found that while daily SIPs serve as a reasonable baseline for strategy comparisons, the choice of frequency has minimal impact on long-term outcomes.
+
 ## Summary
 
 compares lump-sum vs Systematic Investment Plan returns under different market entry timing and holding periods
@@ -21,7 +27,7 @@ compares lump-sum vs Systematic Investment Plan returns under different market e
 
 ### `sma.study.R`
 
-backtests tactical asset allocation using SMA signals to switch between equity and cash/bonds
+compares lump-sum vs Systematic Investment Plan returns under different market entry timing and holding periods
 
 ## Output
 

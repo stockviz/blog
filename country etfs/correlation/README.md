@@ -2,6 +2,8 @@
 
 **Blog post:** [MSCI Country Index Correlations](https://stockviz.biz/index.php/?p=2100643)
 
+> Analyzed rolling 5-year correlations between MSCI India and other country indices, finding Jordan is the least correlated and Hong Kong the most. Concluded that diversification within equities does not reduce drawdowns or necessarily boost returns — it primarily protects against hindsight mistakes like being 100% invested in a poor-performing country.
+
 ## Summary
 
 computes rolling pairwise correlations between indices and evaluates correlation-based timing strategies

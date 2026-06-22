@@ -2,6 +2,8 @@
 
 **Blog post:** [Volatility Targeting](https://stockviz.biz/index.php/?p=40890423)
 
+> Explored volatility-based position sizing for index trading, scaling exposure inversely to recent volatility. At 2x leverage with discrete quintile-based sizing, the strategy outperformed NIFTY buy-and-hold by 5% with half the drawdown; for NIFTY MIDCAP SELECT, it reduced drawdowns but underperformed on raw returns.
+
 ## Summary
 
 implements volatility-targeting strategies that scale position size inversely with trailing realized volatility

@@ -2,6 +2,8 @@
 
 **Blog post:** [Macro: Timing the NIFTY 50](https://stockviz.biz/index.php/?p=40890480)
 
+> Tested whether OECD Composite Leading Indicators can time the NIFTY 50, finding no correlation between absolute CLI levels and returns. However, going long only when the CLI is improving yielded a 2% return boost with significantly less severe drawdowns.
+
 ## Summary
 
 analyzes macroeconomic indicators (currencies, oil, interest rates) and their predictive relationship with equity returns

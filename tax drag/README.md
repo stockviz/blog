@@ -2,6 +2,8 @@
 
 **Blog post:** [Tax Drag on Compounding](https://stockviz.biz/index.php/?p=2084863)
 
+> Quantified the impact of India's 10% long-term capital gains tax on equity compounding, demonstrating that frequent fund switching dramatically amplifies the tax drag and severely diminishes long-term returns.
+
 ## Summary
 
 quantifies the long-term impact of inflation and taxes on real investment returns

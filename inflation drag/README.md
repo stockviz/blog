@@ -4,6 +4,10 @@
 - [The Inflation Drag on Returns](https://stockviz.biz/index.php/?p=2087443)
 - [The Inflation Drag on Bond Returns](https://stockviz.biz/index.php/?p=2101713)
 
+> Calculated that the inflation-adjusted annualized NIFTY 50 return from 1991-2016 was only ~5% compared to ~13% nominal, revealing that inflation erodes roughly two-thirds of Indian equity returns over long horizons.
+
+> Examined inflation-adjusted bond returns from 1991-2016. Found that at the short end of the curve, inflation completely eroded all bond returns — and then some.
+
 ## Summary
 
 quantifies the long-term impact of inflation and taxes on real investment returns

@@ -2,6 +2,8 @@
 
 **Blog post:** [Factor MAX](https://stockviz.biz/index.php/?p=40890492)
 
+> Tested the Factor MAX strategy (going long the factor with the largest single-day return in the prior month) against Factor Momentum on Indian NIFTY500 factor indices. Factor MAX underperformed because more volatile factors get selected disproportionately, and even volatility-adjusting returns did not rescue the strategy.
+
 ## Summary
 
 backtests a factor momentum strategy that rotates across equity factors

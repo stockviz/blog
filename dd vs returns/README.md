@@ -4,6 +4,10 @@
 - [NIFTY Index Drawdowns vs. Returns](https://stockviz.biz/index.php/?p=2087393)
 - [Annual Drawdowns and Subsequent Returns](https://stockviz.biz/index.php/?p=2095573)
 
+> Analyzed NIFTY sector drawdowns versus returns, finding that some sectors like REALTY failed to recover even after a decade, while FMCG experienced shallow drawdowns yet delivered the best long-term returns.
+
+> Showed that max drawdowns are common occurrences across major equity indices and do not reliably signal imminent positive returns. Emphasized that patience is the key ingredient — it takes time after a drawdown for the odds to work in an investor's favor.
+
 ## Summary
 
 analyzes historical NIFTY index drawdowns and their statistical relationship with subsequent 1-year, 3-year, and 5-year forward returns

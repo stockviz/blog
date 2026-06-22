@@ -2,6 +2,8 @@
 
 **Blog post:** [Timing Entries and Exits based on Profits and Drawdowns](https://stockviz.biz/index.php/?p=2090224)
 
+> Tested entry and exit timing strategies based on profit targets and drawdown thresholds, showing that these tactical approaches underperform a simple daily SIP, consistent with earlier buy-the-dip findings.
+
 ## Summary
 
 analyzes binary related financial data

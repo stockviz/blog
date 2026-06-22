@@ -4,6 +4,10 @@
 - [Streaks, Part I](https://stockviz.biz/index.php/?p=2096043)
 - [Streaks, Part II – Backtest](https://stockviz.biz/index.php/?p=2096133)
 
+> Analyzed the distribution of up/down return streaks for NIFTY 50 across daily, weekly, and monthly frequencies. Monthly streaks showed the most promise, with very few instances of three consecutive down months, suggesting a potential predictive signal.
+
+> Back-tested going long NIFTY 50 for one month after two consecutive down months. The strategy produced shallow drawdowns with ~190% gross returns (~1330% when levered via NIFTY futures), but the author cautions this likely reflects data-mining, especially since pre-2005 data does not replicate the result.
+
 ## Summary
 
 analyzes streaks related financial data

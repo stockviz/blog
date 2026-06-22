@@ -2,6 +2,8 @@
 
 **Blog post:** [USDINR and Dollar Indices, Part I](https://stockviz.biz/index.php/?p=2091053)
 
+> Leveraged the St. Louis Fed's FRED database to analyze USDINR against various dollar indices, establishing baseline relationships between the Indian rupee and broader dollar baskets.
+
 ## Summary
 
 analyzes the relationship between USDINR, dollar indices, and equity returns

@@ -2,6 +2,8 @@
 
 **Blog post:** [Global Equities Momentum, Part II](https://stockviz.biz/index.php/?p=2098253)
 
+> Investigated whether using momentum or value indices in the GEM decision tree boosts returns. Found that momentum-based GEM vastly outperforms value-based GEMs and can be easily implemented with MTUM and IMTM ETFs, though statistical robustness concerns remain due to limited MSCI data history.
+
 ## Summary
 
 backtests Global Equities Momentum strategies across country and US equity ETFs with various leverage levels

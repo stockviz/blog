@@ -2,6 +2,8 @@
 
 **Blog post:** [Is the Low Volatility Regime Breaking?](https://stockviz.biz/index.php/?p=2100353)
 
+> Examined whether the multi-year low-volatility regime in the NIFTY 50 is structural or due for mean reversion. Warns that narratives around central bank liquidity, regulatory changes, and SIP flows could change overnight, and new investors accustomed to low volatility may face a rude awakening if volatility reverts to historical norms.
+
 ## Summary
 
 analyzes the distribution of returns conditional on volatility regimes

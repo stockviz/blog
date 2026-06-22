@@ -2,6 +2,8 @@
 
 **Blog post:** [Commodities vs. Commodity Stocks](https://stockviz.biz/index.php/?p=40890444)
 
+> Compared trading physical commodities versus commodity stocks in India (e.g., aluminum vs. National Aluminum stock) and found the stock vastly outperformed the metal with zero correlation in monthly returns. Trading metals is completely different from trading metal stocks, especially in partially-open economies with tariff protections.
+
 ## Summary
 
 analyzes commodity futures data including volumes, basis, and rollover costs

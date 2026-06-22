@@ -2,6 +2,8 @@
 
 **Blog post:** [Global Equities Momentum, Part III](https://stockviz.biz/index.php/?p=2098333)
 
+> Demonstrated that momentum equivalents of equity indices are highly correlated with their base indices, so the S&P 500 can be used for the GEM decision while momentum ETFs (MTUM/IMTM) are used for trading. The backtest shows this hybrid strategy delivers superior returns and shallower drawdowns versus buy-and-hold of the underlying indices.
+
 ## Summary
 
 backtests Global Equities Momentum strategies across country and US equity ETFs with various leverage levels

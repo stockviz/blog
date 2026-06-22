@@ -2,6 +2,8 @@
 
 **Blog post:** [Quant Model in Mutual Fund Wrapper](https://stockviz.biz/index.php/?p=2106843)
 
+> Analyzed the DSP Quant Fund's backtest and found excess returns are tapering off, with market beta dominating and value factor acting as a drag. Concluded it's a low-cost, tax-efficient alternative to direct-equity quant platforms, comparable to the NIFTY 200 Quality 30 index after expense ratios.
+
 ## Summary
 
 analyzes quantitative mutual fund performance, factor exposures, and strategy drift

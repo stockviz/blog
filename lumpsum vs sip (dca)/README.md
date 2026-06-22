@@ -5,6 +5,12 @@
 - [Lumpsum vs. SIP: Thinking in Probabilities](https://stockviz.biz/index.php/?p=2088013)
 - [The Path Dependency of SIP Returns](https://stockviz.biz/index.php/?p=2090023)
 
+> Modeled NIFTY, MIDCAP, and GOLD returns using a Generalized Lambda Distribution with 10,000-path simulations to compare lumpsum vs. SIP investing, finding that while lumpsums outperform in trending markets, SIPs offer a smaller probability of negative returns, making them better for prudent investors.
+
+> Extended the lumpsum vs. SIP analysis with a probabilistic framework, concluding that SIPs are the better choice for risk-averse investors because they substantially reduce the probability of negative returns compared to lumpsum investing.
+
+> Analyzed the path dependency of SIP returns given the statistical distribution of market returns, demonstrating that the sequence of returns materially impacts SIP outcomes compared to lumpsum investing.
+
 ## Summary
 
 compares lump-sum vs Dollar Cost Averaging (SIP) investment returns under various market timing scenarios, analyzing path dependency and probability distributions

@@ -2,6 +2,8 @@
 
 **Blog post:** [Volatility and VIX Charts](https://stockviz.biz/index.php/?p=2091833)
 
+> Updated historical and implied volatility charts for S&P 500, Nikkei 225, and NIFTY 50. Highlighted that no two indices share the same volatility profile, cautioning against naively transplanting trading strategies from one market to another.
+
 ## Summary
 
 compares historical realized volatility with implied volatility (VIX) and analyzes the volatility risk premium

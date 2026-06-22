@@ -2,6 +2,8 @@
 
 **Blog post:** [Volatility and Returns of Momentum Indices](https://stockviz.biz/index.php/?p=40889053)
 
+> Investigated whether historical volatility (200-day standard deviation) can time entries and exits for momentum indices. Found no strong correlation between historical volatility and future returns; any backtest suggesting otherwise is likely a fluke, especially in 'normal' market conditions.
+
 ## Summary
 
 examines the interaction between volatility regimes and momentum returns
