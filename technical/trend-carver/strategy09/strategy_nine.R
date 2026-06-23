@@ -103,7 +103,10 @@ fdm_table <- list(
 #' Falls back to 1.0 with a warning if the combination isn't in Table 36
 #' (e.g. a custom weight vector with a non-standard set of active filters).
 lookup_fdm <- function(weights) {
-  active <- sort(names(weights[weights > 0]))
+  active <- names(weights[weights > 0])
+  # sort numerically (EWMAC2, EWMAC4, ..., EWMAC64) to match fdm_table keys
+  nums <- as.numeric(gsub("EWMAC", "", active))
+  active <- active[order(nums)]
   key    <- paste(active, collapse = ",")
   fdm    <- fdm_table[[key]]
   if (is.null(fdm)) {
