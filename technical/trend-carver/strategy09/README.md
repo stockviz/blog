@@ -1,5 +1,12 @@
 # Strategy Nine — Robert Carver Backtests
 
+**Blog post:** [Strategy 9](https://stockviz.biz/2026/06/23/strategy-9/)
+
+> In Rob Carver's Advanced Futures Trading Strategies, there's a chapter,
+> "Strategy Nine: Multiple Trend Following Rules," that uses composite
+> trend-following rules to drive a long-short strategy. We explore the
+> strategy through an Indian market participant's lens.
+
 ## What's here
 
 Two R scripts that implement and backtest **Strategy Nine** from Robert
