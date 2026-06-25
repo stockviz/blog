@@ -274,7 +274,7 @@ if (nrow(results) > 0) {
     gt() |>
     tab_header(
       title = "Strategy Nine Equal-Weight — All Asset Classes",
-      subtitle = "NIFTY + Crypto (INR) + MCX Commodities; drag = 0.2%"
+      subtitle = "NIFTY + Crypto (INR) + MCX Commodities + US ETFs (INR); drag = 0.2%"
     ) |>
     tab_spanner(label = "Binary LO",  columns = starts_with("Bin_")) |>
     tab_spanner(label = "Scaled LO",  columns = starts_with("ScLO_")) |>
