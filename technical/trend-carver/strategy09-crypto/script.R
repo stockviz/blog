@@ -85,6 +85,7 @@ scaled_ls <- list()
 binary_lo <- list()
 binary_ls <- list()
 bh_rets   <- list()
+coin_results <- tibble()
 
 for (sym in valid_coins) {
   prices <- daily_prices[[sym]]
@@ -134,7 +135,65 @@ for (sym in valid_coins) {
   binary_ls[[sym]] <- xts(bls, order.by = common_dates)
 
   bh_rets[[sym]] <- ra
+
+  # coin-level metrics
+  coin_results <- rbind(coin_results, tibble(
+    Symbol    = sym,
+    ScLO_SR   = round(SharpeRatio.annualized(scaled_lo[[sym]])[1,1], 3),
+    ScLO_Ret  = round(as.numeric(Return.annualized(scaled_lo[[sym]])), 4),
+    ScLO_DD   = round(as.numeric(maxDrawdown(scaled_lo[[sym]])), 4),
+    ScLS_SR   = round(SharpeRatio.annualized(scaled_ls[[sym]])[1,1], 3),
+    ScLS_Ret  = round(as.numeric(Return.annualized(scaled_ls[[sym]])), 4),
+    ScLS_DD   = round(as.numeric(maxDrawdown(scaled_ls[[sym]])), 4),
+    BinLO_SR  = round(SharpeRatio.annualized(binary_lo[[sym]])[1,1], 3),
+    BinLO_Ret = round(as.numeric(Return.annualized(binary_lo[[sym]])), 4),
+    BinLO_DD  = round(as.numeric(maxDrawdown(binary_lo[[sym]])), 4),
+    BinLS_SR  = round(SharpeRatio.annualized(binary_ls[[sym]])[1,1], 3),
+    BinLS_Ret = round(as.numeric(Return.annualized(binary_ls[[sym]])), 4),
+    BinLS_DD  = round(as.numeric(maxDrawdown(binary_ls[[sym]])), 4),
+    BH_SR     = round(SharpeRatio.annualized(ra)[1,1], 3),
+    BH_Ret    = round(as.numeric(Return.annualized(ra)), 4),
+    BH_DD     = round(as.numeric(maxDrawdown(ra)), 4)
+  ))
 }
+
+# ── coin-level summary ───────────────────────────────────────────────────────
+cat("\n=== Coin-Level Summary ===\n")
+coin_results <- coin_results |> arrange(desc(ScLO_SR))
+print(coin_results, n = Inf)
+
+write.csv(coin_results, sprintf("%s/crypto-coin-results.csv", reportPath), row.names = FALSE)
+
+coin_results |>
+  gt() |>
+  tab_header(
+    title = sprintf("Crypto Strategy Nine — Coin-Level Results (%d coins)", nrow(coin_results)),
+    subtitle = sprintf("Scaled LO ranked; %s → %s; drag = %.1f%%",
+                       startDate, format(Sys.Date(), "%Y-%m-%d"), drag * 100)
+  ) |>
+  tab_spanner(label = "Scaled LO",  columns = starts_with("ScLO_")) |>
+  tab_spanner(label = "Scaled LS",  columns = starts_with("ScLS_")) |>
+  tab_spanner(label = "Binary LO",  columns = starts_with("BinLO_")) |>
+  tab_spanner(label = "Binary LS",  columns = starts_with("BinLS_")) |>
+  tab_spanner(label = "Buy & Hold", columns = starts_with("BH_")) |>
+  fmt_percent(columns = ends_with("_Ret") | ends_with("_DD"), decimals = 2) |>
+  fmt_number(columns = ends_with("_SR"), decimals = 2) |>
+  tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) |>
+  cols_label(
+    ScLO_SR = "Sharpe", ScLO_Ret = "Ret", ScLO_DD = "MaxDD",
+    ScLS_SR = "Sharpe", ScLS_Ret = "Ret", ScLS_DD = "MaxDD",
+    BinLO_SR = "Sharpe", BinLO_Ret = "Ret", BinLO_DD = "MaxDD",
+    BinLS_SR = "Sharpe", BinLS_Ret = "Ret", BinLS_DD = "MaxDD",
+    BH_SR = "Sharpe", BH_Ret = "Ret", BH_DD = "MaxDD"
+  ) |>
+  tab_source_note(source_note = "@StockViz") |>
+  tab_style(style = cell_text(align = "right"), locations = cells_source_notes()) |>
+  gtsave(sprintf("%s/crypto-coin-results.html", reportPath))
+
+webshot2::webshot(
+  sprintf("%s/crypto-coin-results.html", reportPath),
+  sprintf("%s/crypto-coin-results.png", reportPath),
+  selector = "table.gt_table", expand = c(10, 10, 10, 10))
 
 # ═════════════════════════════════════════════════════════════════════════════
 # Build portfolios: 4 strategies × 2 weighting schemes = 8 series
