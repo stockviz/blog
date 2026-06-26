@@ -187,8 +187,26 @@ coin_results |>
     BH_SR = "Sharpe", BH_Ret = "Ret", BH_DD = "MaxDD"
   ) |>
   tab_source_note(source_note = "@StockViz") |>
-  tab_style(style = cell_text(align = "right"), locations = cells_source_notes()) |>
-  gtsave(sprintf("%s/crypto-coin-results.html", reportPath))
+  tab_style(style = cell_text(align = "right"), locations = cells_source_notes()) ->
+  tbl
+
+  # colour negative returns dark red (all Ret/DD columns), >2% returns dark green (Ret only)
+  ret_cols <- names(coin_results)[grepl("_Ret$|_DD$", names(coin_results))]
+  for (col in ret_cols) {
+    neg_rows <- which(coin_results[[col]] < 0)
+    if (length(neg_rows) > 0)
+      tbl <- tbl |> tab_style(style = cell_text(color = "#8B0000"),
+                locations = cells_body(columns = all_of(col), rows = neg_rows))
+  }
+  ret_only <- names(coin_results)[grepl("_Ret$", names(coin_results))]
+  for (col in ret_only) {
+    green_rows <- which(coin_results[[col]] > 0.02)
+    if (length(green_rows) > 0)
+      tbl <- tbl |> tab_style(style = cell_text(color = "#006400"),
+                locations = cells_body(columns = all_of(col), rows = green_rows))
+  }
+
+  tbl |> gtsave(sprintf("%s/crypto-coin-results.html", reportPath))
 
 webshot2::webshot(
   sprintf("%s/crypto-coin-results.html", reportPath),
@@ -308,8 +326,22 @@ summary_tbl |>
   tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) |>
   cols_label(SR = "Sharpe", AnnRet = "Ann.Return", MaxDD = "Max Drawdown") |>
   tab_source_note(source_note = "@StockViz") |>
-  tab_style(style = cell_text(align = "right"), locations = cells_source_notes()) |>
-  gtsave(sprintf("%s/crypto-portfolio-summary.html", reportPath))
+  tab_style(style = cell_text(align = "right"), locations = cells_source_notes()) ->
+  tbl
+
+  # colour negative values dark red, >2% returns dark green (AnnRet only)
+  for (col in c("AnnRet", "MaxDD")) {
+    neg_rows <- which(summary_tbl[[col]] < 0)
+    if (length(neg_rows) > 0)
+      tbl <- tbl |> tab_style(style = cell_text(color = "#8B0000"),
+                locations = cells_body(columns = all_of(col), rows = neg_rows))
+  }
+  green_rows <- which(summary_tbl[["AnnRet"]] > 0.02)
+  if (length(green_rows) > 0)
+    tbl <- tbl |> tab_style(style = cell_text(color = "#006400"),
+              locations = cells_body(columns = "AnnRet", rows = green_rows))
+
+  tbl |> gtsave(sprintf("%s/crypto-portfolio-summary.html", reportPath))
 
 webshot2::webshot(
   sprintf("%s/crypto-portfolio-summary.html", reportPath),
