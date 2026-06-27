@@ -10,3 +10,6 @@
 
 **Crypto Universe:** [Strategy 9 with Crypto](https://stockviz.biz/2026/06/26/strategy-9-with-crypto/)
 > Expands to all 21 pre-2019 Binance USDT coins. Binary long-only equal-weight delivers the highest returns but with a 60% drawdown, ruling out leverage. Adding more coins beyond the Big 3 does not improve the portfolio; many have negative trend-following contributions.
+
+**Dynamic Universe:** [Strategy 9 with Dynamic Universe Selection](https://stockviz.biz/2026/06/27/strategy-9-with-dynamic-universe-selection/)
+> Walk-forward monthly re-selection from the full Binance USDT universe. Coins qualify with ≥500 days history and positive Sharpe (or Hurst > 0.55). Neither approach improves on the static universe; dynamic selection adds complexity without better risk-adjusted returns.
