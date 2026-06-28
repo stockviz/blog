@@ -236,23 +236,48 @@ names(to_plot) <- port_names
 to_plot <- na.omit(merge(to_plot, acwi_bh))
 names(to_plot)[ncol(to_plot)] <- "ACWI B&H"
 
+sr_to_plot <- sapply(colnames(to_plot), function(nm) round(SharpeRatio.annualized(to_plot[,nm])[1,1], 2))
+sr_text <- paste0(colnames(to_plot), "=", sr_to_plot, collapse=", ")
+
 Common.PlotCumReturns(to_plot, "MSCI Country Equity — Strategy Nine",
-  sprintf("%d countries, equal-weight; %s → %s", length(valid_assets), portfolio_start, format(Sys.Date(), "%Y-%m-%d")),
+  sprintf("%d countries, equal-weight; %s → %s | SR: %s", length(valid_assets), portfolio_start, format(Sys.Date(), "%Y-%m-%d"), sr_text),
   sprintf("%s/msci-all-strategies.cumret.png", reportPath), NULL)
 
 # scaled LO vs scaled LS vs ACWI
 sclo_vs_scls <- na.omit(merge(portfolios[["Scaled LO"]], portfolios[["Scaled LS"]], acwi_bh))
 names(sclo_vs_scls) <- c("Scaled LO", "Scaled LS", "ACWI B&H")
+
+sr_scl <- sapply(colnames(sclo_vs_scls), function(nm) round(SharpeRatio.annualized(sclo_vs_scls[,nm])[1,1], 2))
+sr_text_scl <- paste0(colnames(sclo_vs_scls), "=", sr_scl, collapse=", ")
+
 Common.PlotCumReturns(sclo_vs_scls, "MSCI Country Equity — Scaled Strategies",
-  "Scaled Long-Only vs Scaled Long-Short vs ACWI B&H",
+  sprintf("Scaled Long-Only vs Scaled Long-Short vs ACWI B&H | SR: %s", sr_text_scl),
   sprintf("%s/msci-scaled.cumret.png", reportPath), NULL)
 
 # binary LO vs binary LS vs ACWI
 blo_vs_bls <- na.omit(merge(portfolios[["Binary LO"]], portfolios[["Binary LS"]], acwi_bh))
 names(blo_vs_bls) <- c("Binary LO", "Binary LS", "ACWI B&H")
+
+sr_bin <- sapply(colnames(blo_vs_bls), function(nm) round(SharpeRatio.annualized(blo_vs_bls[,nm])[1,1], 2))
+sr_text_bin <- paste0(colnames(blo_vs_bls), "=", sr_bin, collapse=", ")
+
 Common.PlotCumReturns(blo_vs_bls, "MSCI Country Equity — Binary Strategies",
-  "Binary Long-Only vs Binary Long-Short vs ACWI B&H",
+  sprintf("Binary Long-Only vs Binary Long-Short vs ACWI B&H | SR: %s", sr_text_bin),
   sprintf("%s/msci-binary.cumret.png", reportPath), NULL)
+
+# cumulative returns from 2010 onwards
+from_2010 <- to_plot["2010-01-01/"]
+if (nrow(from_2010) > 0) {
+  sr_2010 <- sapply(colnames(from_2010), function(nm) round(SharpeRatio.annualized(from_2010[,nm])[1,1], 2))
+  sr_text_2010 <- paste0(colnames(from_2010), "=", sr_2010, collapse=", ")
+  Common.PlotCumReturns(from_2010, "MSCI Country Equity — Strategy Nine (from 2010)",
+    sprintf("%d countries, equal-weight; %s → %s | SR: %s",
+            length(valid_assets),
+            as.character(as.Date(first(index(from_2010)))),
+            as.character(as.Date(last(index(from_2010)))),
+            sr_text_2010),
+    sprintf("%s/msci-all-strategies-2010.cumret.png", reportPath), NULL)
+}
 
 # ── annual returns table ─────────────────────────────────────────────────────
 annual_ret <- apply.yearly(to_plot, Return.cumulative)
