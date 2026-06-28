@@ -13,3 +13,7 @@
 
 **Dynamic Universe:** [Strategy 9 with Dynamic Universe Selection](https://stockviz.biz/2026/06/27/strategy-9-with-dynamic-universe-selection/)
 > Walk-forward monthly re-selection from the full Binance USDT universe. Coins qualify with ≥500 days history and positive Sharpe (or Hurst > 0.55). Neither approach improves on the static universe; dynamic selection adds complexity without better risk-adjusted returns.
+
+**MSCI Equity Indices:** [Strategy 9 with Equity Indices](https://stockviz.biz/2026/06/28/strategy-9-with-equity-indices/)
+> Applies Strategy 9 trend-following to a basket of MSCI country equity indices. A Binary Long-only strategy earns a higher Sharpe than buy & hold, but its drawdown profile makes it unleverageable — so it ultimately trails B&H returns. More importantly, yearly returns suggest something stopped working in 2009; the backtest performance appears back-loaded. Once again, Strategy 9 fails us.
+
