@@ -94,6 +94,19 @@ if (file.exists(cache_file)) {
   names(bench_monthly_rets) <- c(benchIndexName)
   cat(sprintf("    ACWI: %d rows\n", nrow(bench_xts)))
 
+  # MSCI ACWI Momentum Index
+  momIndexName <- "MSCI ACWI Momentum Index"
+  momIndexCode <- sqlQuery(lconUS2,
+    sprintf("select index_code from msci_meta where index_name='%s'", momIndexName))[[1]]
+  momIdxPx <- sqlQuery(lconUS2, sprintf("
+    select VAL, TIME_STAMP
+    from msci_data
+    where INDEX_TYPE = 'G' and ID = %s
+    order by TIME_STAMP", momIndexCode))
+  mom_idx_xts <- xts(momIdxPx$VAL, momIdxPx$TIME_STAMP)
+  mom_index_monthly <- monthlyReturn(mom_idx_xts)
+  cat(sprintf("    %s: %d rows\n", momIndexName, nrow(momIdxPx)))
+
   for (i in 1:nrow(countryUniverse)) {
     idx_code <- countryUniverse$ID[i]
     idx_name <- countryUniverse$country[i]
@@ -140,6 +153,7 @@ if (file.exists(cache_file)) {
   print("saving shared cache...")
   save(valid_countries, daily_prices, daily_rets, monthly_rets,
        bench_monthly_rets, benchIndexName,
+       mom_index_monthly, momIndexName,
        periodSRs, sma_prices, momLbs, monthEndDates,
        drag, positionSize,
        file = cache_file)

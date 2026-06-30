@@ -13,7 +13,7 @@ source("/mnt/data/blog/common/plot.common.r")
 
 pdf(NULL)
 
-# ── load data ─────────────────────────────────────────────────────────────────
+# ── load cached momentum results ──────────────────────────────────────────────
 cache_file <- sprintf("%s/cache.Rdata", reportPath)
 if (!file.exists(cache_file))
   stop("cache.Rdata not found — run script-mom.R or script-mom-tech.R first")
@@ -41,14 +41,16 @@ cat(sprintf("  trend: %d rows (%s → %s)\n",
             as.character(as.Date(last(index(mom_trend))))))
 
 # ── rename & combine ─────────────────────────────────────────────────────────
-# rename trend columns to avoid collision with plain
 names(mom_trend) <- paste0(names(mom_trend), "t")
 
-# ── all series + benchmark ────────────────────────────────────────────────────
-all_combined <- na.omit(merge(mom_plain, mom_trend, bench_monthly_rets))
-colnames(all_combined)[ncol(all_combined)] <- benchIndexName
-all_cols <- colnames(all_combined)
-strat_cols <- setdiff(all_cols, benchIndexName)
+# all series + both benchmarks
+all_combined <- na.omit(merge(mom_plain, mom_trend,
+                              bench_monthly_rets, mom_index_monthly))
+colnames(all_combined)[(ncol(all_combined) - 1):ncol(all_combined)] <-
+  c(benchIndexName, momIndexName)
+all_cols   <- colnames(all_combined)
+bench_cols <- c(benchIndexName, momIndexName)
+strat_cols <- setdiff(all_cols, bench_cols)
 
 cat(sprintf("  combined: %d rows (%s → %s)\n",
             nrow(all_combined),
@@ -67,11 +69,11 @@ momLbs <- c(50, 100, 200)
 for (momLb in momLbs) {
   p_name <- paste0("MOM_", momLb)
   t_name <- paste0("MOM_", momLb, "t")
-  subset <- na.omit(merge(all_combined[, p_name], all_combined[, t_name],
-                          all_combined[, benchIndexName]))
-  colnames(subset) <- c(sprintf("MOM_%d", momLb),
-                        sprintf("MOM_%dt", momLb),
-                        benchIndexName)
+  subset <- na.omit(merge(
+    all_combined[, p_name], all_combined[, t_name],
+    all_combined[, bench_cols]))
+  colnames(subset) <- c(sprintf("MOM_%d", momLb), sprintf("MOM_%dt", momLb),
+                        bench_cols)
 
   sr <- sapply(colnames(subset), function(nm)
     round(SharpeRatio.annualized(subset[, nm])[1, 1], 2))
@@ -84,9 +86,10 @@ for (momLb in momLbs) {
 }
 
 # ── cumulative returns: average ───────────────────────────────────────────────
-avg_subset <- na.omit(merge(all_combined[, "MOM_AVG"], all_combined[, "MOM_AVGt"],
-                            all_combined[, benchIndexName]))
-colnames(avg_subset) <- c("MOM_AVG", "MOM_AVGt", benchIndexName)
+avg_subset <- na.omit(merge(
+  all_combined[, "MOM_AVG"], all_combined[, "MOM_AVGt"],
+  all_combined[, bench_cols]))
+colnames(avg_subset) <- c("MOM_AVG", "MOM_AVGt", bench_cols)
 sr_avg <- sapply(colnames(avg_subset), function(nm)
   round(SharpeRatio.annualized(avg_subset[, nm])[1, 1], 2))
 sr_text_avg <- paste0(colnames(avg_subset), "=", sr_avg, collapse = ", ")
@@ -103,7 +106,7 @@ for (nm in colnames(all_combined)) {
   sr  <- round(SharpeRatio.annualized(all_combined[, nm])[1, 1], 3)
   ret <- round(as.numeric(Return.annualized(all_combined[, nm])), 4)
   dd  <- round(as.numeric(maxDrawdown(all_combined[, nm])), 4)
-  cat(sprintf("  %-12s  SR=%.2f  Ret=%.2f%%  DD=%.2f%%\n", nm, sr, ret * 100, dd * 100))
+  cat(sprintf("  %-30s  SR=%.2f  Ret=%.2f%%  DD=%.2f%%\n", nm, sr, ret * 100, dd * 100))
   summary_tbl <- rbind(summary_tbl,
     tibble(Strategy = nm, SR = sr, AnnRet = ret, MaxDD = dd))
 }
@@ -125,15 +128,20 @@ summary_tbl |>
             locations = cells_source_notes()) ->
   tbl
 
-# row backgrounds: plain = light green, trend = light blue
-plain_rows <- which(!grepl("t$", summary_tbl$Strategy) & summary_tbl$Strategy != benchIndexName)
+# row backgrounds: plain = light green, trend = light blue, benchmarks = light yellow
+plain_rows <- which(!grepl("t$", summary_tbl$Strategy) &
+                    !summary_tbl$Strategy %in% bench_cols)
 trend_rows <- which(grepl("t$", summary_tbl$Strategy))
+bench_rows <- which(summary_tbl$Strategy %in% bench_cols)
 if (length(plain_rows) > 0)
   tbl <- tbl |> tab_style(style = cell_fill(color = "#f0fff0"),
     locations = cells_body(rows = plain_rows))
 if (length(trend_rows) > 0)
   tbl <- tbl |> tab_style(style = cell_fill(color = "#f0f4ff"),
     locations = cells_body(rows = trend_rows))
+if (length(bench_rows) > 0)
+  tbl <- tbl |> tab_style(style = cell_fill(color = "#fff8e1"),
+    locations = cells_body(rows = bench_rows))
 
 for (col in c("AnnRet")) {
   neg_rows <- which(summary_tbl[[col]] < 0)
@@ -158,7 +166,7 @@ ar_tbl <- fortify(annual_ret) |>
   rename(Year = Index) |>
   mutate(Year = format(Year, "%Y"))
 ar_cols <- names(ar_tbl)[-1]
-ar_strat <- setdiff(ar_cols, benchIndexName)
+ar_strat <- setdiff(ar_cols, bench_cols)
 
 tbl <- ar_tbl |>
   gt() |>
@@ -174,7 +182,7 @@ tbl <- ar_tbl |>
   tab_style(style = cell_text(align = "right"),
             locations = cells_source_notes())
 
-# column label backgrounds: plain = light green, trend = light blue
+# column label backgrounds: plain = light green, trend = light blue, benchmarks = light yellow
 plain_cols <- grep("^MOM_.*[^t]$", ar_cols, value = TRUE)
 trend_cols <- grep("t$", ar_cols, value = TRUE)
 if (length(plain_cols) > 0)
@@ -183,6 +191,11 @@ if (length(plain_cols) > 0)
 if (length(trend_cols) > 0)
   tbl <- tbl |> tab_style(style = cell_fill(color = "#f0f4ff"),
     locations = cells_column_labels(columns = all_of(trend_cols)))
+for (b in bench_cols) {
+  if (b %in% ar_cols)
+    tbl <- tbl |> tab_style(style = cell_fill(color = "#fff8e1"),
+      locations = cells_column_labels(columns = all_of(b)))
+}
 
 # red for negative (all columns)
 for (c in ar_cols) {
@@ -192,21 +205,22 @@ for (c in ar_cols) {
       locations = cells_body(columns = all_of(c), rows = neg))
 }
 
-# strategy columns: box > bench, red < bench, green > bench+2%
+# strategy columns: box > best bench, red < worst bench, green > best+2%
 for (c in ar_strat) {
-  rel <- ar_tbl[[c]] - ar_tbl[[benchIndexName]]
+  bench_best  <- do.call(pmax, ar_tbl[, bench_cols])
+  bench_worst <- do.call(pmin, ar_tbl[, bench_cols])
 
-  below <- which(rel < 0)
+  below <- which(ar_tbl[[c]] < bench_worst)
   if (length(below) > 0)
     tbl <- tbl |> tab_style(style = cell_text(color = "#8B0000"),
       locations = cells_body(columns = all_of(c), rows = below))
 
-  above2 <- which(rel > 0.02)
+  above2 <- which(ar_tbl[[c]] > bench_best + 0.02)
   if (length(above2) > 0)
     tbl <- tbl |> tab_style(style = cell_text(color = "#006400"),
       locations = cells_body(columns = all_of(c), rows = above2))
 
-  beat <- which(rel > 0)
+  beat <- which(ar_tbl[[c]] > bench_best)
   if (length(beat) > 0)
     tbl <- tbl |>
       tab_style(style = cell_borders(sides = "all", color = "#333333", weight = px(1.5)),
@@ -239,13 +253,18 @@ tbl <- dd_tbl |>
   tab_style(style = cell_text(align = "right"),
             locations = cells_source_notes())
 
-# column label backgrounds: plain = light green, trend = light blue
+# column label backgrounds
 if (length(plain_cols) > 0)
   tbl <- tbl |> tab_style(style = cell_fill(color = "#f0fff0"),
     locations = cells_column_labels(columns = all_of(plain_cols)))
 if (length(trend_cols) > 0)
   tbl <- tbl |> tab_style(style = cell_fill(color = "#f0f4ff"),
     locations = cells_column_labels(columns = all_of(trend_cols)))
+for (b in bench_cols) {
+  if (b %in% ar_cols)
+    tbl <- tbl |> tab_style(style = cell_fill(color = "#fff8e1"),
+      locations = cells_column_labels(columns = all_of(b)))
+}
 
 # red + bold for drawdowns > 20%
 for (c in ar_cols) {
