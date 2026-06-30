@@ -46,6 +46,11 @@ countries trading above their SMA. Output: same set of charts and tables with
 Loads results from both variants and generates side-by-side comparison charts
 and tables. Groups by lookback period (50, 100, 200) and average.
 
+### `script-vs-etf.R`
+Loads momentum results and compares against off-the-shelf momentum factor ETFs
+(MTUM, IMTM) instead of ACWI. ETF prices are loaded from BHAV_EQ_TD on
+StockVizUs2. Charts start from the later of the two ETF inception dates.
+
 ## Running
 
 ```bash
@@ -77,15 +82,9 @@ have data. The benchmark is MSCI ACWI buy & hold on the same dates.
 
 **Key findings:**
 
-![All variants vs ACWI](msci-compare-all.cumret.png)
-
 1. **Longer lookbacks dominate.** Sharpe and returns increase monotonically
    from 50 → 100 → 200 days. The 200-day variant is the clear winner across
    both plain and trend-filtered variants.
-
-   **50-day:** ![50d](msci-compare-50.cumret.png)
-   **100-day:** ![100d](msci-compare-100.cumret.png)
-   **200-day:** ![200d](msci-compare-200.cumret.png)
 
 2. **Trend filter reduces drawdowns — but only for long lookbacks.** MOM_200t
    has the lowest drawdown at 30.41% (vs 34.81% for plain). On shorter
@@ -102,9 +101,54 @@ have data. The benchmark is MSCI ACWI buy & hold on the same dates.
    returns.
 
 5. **Drawdowns remain the Achilles' heel.** Even the best variant (MOM_200t)
-   has a 30% drawdown — high enough to rule out meaningful leverage. 
+   has a 30% drawdown — high enough to rule out meaningful leverage. Without
+   the ability to lever safely, the absolute return advantage over buy & hold
+   is modest (14.68% vs 8.37%).
 
-   ![Annual drawdowns](msci-compare-annual.drawdowns.table.png)
+## ETF Comparison: MTUM / IMTM
+
+The same momentum strategies are compared against off-the-shelf momentum factor
+ETFs — MTUM (iShares MSCI USA Momentum) and IMTM (iShares MSCI Intl Momentum) —
+from the later of their inception dates (February 2015).
+
+| Strategy    | Sharpe | Ann.Return | Max Drawdown |
+|-------------|--------|------------|--------------|
+| MOM_50      | 0.81   | 11.43%     | 22.65%       |
+| MOM_100     | 0.65   |  8.77%     | 21.51%       |
+| MOM_200     | 0.89   | 13.07%     | 22.97%       |
+| MOM_AVG     | 0.81   | 11.15%     | 21.28%       |
+| MOM_50t     | 0.59   |  8.29%     | 38.07%       |
+| MOM_100t    | 0.69   |  9.52%     | 19.36%       |
+| MOM_200t    | 0.82   | 12.01%     | 25.71%       |
+| MOM_AVGt    | 0.73   | 10.05%     | 24.91%       |
+| MTUM        | 1.02   | 16.83%     | 31.21%       |
+| IMTM        | 0.52   |  6.40%     | 32.78%       |
+
+**Key findings:**
+
+1. **MTUM is the clear winner.** Sharpe 1.02, 16.83% annualized — the off-the-shelf
+   US momentum ETF soundly beats every homemade variant. The best homemade strategy
+   (MOM_200, SR 0.89) trails by 13 bp of Sharpe and ~3.8% of annual return.
+
+2. **International momentum doesn't work.** IMTM has SR 0.52 — worse than nearly
+   every homemade variant and barely above ACWI buy & hold. The MSCI country
+   momentum strategy, which includes international markets, sits between MTUM
+   and IMTM in performance — it captures US momentum but is diluted by
+   international exposure.
+
+3. **Post-2015 is a kinder regime.** Drawdowns are 21–38% vs 30–60% on the full
+   sample. The strategy survived 2020 and 2022 without catastrophic drawdowns.
+   But the trend filter still doesn't add value — plain momentum wins on Sharpe
+   at every lookback in this period.
+
+4. **The monotonic pattern reverses.** On the full sample, longer lookbacks
+   strictly dominated. Post-2015, MOM_50 (SR 0.81) beats MOM_100 (SR 0.65).
+   The optimal lookback may be regime-dependent.
+
+5. **You can't beat a factor ETF with a 10-stock portfolio.** MTUM holds ~125
+   stocks with optimized weighting; the homemade strategy holds 10 equal-weight
+   country indices. The diversification and construction edge of the ETF is
+   substantial.
 
 ## Output
 
@@ -129,6 +173,16 @@ have data. The benchmark is MSCI ACWI buy & hold on the same dates.
 - `msci-compare-summary.png` — combined metrics table
 - `msci-compare-annual.returns.table.png` — yearly returns (all variants)
 - `msci-compare-annual.drawdowns.table.png` — yearly drawdowns (all variants)
+
+### ETF comparison (`script-vs-etf.R`)
+- `msci-momentum-vs-etf-all.cumret.png` — all 10 series vs MTUM & IMTM
+- `msci-momentum-vs-etf-50.cumret.png` — 50-day lookback vs ETFs
+- `msci-momentum-vs-etf-100.cumret.png` — 100-day lookback vs ETFs
+- `msci-momentum-vs-etf-200.cumret.png` — 200-day lookback vs ETFs
+- `msci-momentum-vs-etf-avg.cumret.png` — average vs ETFs
+- `msci-momentum-vs-etf-summary.png` — combined metrics table
+- `msci-momentum-vs-etf-annual.returns.table.png` — yearly returns
+- `msci-momentum-vs-etf-annual.drawdowns.table.png` — yearly drawdowns
 
 ## Data files
 
