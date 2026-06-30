@@ -110,26 +110,26 @@ dates.
 ## Output
 
 ### Plain momentum (`script-mom.R`)
-- `msci-country-index-momentum.cumret.png` — cumulative returns vs ACWI
-- `msci-momentum-summary.png` — Sharpe, return, drawdown table
-- `msci-momentum-annual.returns.table.png` — yearly returns
-- `msci-momentum-annual.drawdowns.table.png` — yearly max drawdowns
+- [cumulative returns vs ACWI](msci-country-index-momentum.cumret.png)
+- [Sharpe, return, drawdown table](msci-momentum-summary.png)
+- [yearly returns](msci-momentum-annual.returns.table.png)
+- [yearly max drawdowns](msci-momentum-annual.drawdowns.table.png)
 
 ### Momentum + trend (`script-mom-tech.R`)
-- `msci-country-index-momentum-trend.cumret.png`
-- `msci-momentum-trend-summary.png`
-- `msci-momentum-trend-annual.returns.table.png`
-- `msci-momentum-trend-annual.drawdowns.table.png`
+- [cumulative returns vs ACWI](msci-country-index-momentum-trend.cumret.png)
+- [Sharpe, return, drawdown table](msci-momentum-trend-summary.png)
+- [yearly returns](msci-momentum-trend-annual.returns.table.png)
+- [yearly max drawdowns](msci-momentum-trend-annual.drawdowns.table.png)
 
 ### Comparison (`script-compare.R`)
-- `msci-compare-all.cumret.png` — all 10 series vs ACWI & MSCI ACWI Momentum
-- `msci-compare-50.cumret.png` — 50-day lookback vs benchmarks
-- `msci-compare-100.cumret.png` — 100-day lookback vs benchmarks
-- `msci-compare-200.cumret.png` — 200-day lookback vs benchmarks
-- `msci-compare-avg.cumret.png` — average vs benchmarks
-- `msci-compare-summary.png` — combined metrics table
-- `msci-compare-annual.returns.table.png` — yearly returns (all variants)
-- `msci-compare-annual.drawdowns.table.png` — yearly drawdowns (all variants)
+- [all 10 series vs ACWI & MSCI ACWI Momentum](msci-compare-all.cumret.png)
+- [50-day lookback vs benchmarks](msci-compare-50.cumret.png)
+- [100-day lookback vs benchmarks](msci-compare-100.cumret.png)
+- [200-day lookback vs benchmarks](msci-compare-200.cumret.png)
+- [average vs benchmarks](msci-compare-avg.cumret.png)
+- [combined metrics table](msci-compare-summary.png)
+- [yearly returns (all variants)](msci-compare-annual.returns.table.png)
+- [yearly drawdowns (all variants)](msci-compare-annual.drawdowns.table.png)
 
 ## Data files
 
