@@ -48,8 +48,7 @@ and tables. Groups by lookback period (50, 100, 200) and average.
 
 ### `script-vs-etf.R`
 Loads momentum results and compares against off-the-shelf momentum factor ETFs
-(MTUM, IMTM) instead of ACWI. ETF prices are loaded from BHAV_EQ_TD on
-StockVizUs2. Charts start from the later of the two ETF inception dates.
+(MTUM, IMTM) instead of ACWI. Charts start from the later of the two ETF inception dates.
 
 ## Running
 
@@ -58,6 +57,7 @@ cd "/mnt/data/blog/momentum/msci country indices"
 Rscript script-mom.R          # plain momentum (creates cache.Rdata)
 Rscript script-mom-tech.R     # momentum + trend (reuses cache)
 Rscript script-compare.R      # side-by-side comparison
+Rscript script-vs-etf.R       # compare vs MTUM / IMTM ETFs
 ```
 
 The first run builds `cache.Rdata` (DB queries + rolling metrics — the expensive
@@ -101,9 +101,7 @@ have data. The benchmark is MSCI ACWI buy & hold on the same dates.
    returns.
 
 5. **Drawdowns remain the Achilles' heel.** Even the best variant (MOM_200t)
-   has a 30% drawdown — high enough to rule out meaningful leverage. Without
-   the ability to lever safely, the absolute return advantage over buy & hold
-   is modest (14.68% vs 8.37%).
+   has a 30% drawdown — high enough to rule out meaningful leverage. 
 
 ## ETF Comparison: MTUM / IMTM
 
