@@ -6,7 +6,7 @@ Sharpe ratio and holds them equal-weight for the following month. Two variants
 are tested: plain momentum and momentum filtered by a price-above-SMA trend
 condition.
 
-**Blog: ** [MSCI Country Index Momentum](https://stockviz.biz/2026/06/30/msci-country-index-momentum/)
+**Blog:** [MSCI Country Index Momentum](https://stockviz.biz/2026/06/30/msci-country-index-momentum/)
 
 ## Approach
 
