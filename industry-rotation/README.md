@@ -1,5 +1,7 @@
 # Industry Rotation — RRG Backtest
 
+> Blog post: [Industry Momentum via RRG](https://stockviz.biz/2026/07/09/industry-momentum/)
+
 Uses Relative Rotation Graphs (RRG) to rotate across NSE industries. Each week
 we compute the JdK RS-Ratio and RS-Momentum for every industry with at least 10
 stocks, pick the top 5 in the target quadrant, and hold them equal-weighted
