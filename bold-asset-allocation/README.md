@@ -1,5 +1,7 @@
 # BAA-R — Bold Asset Allocation (Robust)
 
+**Blog:** [Bold Asset Allocation](https://stockviz.biz/2026/07/12/bold-asset-allocation/)
+
 **Paper:** Keller (2022), *"Bold Asset Allocation (BAA)"* — SSRN
 
 Walk-forward backtest comparing four BAA variants (SPY/QQQ offensive × EEM/SPHB
