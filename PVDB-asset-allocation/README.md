@@ -291,3 +291,4 @@ charts. ABA's design thesis — that dual-filter self-breadth with smoothed
 sigmoid scoring and hysteresis outperforms canary-based approaches — will be
 tested against genuine future data that was not available when the strategy
 was conceived.
+ 
