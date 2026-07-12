@@ -138,7 +138,7 @@ dominated.
 ## Output
 
 - [Cumulative returns](paa-cumulative.png) — full period: PAA-EEM vs PAA-SPHB vs 60/40, EW, SPY
-- [Recent performance](paa-cumulative-os.png) — 2020-07 onward
+- [Recent performance](paa-cumulative-os.png) — Out-of-Sample period only
 - [Drawdowns](paa-drawdowns.png) — drawdown comparison
 - [Metrics table](paa-metrics.png) — In-Sample / Out-of-Sample / Full Sample metrics
 

@@ -428,7 +428,7 @@ Common.PlotCumReturns(to_plot, "PAA-R — EEM vs SPHB Canary",
   sprintf("%s/paa-cumulative.png", reportPath), NULL)
 
 # OS
-os_split <- "2020-07-01"
+os_split <- as.character(is_end_date)
 os_plot <- to_plot[paste0(os_split, "/")]
 if (NROW(os_plot) > 12) {
   sr_os <- sapply(colnames(os_plot), function(nm) round(SharpeRatio.annualized(os_plot[,nm])[1,1],2))

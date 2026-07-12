@@ -131,7 +131,7 @@ stress).
 ## Output
 
 - [Cumulative returns](daa-cumulative.png) — full period: DAA-EEM vs DAA-SPHB vs 60/40, EW, SPY
-- [Recent performance](daa-cumulative-os.png) — 2020-07 onward
+- [Recent performance](daa-cumulative-os.png) — Out-of-Sample period only
 - [Drawdowns](daa-drawdowns.png) — drawdown comparison with both variants
 - [Metrics table](daa-metrics.png) — full-period metrics
 

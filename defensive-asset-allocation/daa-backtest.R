@@ -458,7 +458,7 @@ Common.PlotCumReturns(to_plot,
   sprintf("%s/daa-cumulative.png", reportPath), NULL)
 
 # OS: 2020-07 onward
-os_split <- "2020-07-01"
+os_split <- as.character(is_end_date)
 os_plot <- to_plot[paste0(os_split, "/")]
 if (NROW(os_plot) > 12) {
   sr_os <- sapply(colnames(os_plot), function(nm)
