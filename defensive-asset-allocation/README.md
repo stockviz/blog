@@ -1,5 +1,7 @@
 # DAA-R — Defensive Asset Allocation (Robust)
 
+**Blog:** [Defensive Asset Allocation](https://stockviz.biz/2026/07/12/defensive-asset-allocation/)
+
 **Paper:** Keller & Keuning (2018), *"Breadth Momentum and the Canary Universe: Defensive Asset Allocation (DAA)"* — [SSRN 3212860](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3212860)
 
 Walk-forward backtest comparing two canary-pool variants: the original EEM-based

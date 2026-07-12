@@ -1,5 +1,7 @@
 # VAA (Vigilant Asset Allocation) — ETF Backtest
 
+**Blog:** [Vigilant Asset Allocation](https://stockviz.biz/2026/07/12/vigilant-asset-allocation/)
+
 **Paper:** Keller & Keuning (2017), *"Breadth Momentum and the Vigilant Asset Allocation (VAA):
 Winning More by Losing Less"* — [SSRN 3002624](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3002624)
 
