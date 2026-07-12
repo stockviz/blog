@@ -1,5 +1,7 @@
 # PAA-R — Protective Asset Allocation (Robust)
 
+**Blog:** [Protective Asset Allocation](https://stockviz.biz/2026/07/12/protective-asset-allocation/)
+
 **Paper:** Keller & Keuning (2016), *"Protective Asset Allocation (PAA): A Simple Momentum-Based Alternative for Term Deposits"* — [SSRN 2759734](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2759734)
 
 Walk-forward backtest comparing two canary-pool variants (EEM/AGG and SPHB/AGG)

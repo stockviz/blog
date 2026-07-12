@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+
+
+</head>
+<body>
+<div id="iggledmnhs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#iggledmnhs table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#iggledmnhs thead, #iggledmnhs tbody, #iggledmnhs tfoot, #iggledmnhs tr, #iggledmnhs td, #iggledmnhs th {
+  border-style: none;
+}
+
+#iggledmnhs p {
+  margin: 0;
+  padding: 0;
+}
+
+#iggledmnhs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#iggledmnhs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#iggledmnhs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#iggledmnhs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#iggledmnhs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#iggledmnhs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#iggledmnhs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#iggledmnhs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#iggledmnhs .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#iggledmnhs .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#iggledmnhs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#iggledmnhs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#iggledmnhs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#iggledmnhs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#iggledmnhs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iggledmnhs .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#iggledmnhs .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#iggledmnhs .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#iggledmnhs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iggledmnhs .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#iggledmnhs .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iggledmnhs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#iggledmnhs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iggledmnhs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iggledmnhs .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iggledmnhs .gt_left {
+  text-align: left;
+}
+
+#iggledmnhs .gt_center {
+  text-align: center;
+}
+
+#iggledmnhs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#iggledmnhs .gt_font_normal {
+  font-weight: normal;
+}
+
+#iggledmnhs .gt_font_bold {
+  font-weight: bold;
+}
+
+#iggledmnhs .gt_font_italic {
+  font-style: italic;
+}
+
+#iggledmnhs .gt_super {
+  font-size: 65%;
+}
+
+#iggledmnhs .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#iggledmnhs .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#iggledmnhs .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#iggledmnhs .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#iggledmnhs .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#iggledmnhs .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#iggledmnhs .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#iggledmnhs .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#iggledmnhs div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+  <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="7" class="gt_heading gt_title gt_font_normal" style>ABA — Adaptive Breadth Allocation</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="7" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>SMA Offense + 13612W Self-Breadth + Hysteresis | 2019-02-01 → 2026-07-01</td>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Strategy"></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="R">CAGR %</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="V">Vol %</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="D">MaxDD %</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Sharpe">Sharpe</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="MAR">MAR</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="RAD">RAD</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <th colspan="7" class="gt_group_heading" style="font-weight: bold;" scope="colgroup" id="In-Sample">In-Sample</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F0F4FF;">ABA.SPY</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F0F4FF; color: #006400;">3.1%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F0F4FF;">8.3%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F0F4FF;">11.9%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0F4FF;">0.48</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F0F4FF;">0.26</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F0F4FF;">0.0264</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F0FFF0;">ABA.MTUM</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F0FFF0; color: #006400;">5.5%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F0FFF0;">9.8%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F0FFF0;">11.2%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0FFF0;">0.65</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F0FFF0;">0.49</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F0FFF0;">0.0484</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EW</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">5.0%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">13.1%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">18.6%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">0.51</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.27</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0385</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EWC</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000;">−0.9%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">2.9%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">9.1%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">NaN</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">−0.10</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0000</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">SPY</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">14.2%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">19.7%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000; font-weight: bold;">20.9%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">0.82</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.68</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.1048</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">MTUM</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">11.8%</td>
+<td headers="In-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">19.7%</td>
+<td headers="In-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000; font-weight: bold;">24.4%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">0.71</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.49</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0802</td></tr>
+    <tr><td headers="In-Sample  Strategy" class="gt_row gt_left">X60.40</td>
+<td headers="In-Sample  R" class="gt_row gt_right" style="color: #006400;">8.0%</td>
+<td headers="In-Sample  V" class="gt_row gt_right">12.4%</td>
+<td headers="In-Sample  D" class="gt_row gt_right">18.1%</td>
+<td headers="In-Sample  Sharpe" class="gt_row gt_right">0.79</td>
+<td headers="In-Sample  MAR" class="gt_row gt_right">0.44</td>
+<td headers="In-Sample  RAD" class="gt_row gt_right">0.0622</td></tr>
+    <tr class="gt_group_heading_row">
+      <th colspan="7" class="gt_group_heading" style="font-weight: bold;" scope="colgroup" id="Out-of-Sample">Out-of-Sample</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F0F4FF;">ABA.SPY</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F0F4FF; color: #006400;">4.7%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F0F4FF;">8.5%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F0F4FF;">8.0%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0F4FF;">0.75</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F0F4FF;">0.59</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F0F4FF;">0.0429</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F0FFF0;">ABA.MTUM</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F0FFF0; color: #006400;">5.5%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F0FFF0;">9.5%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F0FFF0;">9.4%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0FFF0;">0.75</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F0FFF0;">0.59</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F0FFF0;">0.0496</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EW</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">7.8%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">10.1%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">11.7%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">1.06</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.67</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0680</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EWC</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000;">−0.6%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">3.0%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">4.3%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">NaN</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">−0.14</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0000</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">SPY</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">17.5%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">13.7%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">10.4%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">1.41</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">1.69</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.1552</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">MTUM</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">21.0%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">19.2%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">11.8%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">1.15</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">1.77</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.1816</td></tr>
+    <tr><td headers="Out-of-Sample  Strategy" class="gt_row gt_left">X60.40</td>
+<td headers="Out-of-Sample  R" class="gt_row gt_right" style="color: #006400;">9.8%</td>
+<td headers="Out-of-Sample  V" class="gt_row gt_right">9.9%</td>
+<td headers="Out-of-Sample  D" class="gt_row gt_right">7.8%</td>
+<td headers="Out-of-Sample  Sharpe" class="gt_row gt_right">1.27</td>
+<td headers="Out-of-Sample  MAR" class="gt_row gt_right">1.26</td>
+<td headers="Out-of-Sample  RAD" class="gt_row gt_right">0.0896</td></tr>
+    <tr class="gt_group_heading_row">
+      <th colspan="7" class="gt_group_heading" style="font-weight: bold;" scope="colgroup" id="Full Sample">Full Sample</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F0F4FF;">ABA.SPY</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F0F4FF; color: #006400;">3.6%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F0F4FF;">8.4%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F0F4FF;">17.5%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0F4FF;">0.60</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F0F4FF;">0.21</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F0F4FF;">0.0286</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F0FFF0;">ABA.MTUM</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F0FFF0; color: #006400;">5.4%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F0FFF0;">9.6%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F0FFF0;">17.8%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F0FFF0;">0.70</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F0FFF0;">0.30</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F0FFF0;">0.0419</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EW</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">5.4%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">11.5%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000; font-weight: bold;">21.2%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">0.65</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.26</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0397</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">EWC</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000;">−1.0%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">2.9%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5;">11.9%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">NaN</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">−0.08</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.0000</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">SPY</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">15.1%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">16.9%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000; font-weight: bold;">20.9%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">1.00</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.72</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.1114</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left" style="background-color: #F5F5F5;">MTUM</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="background-color: #F5F5F5; color: #006400;">15.9%</td>
+<td headers="Full Sample  V" class="gt_row gt_right" style="background-color: #F5F5F5;">19.5%</td>
+<td headers="Full Sample  D" class="gt_row gt_right" style="background-color: #F5F5F5; color: #8B0000; font-weight: bold;">24.4%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right" style="background-color: #F5F5F5;">0.91</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right" style="background-color: #F5F5F5;">0.65</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right" style="background-color: #F5F5F5;">0.1074</td></tr>
+    <tr><td headers="Full Sample  Strategy" class="gt_row gt_left">X60.40</td>
+<td headers="Full Sample  R" class="gt_row gt_right" style="color: #006400;">8.3%</td>
+<td headers="Full Sample  V" class="gt_row gt_right">11.1%</td>
+<td headers="Full Sample  D" class="gt_row gt_right">18.1%</td>
+<td headers="Full Sample  Sharpe" class="gt_row gt_right">0.93</td>
+<td headers="Full Sample  MAR" class="gt_row gt_right">0.46</td>
+<td headers="Full Sample  RAD" class="gt_row gt_right">0.0643</td></tr>
+  </tbody>
+  <tfoot>
+    <tr class="gt_sourcenotes">
+      <td class="gt_sourcenote" style="text-align: right;" colspan="7">@StockViz</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</body>
+</html>
