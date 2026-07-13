@@ -19,9 +19,19 @@
 | `sweep_slow.csv` | Slow-signal parameter sweep (window × tilt, 16 combos) |
 | `sweep_overlay.csv` | Overlay parameter sweep (sigma × cooldown, 15 combos) |
 
+**Blog post:** [VIX and Equity Index Returns — Part III](https://stockviz.biz/2026/07/13/vix-and-equity-index-returns-part-iii/)
+
 Long-only plans (`vix_regime_robust_backtest_plan.md`, `vix_regime_testing_outline.md`)
 are also present for reference — the long-only version ran separately and reached
 the same conclusion (inverse-vol baseline dominates).
+
+### Charts
+
+| Chart | File |
+|---|---|
+| Full-sample cumulative returns | [cumulative_full.png](cumulative_full.png) |
+| Out-of-sample cumulative returns (2019–2026) | [cumulative_os.png](cumulative_os.png) |
+| Full-sample metrics table | [metrics_ls.png](metrics_ls.png) |
 
 ## What the Script Does
 
