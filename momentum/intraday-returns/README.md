@@ -4,6 +4,8 @@
 > "What Drives Momentum and Reversal? Evidence from Day and Night Signals"
 > (*Review of Financial Studies*, conditionally accepted)
 
+**Blog post:** [Day vs. Night Momentum — Indian Equity Replication](https://stockviz.biz/2026/07/14/day-vs-night-momentum/)
+
 ## Paper Summary
 
 The paper decomposes momentum into its **intraday** (open→close) and **overnight**
