@@ -17,7 +17,7 @@ suppressMessages({
   library(PerformanceAnalytics); library(quantmod)
   library(ggplot2)
   library(viridis)
-  library(gt)
+  library(gt); library(webshot2)
 })
 
 source("/mnt/hollandC/StockViz/R/config.r")
@@ -313,8 +313,9 @@ gtTbl <- metsTbl |>
     locations = cells_body(columns = `Max DD`, rows = `Max DD` > 0.20)
   )
 
-gtsave(gtTbl, "metrics.html")
-cat("Saved: metrics.html\n")
+gtsave(gtTbl, "metrics.png")
+webshot2::webshot(paste0("file://", getwd(), "/metrics.html"), "metrics.png", selector = "table", expand = c(10, 10, 10, 10))
+cat("Saved: metrics.png\n")
 
 # ── Console summary ───────────────────────────────────────────────────
 cat(sprintf("\n%s\n", paste(rep("=", 60), collapse = "")))
@@ -331,5 +332,5 @@ cat(sprintf("Ann. Return:   %+.2f%%\n", 100*stratMets$`Ann. Return`))
 cat(sprintf("Ann. Vol:      %.2f%%\n", 100*stratMets$`Ann. Vol`))
 cat(sprintf("Sharpe:        %+.2f\n", stratMets$Sharpe))
 cat(sprintf("Max Drawdown:  %.2f%%\n", 100*stratMets$`Max DD`))
-cat(sprintf("\nOutput: equity_curve.csv  cumulative_returns.png  annual_returns.png  metrics.html\n"))
+cat(sprintf("\nOutput: equity_curve.csv  cumulative_returns.png  annual_returns.png  metrics.png\n"))
 write.csv(resDf, "equity_curve.csv", row.names = FALSE)

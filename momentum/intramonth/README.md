@@ -1,5 +1,7 @@
 # Intramonth Futures Momentum Backtest
 
+**Blog post:** [Intramonth Momentum in Indian Futures](https://stockviz.biz/2026/07/18/intramonth-momentum/)
+
 **Paper:** [The Intramonth Momentum Cycle — Nathan, Suominen, and Tasa (June 2026)](intramonth_momentum_summary.md)
 
 > Most of the equity momentum premium is a plumbing effect: investors facing month-end cash needs sell the stocks that are cheapest to part with — those with embedded losses and salient recent underperformance. Over 1980–2025, 78% of the winners-minus-losers cumulative return came from a six-day pre-month-end window.
