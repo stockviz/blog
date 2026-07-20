@@ -13,10 +13,12 @@ Our backtest adapts this idea to Indian equity futures: short the worst-momentum
 - **Entry**: 6 business days before month-end
 - **Exit**: Last trading day of the month
 - **Positions**: Short 20 worst-momentum futures, 1 contract each
-- **Momentum**: Past 252 trading-day returns (1 year, ascending: lowest first)
+- **Momentum**: Past 252 trading-day returns from `eod_adjusted_nse` stock prices (1 year, ascending: lowest first)
+- **Universe**: 342 stocks with ≥252 days of contiguous price history; overlap between futures and stock universe
 - **Drag**: 0.5% per trade
-- **Filters**: Exclude symbols with ex-dates during hold period; pick next-month expiry
+- **Filters**: Exclude symbols with ex-dates during hold period; pick next-month expiry to avoid early expiration
 - **Benchmark**: NIFTY 50
+- **Trade execution**: Futures prices from `BHAV_EQ_FUT` (momentum signal from stocks, execution via futures)
 
 ## Results
 
@@ -24,15 +26,15 @@ Our backtest adapts this idea to Indian equity futures: short the worst-momentum
 |--------|---------------------|
 | Months | 151 |
 | Positions | 20 short, 1 contract each |
-| Avg positions | 19.7 per month |
+| Avg positions | 9.6 per month |
 
 | Metric | Strategy | NIFTY 50 |
 |--------|----------|----------|
-| Win Rate | 41.7% | 48.3% |
-| Ann. Return | −8.40% | +0.99% |
-| Ann. Vol | 12.39% | 3.53% |
-| Sharpe | −0.64 | +0.30 |
-| Max Drawdown | −73.49% | −10.33% |
+| Win Rate | 43.7% | 48.3% |
+| Ann. Return | −4.61% | +0.99% |
+| Ann. Vol | 16.05% | 3.53% |
+| Sharpe | −0.21 | +0.30 |
+| Max Drawdown | −59.76% | −10.33% |
 
 The strategy loses money systematically. Worst-momentum stocks in Indian futures tend to mean-revert within the 6-day window rather than continue falling — shorting them catches the bounce, not the continuation.
 
@@ -47,7 +49,7 @@ The paper does not model short-selling borrow costs. Momentum losers are disprop
 - [equity_curve.csv](equity_curve.csv) — Monthly net returns
 - [cumulative_returns.png](cumulative_returns.png) — Log-scale chart: Strategy vs NIFTY 50
 - [annual_returns.png](annual_returns.png) — Grouped bar chart by year
-- [metrics.html](metrics.html) — gt table with Sharpe, MaxDD, Win Rate
+- [metrics.png](metrics.png) — Performance metrics table
 
 ## Script
 
