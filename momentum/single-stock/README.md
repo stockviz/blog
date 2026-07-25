@@ -4,6 +4,8 @@ Replication of **Ammann, Moellenbeck & Schmid (2010)**, "Feasible Momentum Strat
 
 [Paper: Feasible Momentum Strategies in the US Stock Market](https://ssrn.com/abstract=1694700) — ([summary](paper_summary.md))
 
+[Blog: Single-Stock Winner / NIFTY-Short Momentum in India](https://stockviz.biz/2026/07/25/single-stock-momentum/)
+
 > "Long the single best-performing winner stock, short the S&P 100 index, formation period J = 6 months, holding period K = 3 months." — Best strategy identified in the paper, producing 1.52% monthly excess return (Sharpe 0.37) on S&P 100 names, 1984–2009.
 
 ---
