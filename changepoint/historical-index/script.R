@@ -10,6 +10,7 @@ library('viridis')
 library('ggrepel')
 library('gtExtras')
 library('webshot2')
+library('parallel')
 
 pdf(NULL)
 options("scipen" = 100)
@@ -71,40 +72,6 @@ if(file.exists(fileName)){
 dSymXts <- do.call(merge.xts, lapply(indices, \(x) dailyReturn(pXts[,x])))
 names(dSymXts) <- indices
 
-statsFile <- "../common/cp-stats_index.Rdata"
-classXts <- NULL
-if(file.exists(statsFile)){
-  print("loading stats from cache...")
-  load(statsFile)
-  
-  for(i in 1:length(indices)){
-    iName <- indices[i]
-    classRet <- classRets[[iName]]
-    classXts <- merge.xts(classXts, classRet$regime_tbl |> 
-                        mutate(Regime = if_else(Regime == 'STABLE', 1, 0)) |>
-                        dplyr::select(Date, Regime) |> 
-                        as.xts())
-  }
-  names(classXts) <- indices
-} else {
-  print("calculating stats...")
-  classRets <- list()
-  for(i in 1:length(indices)){
-    iName <- indices[i]
-    classRet <- classify_regime(dSymXts[, i])
-    classXts <- merge.xts(classXts, classRet$regime_tbl |> 
-                        mutate(Regime = if_else(Regime == 'STABLE', 1, 0)) |>
-                        dplyr::select(Date, Regime) |> 
-                        as.xts())
-    classRets[[iName]] <- classRet
-  }
-  
-  names(classXts) <- indices
-  
-  save(classRets, file = statsFile)
-}
-
-###############
 
 # ---- Helper: compute four strategy returns for a given date range ----
 # price_xts: single-column xts of prices
@@ -143,141 +110,19 @@ compute_strategies <- function(price_xts, regime_xts, date_range,
   toPlot
 }
 
+
 smaLb <- 50
-for(i in 1:length(indices)){
-  iName <- indices[i]
-  retL1 <- stats::lag(dSymXts[paste0("/", trainEndDt), i], -1)
-  pxSubset <- pXts[paste0("/", trainEndDt), i]
-  smaPx <- SMA(pxSubset, smaLb)
-  
-  smaGross <- ifelse(pxSubset > smaPx, retL1, 0)
-  trd <- ifelse(pxSubset > smaPx, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  smaNet <- ifelse(trd != 0, smaGross - drag, smaGross)
-  
-  cpGross <- ifelse(classXts[, i] == 1, retL1, 0)
-  trd <- ifelse(classXts[, i] == 1, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  cpNet <- ifelse(trd != 0, cpGross - drag, cpGross)
-  
-  smaCpGross <- ifelse(pxSubset > smaPx & classXts[, i] == 1, retL1, 0)
-  trd <- ifelse(pxSubset > smaPx & classXts[, i] == 1, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  smaCpNet <- ifelse(trd != 0, smaCpGross - drag, smaCpGross)
-  
-  toPlot <- na.omit(merge(smaNet, cpNet, smaCpNet, retL1))
-  names(toPlot) <- c("SMA", "CP", "SMA_CP", "B&H")
-  
-  sharpe <- SharpeRatio.annualized(toPlot)
-  print(sharpe)
-  
-  Common.PlotCumReturns(toPlot, iName, 
-                        sprintf("SR: %s", paste(round(sharpe,2), collapse="/")), #NULL)
-                        sprintf("%s/%s.sma-cp.train.png", reportPath, iName), NULL)
-  
-  ddTb <- tibble()
-  for(j in 1:ncol(toPlot)){
-    tdd <- table.Drawdowns(toPlot[,j])
-    tdd[,4]<-format(round(100*tdd[,4], 2), nsmall = 2)
-    tdd$INDEX <- sprintf("%s (%s)", iName, names(toPlot)[j])
-    ddTb <- rbind(ddTb, tdd)
-  }
-  
-  ddFileNameHtml <- sprintf("%s/%s.sma-cp.train.drawdowns.html", reportPath, iName)
-  ddFileNameImg <- sprintf("%s/%s.sma-cp.train.drawdowns.png", reportPath, iName)
-  
-  ddTb |>
-    gt(groupname_col = 'INDEX') |>
-    tab_header(title = "Drawdowns", subtitle = sprintf('%s:%s', index(xts::first(toPlot)), index(xts::last(toPlot)))) |>
-    sub_missing(missing_text = '') |>
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_row_groups()
-    ) |>
-    opt_stylize(style=5) |>
-    gtsave(ddFileNameHtml)
-  
-  webshot2::webshot(
-    ddFileNameHtml,
-    ddFileNameImg, 
-    selector = "table.gt_table", 
-    expand = c(10, 10, 10, 10)
-  )
-}
+drag <- 0.2/100
 
-
-
-
-for(i in 1:length(indices)){
-  iName <- indices[i]
-  retL1 <- stats::lag(dSymXts[testRange, i], -1)
-  pxSubset <- pXts[testRange, i]
-  smaPx <- SMA(pxSubset, smaLb)
-  
-  smaGross <- ifelse(pxSubset > smaPx, retL1, 0)
-  trd <- ifelse(pxSubset > smaPx, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  smaNet <- ifelse(trd != 0, smaGross - drag, smaGross)
-  
-  cpGross <- ifelse(classXts[, i] == 1, retL1, 0)
-  trd <- ifelse(classXts[, i] == 1, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  cpNet <- ifelse(trd != 0, cpGross - drag, cpGross)
-  
-  smaCpGross <- ifelse(pxSubset > smaPx & classXts[, i] == 1, retL1, 0)
-  trd <- ifelse(pxSubset > smaPx & classXts[, i] == 1, 1, 0)
-  trd <- trd - stats::lag(trd, 1)
-  smaCpNet <- ifelse(trd != 0, smaCpGross - drag, smaCpGross)
-  
-  toPlot <- na.omit(merge(smaNet, cpNet, smaCpNet, retL1))
-  names(toPlot) <- c("SMA", "CP", "SMA_CP", "B&H")
-  
-  sharpe <- SharpeRatio.annualized(toPlot)
-  print(sharpe)
-  
-  Common.PlotCumReturns(toPlot, iName, 
-                        sprintf("SR: %s", paste(round(sharpe,2), collapse="/")), #NULL)
-                        sprintf("%s/%s.sma-cp.test.png", reportPath, iName), NULL)
-  
-  ddTb <- tibble()
-  for(j in 1:ncol(toPlot)){
-    tdd <- table.Drawdowns(toPlot[,j])
-    tdd[,4]<-format(round(100*tdd[,4], 2), nsmall = 2)
-    tdd$INDEX <- sprintf("%s (%s)", iName, names(toPlot)[j])
-    ddTb <- rbind(ddTb, tdd)
-  }
-  
-  ddFileNameHtml <- sprintf("%s/%s.sma-cp.test.drawdowns.html", reportPath, iName)
-  ddFileNameImg <- sprintf("%s/%s.sma-cp.test.drawdowns.png", reportPath, iName)
-
-  ddTb |>
-    gt(groupname_col = 'INDEX') |>
-    tab_header(title = "Drawdowns", subtitle = sprintf('%s:%s', index(xts::first(toPlot)), index(xts::last(toPlot)))) |>
-    sub_missing(missing_text = '') |>
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_row_groups()
-    ) |>
-    opt_stylize(style=5) |>
-    gtsave(ddFileNameHtml)
-
-  webshot2::webshot(
-    ddFileNameHtml,
-    ddFileNameImg,
-    selector = "table.gt_table",
-    expand = c(10, 10, 10, 10)
-  )
-}
-
-# =========================================================================
 # Sliding-window analysis
 # =========================================================================
 # Window: 5 years ending on each date  |  Slide: 1 trading day
-# Phase 1: compute all regime classifications (cached)
+# Phase 1: compute all regime classifications (cached, parallelized)
 # Phase 2: compute strategies from cached regimes
 
 print("=== SLIDING WINDOW ===")
 window_days <- 365 * 5
+ncores <- 4
 
 cache_file <- sprintf("%s/window-class-cache.Rdata", reportPath)
 window_cache <- list()
@@ -289,257 +134,321 @@ all_dates <- index(pXts)
 n_total <- length(all_dates)
 
 # ---- Phase 1: classify regimes (windows ending on each date) ----
-print("  Phase 1: classifying regimes...")
+print("  Phase 1: classifying regimes (parallelized)...")
 for (iName in indices) {
   cat(sprintf("    %s\n", iName))
+
+  # Build task list: all uncached (start, end) pairs
+  tasks <- list()
   for (i in seq_along(all_dates)) {
     window_start <- all_dates[i] - window_days + 1
     window_end   <- all_dates[i]
     if (window_start < first(all_dates)) next
 
     cache_key <- sprintf("sliding_%s_%s_%s", iName, window_start, window_end)
-    if (cache_key %in% names(window_cache)) next  # already cached
+    if (cache_key %in% names(window_cache)) next
 
-    window_range <- paste0(window_start, "/", window_end)
-    window_ret <- dSymXts[window_range, iName]
+    tasks[[length(tasks) + 1]] <- list(
+      key   = cache_key,
+      start = window_start,
+      end   = window_end,
+      name  = iName
+    )
+  }
 
-    if (nrow(window_ret) < 100) next
+  if (length(tasks) == 0) {
+    cat(sprintf("      all cached, skipping\n"))
+    next
+  }
 
-    window_class <- tryCatch({
-      classify_regime(window_ret)
+  # Process in batches of 500, saving after each batch
+  batch_size <- 500
+  n_batches  <- ceiling(length(tasks) / batch_size)
+
+  for (b in seq_len(n_batches)) {
+    bs <- (b - 1) * batch_size + 1
+    be <- min(b * batch_size, length(tasks))
+    batch <- tasks[bs:be]
+
+    results <- mclapply(batch, function(task) {
+      window_range <- paste0(task$start, "/", task$end)
+      window_ret   <- dSymXts[window_range, task$name]
+
+      if (nrow(window_ret) < 100) return(NULL)
+
+      window_class <- tryCatch({
+        classify_regime(window_ret)
+      }, error = function(e) NULL)
+
+      if (!is.null(window_class)) {
+        stats::setNames(list(window_class$regime_tbl), task$key)
+      } else {
+        NULL
+      }
+    }, mc.cores = ncores)
+
+    # Merge results back into the master cache
+    for (res in results) {
+      if (!is.null(res) && !is.null(names(res))) {
+        window_cache[[names(res)]] <- res[[1]]
+      }
+    }
+
+    print(paste(iName, batch[[1]]$start, "to", batch[[length(batch)]]$end,
+                sprintf("[batch %d/%d]", b, n_batches)))
+    save(window_cache, file = cache_file)
+  }
+}
+
+# ---- Phase 2: train/test sliding window (non-overlapping, parallelized per-index) ----
+# Train: 5-year window → classify regime → get final regime label
+# Test:  next 1-year window → apply that regime, build strategies
+# Windows: [2005-2010]→test 2011, [2006-2011]→test 2012, ...
+print("  Phase 2: train/test sliding windows (parallelized)...")
+
+test_step_days <- 252L  # ~1 year of trading days
+
+process_sliding_index <- function(iName) {
+  # Find all valid 5-year training windows from cache
+  cache_keys <- grep(sprintf("^sliding_%s_", iName), names(window_cache), value = TRUE)
+  if (length(cache_keys) == 0) return(NULL)
+
+  # Find the latest date in each training window, determine test period
+  all_windows <- tibble()
+  for (ck in cache_keys) {
+    tbl <- window_cache[[ck]]
+    if (is.null(tbl) || nrow(tbl) == 0) next
+    train_start <- min(tbl$Date)
+    train_end   <- max(tbl$Date)
+    final_regime <- tail(tbl$Regime, 1)
+    all_windows <- rbind(all_windows, tibble(
+      train_start = train_start, train_end = train_end,
+      regime = final_regime
+    ))
+  }
+  if (nrow(all_windows) == 0) return(NULL)
+
+  all_windows <- all_windows |>
+    arrange(train_end) |>
+    distinct(train_end, .keep_all = TRUE) |>
+    filter(row_number() %% test_step_days == 0L)
+
+  results_rows <- list()
+  strats       <- list()
+
+  # For each train window, test on the following 1 year
+  for (wi in seq_len(nrow(all_windows))) {
+    train_start <- all_windows$train_start[wi]
+    train_end   <- all_windows$train_end[wi]
+
+    # Test period: after train_end, spanning ~1 year
+    test_start_idx <- which(all_dates == train_end) + 1L
+    if (is.na(test_start_idx) || test_start_idx > length(all_dates)) next
+    test_end_idx <- min(test_start_idx + test_step_days - 1L, length(all_dates))
+    test_start <- all_dates[test_start_idx]
+    test_end   <- all_dates[test_end_idx]
+
+    test_range <- paste0(test_start, "/", test_end)
+    px_range <- paste0(first(all_dates), "/", test_end)
+
+    # Build regime vector: daily labels from 5-year lookback ending on each test date
+    regime_vec <- c()
+    for (j in test_start_idx:test_end_idx) {
+      d <- all_dates[j]
+      ws <- d - window_days + 1
+      ck <- sprintf("sliding_%s_%s_%s", iName, ws, d)
+      tbl <- window_cache[[ck]]
+      if (is.null(tbl)) { regime_vec <- c(regime_vec, NA_integer_); next }
+      row <- tbl |> filter(Date == d)
+      if (nrow(row) == 0) row <- tail(tbl, 1)
+      regime_vec <- c(regime_vec, ifelse(row$Regime[1] == 'STABLE', 1L, 0L))
+    }
+    regime_xts <- xts(regime_vec, order.by = all_dates[test_start_idx:test_end_idx])
+    regime_xts <- na.locf(regime_xts, fromLast = FALSE)
+
+    if (nrow(regime_xts) < 20) next
+
+    strat <- tryCatch({
+      compute_strategies(pXts[, iName], regime_xts, px_range,
+                         sma_lb = smaLb, drag = drag,
+                         ret_xts = dSymXts[, iName])
     }, error = function(e) NULL)
 
-    if (!is.null(window_class)) {
-      window_cache[[cache_key]] <- window_class$regime_tbl
-    }
+    if (is.null(strat) || nrow(strat) < 20) next
 
-    if (i %% 500 == 0) {
-      print(paste(iName, window_range))
-      save(window_cache, file = cache_file)
-    }
+    # Subset to test period only
+    strat_test <- strat[test_range]
+    if (nrow(strat_test) < 20) next
+
+    strats[[sprintf("%s_%s_%s", iName, test_start, test_end)]] <- strat_test
+
+    ann_ret <- Return.annualized(strat_test)
+    sharpe <- SharpeRatio.annualized(strat_test)
+
+    results_rows[[length(results_rows) + 1]] <- tibble(
+      Index         = iName,
+      Window_Start  = as.character(test_start),
+      Window_End    = as.character(test_end),
+      SMA_Ret       = round(ann_ret[1, "SMA"], 4),
+      CP_Ret        = round(ann_ret[1, "CP"], 4),
+      SMA_CP_Ret    = round(ann_ret[1, "SMA_CP"], 4),
+      BH_Ret        = round(ann_ret[1, "B&H"], 4),
+      SMA_Sharpe    = round(sharpe[1, "SMA"], 3),
+      CP_Sharpe     = round(sharpe[1, "CP"], 3),
+      SMA_CP_Sharpe = round(sharpe[1, "SMA_CP"], 3),
+      BH_Sharpe     = round(sharpe[1, "B&H"], 3)
+    )
   }
+
+  list(results_rows = results_rows, strats = strats)
 }
-save(window_cache, file = cache_file)
 
-# ---- Phase 2: build consolidated regime xts + compute strategies ----
-# Sliding: for each date D, use regime from the 5-year window ENDING on D.
-# This is look-ahead-free: the classification for window [D-5y, D] only
-# sees data up to D.
-print("  Phase 2: building consolidated regimes + computing strategies...")
+index_results <- mclapply(indices, process_sliding_index, mc.cores = ncores)
 
-full_range <- paste0(first(all_dates), "/", last(all_dates))
-
+# Merge results from all workers
 sliding_results <- tibble()
-sliding_strats <- list()
-
-for (iName in indices) {
-  cat(sprintf("    %s\n", iName))
-  regime_vec <- rep(NA_integer_, length(all_dates))
-
-  for (i in seq_along(all_dates)) {
-    window_start <- all_dates[i] - window_days + 1
-    window_end   <- all_dates[i]
-    if (window_start < first(all_dates)) next
-
-    cache_key <- sprintf("sliding_%s_%s_%s", iName, window_start, window_end)
-    if (!cache_key %in% names(window_cache)) next
-
-    tbl <- window_cache[[cache_key]]
-    row <- tbl |> filter(Date == window_end)
-    if (nrow(row) == 0) row <- tail(tbl, 1)
-    if (nrow(row) > 0) {
-      regime_vec[i] <- ifelse(row$Regime[1] == 'STABLE', 1L, 0L)
-    }
-    if (i %% 500 == 0) cat(sprintf("      %d/%d\n", i, n_total))
+sliding_strats  <- list()
+for (res in index_results) {
+  if (is.null(res)) next
+  for (row in res$results_rows) {
+    sliding_results <- rbind(sliding_results, row)
   }
-
-  regime_xts <- xts(regime_vec, order.by = all_dates)
-  regime_xts <- na.omit(regime_xts)
-
-  if (nrow(regime_xts) < 50) next
-
-  strat <- tryCatch({
-    compute_strategies(pXts[, iName], regime_xts, full_range,
-                       sma_lb = smaLb, drag = drag,
-                       ret_xts = dSymXts[, iName])
-  }, error = function(e) NULL)
-
-  if (is.null(strat) || nrow(strat) < 50) next
-
-  sliding_strats[[iName]] <- strat
-
-  sharpe <- SharpeRatio.annualized(strat)
-  ann_ret <- Return.annualized(strat)
-
-  sliding_results <- rbind(sliding_results, tibble(
-    Index         = iName,
-    SMA_Ret       = round(ann_ret[1, "SMA"], 4),
-    CP_Ret        = round(ann_ret[1, "CP"], 4),
-    SMA_CP_Ret    = round(ann_ret[1, "SMA_CP"], 4),
-    BH_Ret        = round(ann_ret[1, "B&H"], 4),
-    SMA_Sharpe    = round(sharpe[1, "SMA"], 3),
-    CP_Sharpe     = round(sharpe[1, "CP"], 3),
-    SMA_CP_Sharpe = round(sharpe[1, "SMA_CP"], 3),
-    BH_Sharpe     = round(sharpe[1, "B&H"], 3)
-  ))
+  for (nm in names(res$strats)) {
+    sliding_strats[[nm]] <- res$strats[[nm]]
+  }
 }
 
-print("Sliding-window Sharpe ratios:")
-print(sliding_results)
+# Aggregate: mean metrics per index across all test windows
+sliding_summary <- sliding_results |>
+  group_by(Index) |>
+  summarise(
+    Windows = n(),
+    across(ends_with("_Ret"), ~ round(mean(.x, na.rm = TRUE), 4)),
+    across(ends_with("_Sharpe"), ~ round(mean(.x, na.rm = TRUE), 3)),
+    .groups = "drop"
+  )
+
+print("Sliding-window Sharpe ratios (mean across test windows):")
+print(sliding_summary)
 
 # gt table
-sliding_results |>
-  gt() |>
-  tab_header(
-    title = "Sliding Window",
-    subtitle = "5-year look-back; consolidated regime; annualized returns + Sharpe"
-  ) |>
-  tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
-  tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
-  fmt_percent(columns = ends_with("_Ret"), decimals = 2) |>
-  fmt_number(columns = ends_with("_Sharpe"), decimals = 2) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_column_labels()
-  ) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_body(columns = Index)
-  ) |>
-  cols_label(
-    SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
-    SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H"
-  ) |>
-  gtsave(sprintf("%s/sliding-window-sharpe.html", reportPath))
-
-webshot2::webshot(
-  sprintf("%s/sliding-window-sharpe.html", reportPath),
-  sprintf("%s/sliding-window-sharpe.png", reportPath),
-  selector = "table.gt_table",
-  expand = c(10, 10, 10, 10)
-)
-
-# sliding-window drawdowns
-print("  Sliding-window drawdowns...")
-for (iName in names(sliding_strats)) {
-  strat <- sliding_strats[[iName]]
-  ddTb <- tibble()
-  for (j in 1:ncol(strat)) {
-    tdd <- table.Drawdowns(strat[, j])
-    tdd[, 4] <- format(round(100 * tdd[, 4], 2), nsmall = 2)
-    tdd$INDEX <- sprintf("%s (%s)", iName, names(strat)[j])
-    ddTb <- rbind(ddTb, tdd)
-  }
-
-  ddHtml <- sprintf("%s/%s.sliding.drawdowns.html", reportPath, iName)
-  ddImg  <- sprintf("%s/%s.sliding.drawdowns.png", reportPath, iName)
-
-  ddTb |>
-    gt(groupname_col = "INDEX") |>
+if (nrow(sliding_summary) > 0) {
+  sliding_summary |>
+    gt() |>
     tab_header(
-      title = "Drawdowns — Sliding Window",
-      subtitle = sprintf("%s: %s", iName,
-                         paste(format(range(index(strat))), collapse = " → "))
+      title = "Sliding Window (train/test split)",
+      subtitle = "Train: 5yr → classify regime. Test: next 1yr → apply regime. Mean across windows."
     ) |>
-    sub_missing(missing_text = "") |>
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_row_groups()
-    ) |>
+    tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
+    tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
+    fmt_percent(columns = ends_with("_Ret"), decimals = 2) |>
+    fmt_number(columns = c(ends_with("_Sharpe"), Windows), decimals = 2) |>
     tab_style(
       style = cell_text(weight = "bold"),
       locations = cells_column_labels()
     ) |>
-    gtsave(ddHtml)
-
-  webshot2::webshot(ddHtml, ddImg,
-                    selector = "table.gt_table",
-                    expand = c(10, 10, 10, 10))
+    tab_style(
+      style = cell_text(weight = "bold"),
+      locations = cells_body(columns = Index)
+    ) |>
+    cols_label(
+      SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
+      SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H"
+    ) |>
+    gtsave(sprintf("%s/sliding-window-sharpe.html", reportPath))
 }
 
-# sliding-window cumulative returns
-for (iName in names(sliding_strats)) {
-  strat <- sliding_strats[[iName]]
-  Common.PlotCumReturns(strat, iName,
-    sprintf("Sliding Window: %s → %s",
-            format(start(strat), "%Y-%m-%d"), format(end(strat), "%Y-%m-%d")),
-    sprintf("%s/%s.sliding.cumret.png", reportPath, iName), NULL)
-}
-# =========================================================================
-# Expanding-window analysis
-# =========================================================================
-# Window: 2005 → date  |  Expands 1 day each step
-# Phase 1: compute all regime classifications (cached)
-# Phase 2: compute strategies from cached regimes
+webshot2::webshot(
+  sprintf("%s/sliding-window-sharpe.html", reportPath),
+  sprintf("%s/sliding-window-sharpe.png", reportPath),
+  selector = "table.gt_table", expand = c(10, 10, 10, 10)
+)
 
+# Drawdown tables: merge all test windows per index, one table per index
+print("  Sliding-window drawdowns...")
+for (iName in indices) {
+  idx_strats <- sliding_strats[grepl(paste0("^", iName, "_"), names(sliding_strats))]
+  if (length(idx_strats) == 0) next
+  merged <- do.call(rbind.xts, unname(idx_strats))
+  merged <- na.omit(merged)
+  if (nrow(merged) < 20) next
+  names(merged) <- c("SMA", "CP", "SMA_CP", "B&H")
+  ddown <- table.Drawdowns(merged)
+  if (is.null(ddown) || nrow(ddown) == 0) next
+  tbl <- ddown |> as_tibble(rownames = "Strategy")
+  tbl |>
+    gt() |>
+    tab_header(title = paste("Drawdowns —", iName, "(sliding test windows)")) |>
+    fmt_percent(columns = -Strategy, decimals = 2) |>
+    gtsave(sprintf("%s/%s.sliding.drawdowns.html", reportPath, iName))
+  webshot2::webshot(
+    sprintf("%s/%s.sliding.drawdowns.html", reportPath, iName),
+    sprintf("%s/%s.sliding.drawdowns.png", reportPath, iName),
+    selector = "table.gt_table", expand = c(10, 10, 10, 10)
+  )
+}
+
+# Cumulative return charts: one merged chart per index across all test windows
+print("  Sliding-window cumulative charts...")
+for (iName in indices) {
+  idx_strats <- sliding_strats[grepl(paste0("^", iName, "_"), names(sliding_strats))]
+  if (length(idx_strats) == 0) next
+  merged <- do.call(rbind.xts, unname(idx_strats))
+  merged <- na.omit(merged)
+  if (nrow(merged) < 20) next
+  names(merged) <- c("SMA", "CP", "SMA_CP", "B&H")
+  
+  cum_merged <- cumprod(1 + merged)
+  cum_df <- fortify(cum_merged, melt = TRUE)
+  names(cum_df) <- c("Date", "Strategy", "Value")
+  
+  p <- ggplot(cum_df, aes(x = Date, y = Value, color = Strategy)) +
+    geom_line(linewidth = 0.8) +
+    scale_color_viridis_d() +
+    labs(title = paste(iName, "— Sliding Test Windows (merged)"),
+         x = "", y = "Cumulative Return", caption = "@StockViz") +
+    theme_minimal(base_size = 12) +
+    theme(legend.position = "bottom")
+  
+  ggsave(sprintf("%s/%s.sliding.cumulative.png", reportPath, iName),
+         p, width = 10, height = 6, dpi = 120)
+}
+
+
+
+# ---- Expanding-window analysis (parallelized per-index) ----
+# Each date's regime comes from a 5-year lookback ending on that date.
+# This is properly walk-forward with no lookahead bias.
 print("=== EXPANDING WINDOW ===")
-min_window_days <- 365 * 5
 
-# ---- Phase 1: classify regimes ----
-print("  Phase 1: classifying regimes...")
-for (iName in indices) {
-  cat(sprintf("    %s\n", iName))
-  for (i in seq_along(all_dates)) {
-    window_start <- all_dates[1]
-    window_end   <- all_dates[i]
-    if (as.numeric(window_end - window_start) < min_window_days) next
+full_range <- paste0(first(all_dates), "/", last(all_dates))
 
-    cache_key <- sprintf("expanding_%s_%s_%s", iName, window_start, window_end)
-    if (cache_key %in% names(window_cache)) next
-
-    window_range <- paste0(window_start, "/", window_end)
-    window_ret <- dSymXts[window_range, iName]
-
-    if (nrow(window_ret) < 100) next
-
-    window_class <- tryCatch({
-      classify_regime(window_ret)
-    }, error = function(e) NULL)
-
-    if (!is.null(window_class)) {
-      window_cache[[cache_key]] <- window_class$regime_tbl
-    }
-
-    if (i %% 500 == 0) {
-      print(paste(iName, window_range))
-      save(window_cache, file = cache_file)
-    }
-  }
-}
-save(window_cache, file = cache_file)
-
-# ---- Phase 2: build consolidated regime xts + compute strategies ----
-# For each date, pull regime from the expanding window ending on that date.
-print("  Phase 2: building consolidated regimes + computing strategies...")
-
-expanding_results <- tibble()
-expanding_strats <- list()
-
-for (iName in indices) {
-  cat(sprintf("    %s\n", iName))
+process_expanding_index <- function(iName) {
   regime_vec <- rep(NA_integer_, length(all_dates))
 
   for (i in seq_along(all_dates)) {
-    window_start <- all_dates[1]
-    window_end   <- all_dates[i]
-    if (as.numeric(window_end - window_start) < min_window_days) next
+    d <- all_dates[i]
+    ws <- d - window_days + 1
+    if (ws < first(all_dates)) next
 
-    cache_key <- sprintf("expanding_%s_%s_%s", iName, window_start, window_end)
+    cache_key <- sprintf("sliding_%s_%s_%s", iName, ws, d)
     if (!cache_key %in% names(window_cache)) next
 
     tbl <- window_cache[[cache_key]]
-    row <- tbl |> filter(Date == window_end)
+    row <- tbl |> filter(Date == d)
     if (nrow(row) == 0) row <- tail(tbl, 1)
     if (nrow(row) > 0) {
-      regime_vec[i] <- ifelse(row$Regime[1] == 'STABLE', 1L, 0L)
+      regime_vec[i] <- ifelse(row$Regime[1] == "STABLE", 1L, 0L)
     }
-    if (i %% 500 == 0) cat(sprintf("      %d/%d\n", i, n_total))
   }
 
   regime_xts <- xts(regime_vec, order.by = all_dates)
+  regime_xts <- na.locf(regime_xts, fromLast = FALSE)
   regime_xts <- na.omit(regime_xts)
+  first_valid <- which(!is.na(coredata(regime_xts)))[1]
+  regime_xts <- regime_xts[first_valid:nrow(regime_xts)]
 
-  if (nrow(regime_xts) < 50) next
+  if (nrow(regime_xts) < 50) return(NULL)
 
   strat <- tryCatch({
     compute_strategies(pXts[, iName], regime_xts, full_range,
@@ -547,26 +456,45 @@ for (iName in indices) {
                        ret_xts = dSymXts[, iName])
   }, error = function(e) NULL)
 
-  if (is.null(strat) || nrow(strat) < 50) next
+  if (is.null(strat) || nrow(strat) < 50) return(NULL)
 
-  expanding_strats[[iName]] <- strat
+  ann_ret <- Return.annualized(strat)
+  sharpe  <- SharpeRatio.annualized(strat)
 
-  sharpe <- SharpeRatio.annualized(strat)
+  list(
+    name  = iName,
+    strat = strat,
+    row   = tibble(
+      Index         = iName,
+      SMA_Ret       = round(ann_ret[1, "SMA"], 4),
+      CP_Ret        = round(ann_ret[1, "CP"], 4),
+      SMA_CP_Ret    = round(ann_ret[1, "SMA_CP"], 4),
+      BH_Ret        = round(ann_ret[1, "B&H"], 4),
+      SMA_Sharpe    = round(sharpe[1, "SMA"], 3),
+      CP_Sharpe     = round(sharpe[1, "CP"], 3),
+      SMA_CP_Sharpe = round(sharpe[1, "SMA_CP"], 3),
+      BH_Sharpe     = round(sharpe[1, "B&H"], 3)
+    )
+  )
+}
 
-  expanding_results <- rbind(expanding_results, tibble(
-    Index         = iName,
-    SMA_Sharpe    = round(sharpe[1, "SMA"], 3),
-    CP_Sharpe     = round(sharpe[1, "CP"], 3),
-    SMA_CP_Sharpe = round(sharpe[1, "SMA_CP"], 3),
-    BH_Sharpe     = round(sharpe[1, "B&H"], 3)
-  ))
+expanding_index_results <- mclapply(indices, process_expanding_index, mc.cores = ncores)
+
+# Merge results from all workers
+expanding_results <- tibble()
+expanding_strats  <- list()
+for (res in expanding_index_results) {
+  if (is.null(res)) next
+  expanding_results <- rbind(expanding_results, res$row)
+  expanding_strats[[res$name]] <- res$strat
 }
 
 print("Expanding-window Sharpe ratios:")
 print(expanding_results)
 
 # gt table
-expanding_results |>
+if (nrow(expanding_results) > 0) {
+  expanding_results |>
   gt() |>
   tab_header(
     title = "Expanding Window",
@@ -596,6 +524,7 @@ webshot2::webshot(
   selector = "table.gt_table",
   expand = c(10, 10, 10, 10)
 )
+}
 
 # expanding-window drawdowns
 print("  Expanding-window drawdowns...")

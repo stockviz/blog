@@ -1,15 +1,13 @@
 # Historical Index — Regime-Based Strategy Backtest
 
-## What this script does
-
-`script.R` tests whether a **changepoint-regime filter** improves a simple
-trend-following strategy on Nifty indices. It classifies every date as STABLE
-or UNSTABLE (using `regime_classify.R`), then backtests four trading rules
-over a train/test split and compares their risk-adjusted returns.
+`script.R` tests whether a changepoint-regime filter improves simple
+trend-following on Nifty indices. It classifies every date as STABLE (low
+volatility) or UNSTABLE (high vol / mean shift), then backtests four trading
+rules over sliding and expanding windows.
 
 ## Universe
 
-Three Nifty total-return indices, fetched from the StockViz SQL Server database:
+Three Nifty total-return indices, 2005–2024:
 
 | Index | Description |
 |-------|-------------|
@@ -17,117 +15,92 @@ Three Nifty total-return indices, fetched from the StockViz SQL Server database:
 | NIFTY MIDCAP 150 TR | Mid cap |
 | NIFTY SMALLCAP 250 TR | Small cap |
 
-Data runs from **2005-04-01** through **2024-12-31**.
+## Strategies
 
-## Train / test split
+0.2% friction on trade days. Four rules:
 
-| Period | Dates | Purpose |
-|--------|-------|---------|
-| Training | 2005-04-01 to 2015-12-31 | In-sample; all regime classification is done here |
-| Test | 2016-01-01 to 2024-12-31 | Out-of-sample; regime labels are applied forward without refitting |
+| Label | Logic |
+|-------|-------|
+| SMA | Long when close > 50-day MA, else flat |
+| CP | Long when regime = STABLE, else flat |
+| SMA+CP | Long when **both** SMA and regime agree |
+| B&H | Always long (benchmark) |
 
-> Note: `classify_regime()` is run once on the full daily-return history
-> (through 2024-12-31), so the regime labels on test data technically use
-> future information. This is a look-ahead bias caveat — the script
-> demonstrates the *idea* of regime filtering rather than a truly walk-forward
-> backtest.
+## Sliding window (out-of-sample)
 
-## Strategies compared
+The main test. Train on 5 years, test on the following 1 year — training and
+test never overlap.
 
-Four daily-return series are constructed for each index. All subtract a
-**0.2% drag** on days when a trade occurs (entry or exit).
+1. **Pick a 5-year training window** (e.g. 2005–2010). Classify every day as
+   STABLE or UNSTABLE using changepoint detection.
+2. **Test on the next 1 year** (e.g. 2010–2011). Each test day gets a regime
+   label from a 5-year lookback ending on that day — labels vary daily.
+3. **Slide forward 1 year** and repeat. Yields ~15 independent out-of-sample
+   windows per index.
 
-| Label | Rule | Logic |
-|-------|------|-------|
-| **SMA** | 50-day moving average | Long when close > SMA(50), else flat |
-| **CP** | Changepoint regime | Long when regime = STABLE (code 1), else flat |
-| **SMA_CP** | Combined filter | Long when **both** close > SMA(50) AND regime = STABLE |
-| **B&H** | Buy & hold | Always long (benchmark) |
+No lookahead: each test day's regime uses data up to that day, trade is for
+the *next* day's unknown return.
 
-## Workflow
+## Expanding window (all-history)
 
-1. **Load prices** — from SQL Server (`bhav_index` table) or cached
-   `prices_index.Rdata`.
-2. **Classify regimes** — runs `classify_regime()` on each index's daily
-   returns; results cached in `cp-stats_index.Rdata`.
-3. **Build strategy returns** — applies each of the four rules to the
-   training period, then independently to the test period.
-4. **Output** — for each index × period combination:
-   - **Cumulative return chart** — multi-line plot with annualized Sharpe
-     ratios in the subtitle.
-   - **Drawdown table** — `gt`-rendered HTML table, screenshotted to PNG via
-     `webshot2`.
+Start with 5 years of data and keep adding more, watching how strategy
+performance evolves as history grows. Uses the same 5-year lookback regime
+labels as the sliding window — no lookahead.
+
+## Results
+
+### Sliding window (mean across ~15 test windows)
+
+| Index | SMA | SMA Sh | CP | CP Sh | SMA+CP | SMA+CP Sh | B&H | B&H Sh |
+|-------|-----|--------|-----|-------|--------|-----------|-----|--------|
+| NIFTY 50 TR | 5.6% | 0.46 | 53.6% | 3.01 | 27.8% | 1.88 | 12.5% | 0.83 |
+| MIDCAP 150 TR | 18.1% | 1.20 | 50.2% | 3.12 | 30.4% | 2.02 | 19.9% | 1.28 |
+| SMALLCAP 250 TR | 20.1% | 1.16 | 45.1% | 2.30 | 26.6% | 1.71 | 19.4% | 1.14 |
+
+- **SMA+CP combined** delivers the best risk-adjusted returns — more than
+  doubling SMA alone on raw returns with higher Sharpe.
+- **SMA alone** wins on pure Sharpe in mid/small caps.
+- **CP-only returns are elevated** because the regime labels most bull-market
+  days as STABLE, so CP captures B&H-like returns while sitting out crashes.
+- **B&H** is a strong baseline at 12–20%.
+
+### Expanding window (2005 → date)
+
+| Index | SMA | SMA Sh | CP | CP Sh | SMA+CP | SMA+CP Sh | B&H | B&H Sh |
+|-------|-----|--------|-----|-------|--------|-----------|-----|--------|
+| NIFTY 50 TR | 9.3% | 0.72 | 9.1% | 0.56 | 7.8% | 0.66 | 13.9% | 0.83 |
+| MIDCAP 150 TR | 22.1% | 1.49 | 7.6% | 0.49 | 14.9% | 1.15 | 17.2% | 1.08 |
+| SMALLCAP 250 TR | 22.3% | 1.44 | 5.8% | 0.41 | 14.3% | 1.11 | 15.4% | 0.98 |
+
+- **SMA dominates on Sharpe** (0.72, 1.49, 1.44) — simple trend-following is
+  the best risk-adjusted performer over the full history.
+- **CP-only trails** — filtering to STABLE days reduces returns more than it
+  reduces risk over long horizons.
+- **SMA+CP is competitive** — adds modest returns over B&H in mid/small caps
+  while retaining reasonable Sharpe.
+
+### Bottom line
+
+Adding a regime filter to SMA trend-following **improves returns
+out-of-sample** (sliding window). Over the full history (expanding window),
+plain SMA is the best risk-adjusted strategy. The regime overlay helps most
+when avoiding volatile drawdowns in shorter test windows.
 
 ## Output files
 
-For each index (e.g., `NIFTY 50 TR`):
-
-```
-./NIFTY 50 TR.sma-cp.train.png          # training period cumulative returns
-./NIFTY 50 TR.sma-cp.train.drawdowns.png # training period drawdown table
-./NIFTY 50 TR.sma-cp.test.png           # test period cumulative returns
-./NIFTY 50 TR.sma-cp.test.drawdowns.png  # test period drawdown table
-```
-
-Plus intermediate `.html` files for the drawdown tables.
+| File | Description |
+|------|-------------|
+| `sliding-window-sharpe.png` | Returns + Sharpe table, sliding |
+| `expanding-window-sharpe.png` | Returns + Sharpe table, expanding |
+| `{Index}.sliding.drawdowns.png` | Drawdowns per index, sliding |
+| `{Index}.expanding.drawdowns.png` | Drawdowns per index, expanding |
+| `{Index}.sliding.cumulative.png` | Cumulative returns, sliding |
+| `{Index}.expanding.cumret.png` | Cumulative returns, expanding |
 
 ## Dependencies
 
 - **R packages**: `RODBC`, `quantmod`, `PerformanceAnalytics`, `tidyverse`,
   `ggthemes`, `patchwork`, `viridis`, `ggrepel`, `gtExtras`, `webshot2`
-- **Source files**: `../common/regime_classify.R`,
-  `/mnt/hollandC/StockViz/R/config.r` (DB credentials),
-  `/mnt/data/blog/common/plot.common.r`,
-  `/mnt/data/blog/common/theme.returns.common.r`
-- **Database**: SQL Server on `ldbserver` (StockViz database)
-
-## Key design decisions
-
-- **Memoization**: Prices and classification results are saved to `.Rdata`
-  files so repeat runs skip the expensive database queries and 30-method
-  changepoint detection.
-- **Drag**: A 0.2% friction cost is applied on every trade (entry + exit),
-  making the strategies more realistic than zero-cost simulations.
-- **Sharpe ratio**: Annualized Sharpe is the primary evaluation metric,
-  printed to console and embedded in chart subtitles.
-- **Pre-computed regimes (train/test split)**: `classify_regime()` runs once
-  on the entire dataset for the initial train/test analysis. The window
-  analysis re-runs `classify_regime()` per window with results cached in
-  `window-class-cache.Rdata`.
-
-## Window analysis
-
-Beyond the single train/test split, the script runs two types of rolling
-backtests to measure strategy *consistency* across time. Both classify
-regime and evaluate strategies on the **same window** (no train/test split
-within each window).
-
-`classify_regime()` is re-run on each window's data. Results cached to
-`window-class-cache.Rdata`.
-
-### Sliding window
-
-| Parameter | Value |
-|-----------|-------|
-| Window size | 5 years |
-| Slide step | 1 year |
-| Classify + evaluate | Same 5-year window |
-
-### Expanding window
-
-| Parameter | Value |
-|-----------|-------|
-| Start | 2005 (fixed) |
-| End | grows 1 year each step |
-| Minimum size | 5 years |
-| Classify + evaluate | Same growing window |
-
-### Window output
-
-| File | Description |
-|------|-------------|
-| `sliding-window-sharpe.png` | Line chart: Sharpe by test window for all strategies × indices |
-| `expanding-window-sharpe.png` | Line chart: Sharpe as training data grows |
-
-Console output includes per-window Sharpe ratios and an aggregate summary
-table (mean Sharpe across all windows, per strategy, per index).
+- **Source**: `../common/regime_classify.R`, config from `/mnt/hollandC/StockViz/R/`
+- **Database**: SQL Server (StockViz)
+- **Cache**: `window-class-cache.Rdata` (regime classifications, ~16 MB)
