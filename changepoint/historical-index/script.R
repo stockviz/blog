@@ -87,8 +87,16 @@ compute_strategies <- function(price_xts, regime_xts, date_range,
     retL1 <- stats::lag(ret_xts[date_range], -1)
   }
   pxSubset <- price_xts[date_range]
-  classSubset <- regime_xts[date_range]
   smaPx <- SMA(pxSubset, sma_lb)
+
+  # IMPORTANT: ifelse() and `&` on xts objects do NOT align by date --
+  # they recycle positionally. regime_xts may cover a shorter span than
+  # retL1/pxSubset (e.g. just one test-year window while retL1 spans the
+  # full history), so it must be explicitly date-merged onto retL1's
+  # index here. Without this, regime flags silently get paired with the
+  # wrong dates' returns (whatever falls at the same row position),
+  # which previously inflated the CP and SMA_CP results.
+  classSubset <- merge(retL1, regime_xts, join = "left")[, 2]
 
   smaGross <- ifelse(pxSubset > smaPx, retL1, 0)
   trd <- ifelse(pxSubset > smaPx, 1, 0)
