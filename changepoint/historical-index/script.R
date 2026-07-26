@@ -331,31 +331,81 @@ sliding_summary <- sliding_results |>
 print("Sliding-window Sharpe ratios (mean across test windows):")
 print(sliding_summary)
 
-# gt table
-if (nrow(sliding_summary) > 0) {
-  sliding_summary |>
+# Max drawdown per strategy for sliding window
+sliding_dd <- tibble()
+for (iName in indices) {
+  idx_strats <- sliding_strats[grepl(paste0("^", iName, "_"), names(sliding_strats))]
+  if (length(idx_strats) == 0) next
+  merged <- do.call(rbind.xts, unname(idx_strats))
+  merged <- na.omit(merged)
+  if (nrow(merged) < 20) next
+  names(merged) <- c("SMA", "CP", "SMA_CP", "B&H")
+  dd <- maxDrawdown(merged)
+  sliding_dd <- rbind(sliding_dd, tibble(
+    Index = iName,
+    SMA_DD = round(-as.numeric(dd[1,"SMA"]), 4),
+    CP_DD = round(-as.numeric(dd[1,"CP"]), 4),
+    SMA_CP_DD = round(-as.numeric(dd[1,"SMA_CP"]), 4),
+    BH_DD = round(-as.numeric(dd[1,"B&H"]), 4)
+  ))
+}
+print("Sliding-window max drawdowns:")
+print(sliding_dd)
+
+# Combined metrics: sliding window
+sliding_combined <- sliding_summary %>%
+  left_join(sliding_dd, by = "Index")
+
+sm <- sliding_combined
+
+# gt table(sliding)
+if (nrow(sliding_combined) > 0) {
+  tbl <- sliding_combined |>
+    select(Index, Windows,
+           SMA_Ret, CP_Ret, SMA_CP_Ret, BH_Ret,
+           SMA_Sharpe, CP_Sharpe, SMA_CP_Sharpe, BH_Sharpe,
+           SMA_DD, CP_DD, SMA_CP_DD, BH_DD) |>
     gt() |>
     tab_header(
-      title = "Sliding Window (train/test split)",
+      title = "Sliding Window — Combined Metrics",
       subtitle = "Train: 5yr → classify regime. Test: next 1yr → apply regime. Mean across windows."
     ) |>
     tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
     tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
-    fmt_percent(columns = ends_with("_Ret"), decimals = 2) |>
+    tab_spanner(label = "Max Drawdown", columns = ends_with("_DD")) |>
+    fmt_percent(columns = ends_with("_Ret"), decimals = 1) |>
+    fmt_percent(columns = ends_with("_DD"), decimals = 1) |>
     fmt_number(columns = c(ends_with("_Sharpe"), Windows), decimals = 2) |>
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_column_labels()
-    ) |>
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_body(columns = Index)
-    ) |>
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_column_labels()) |>
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_body(columns = Index)) |>
     cols_label(
       SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
-      SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H"
+      SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H",
+      SMA_DD = "SMA", CP_DD = "CP", SMA_CP_DD = "SMA+CP", BH_DD = "B&H"
     ) |>
-    gtsave(sprintf("%s/sliding-window-sharpe.html", reportPath))
+    # Highlight values that beat B&H: bold green
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_Ret, rows = which(sm$SMA_Ret > sm$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_Ret, rows = which(sm$CP_Ret > sm$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_Ret, rows = which(sm$SMA_CP_Ret > sm$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_Sharpe, rows = which(sm$SMA_Sharpe > sm$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_Sharpe, rows = which(sm$CP_Sharpe > sm$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_Sharpe, rows = which(sm$SMA_CP_Sharpe > sm$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_DD, rows = which(sm$SMA_DD > sm$BH_DD))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_DD, rows = which(sm$CP_DD > sm$BH_DD))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_DD, rows = which(sm$SMA_CP_DD > sm$BH_DD)))
+
+  tbl |> gtsave(sprintf("%s/sliding-window-sharpe.html", reportPath))
 }
 
 webshot2::webshot(
@@ -379,7 +429,8 @@ for (iName in indices) {
   tbl |>
     gt() |>
     tab_header(title = paste("Drawdowns —", iName, "(sliding test windows)")) |>
-    fmt_percent(columns = -Strategy, decimals = 2) |>
+    fmt_percent(columns = Depth, decimals = 1) |>
+    fmt_number(columns = c(Length, "To Trough", Recovery), decimals = 0) |>
     gtsave(sprintf("%s/%s.sliding.drawdowns.html", reportPath, iName))
   webshot2::webshot(
     sprintf("%s/%s.sliding.drawdowns.html", reportPath, iName),
@@ -397,21 +448,11 @@ for (iName in indices) {
   merged <- na.omit(merged)
   if (nrow(merged) < 20) next
   names(merged) <- c("SMA", "CP", "SMA_CP", "B&H")
-  
-  cum_merged <- cumprod(1 + merged)
-  cum_df <- fortify(cum_merged, melt = TRUE)
-  names(cum_df) <- c("Date", "Strategy", "Value")
-  
-  p <- ggplot(cum_df, aes(x = Date, y = Value, color = Strategy)) +
-    geom_line(linewidth = 0.8) +
-    scale_color_viridis_d() +
-    labs(title = paste(iName, "— Sliding Test Windows (merged)"),
-         x = "", y = "Cumulative Return", caption = "@StockViz") +
-    theme_minimal(base_size = 12) +
-    theme(legend.position = "bottom")
-  
-  ggsave(sprintf("%s/%s.sliding.cumulative.png", reportPath, iName),
-         p, width = 10, height = 6, dpi = 120)
+
+  Common.PlotCumReturns(merged, iName,
+    sprintf("Sliding Test Windows (merged): %s → %s",
+            format(start(merged), "%Y-%m-%d"), format(end(merged), "%Y-%m-%d")),
+    sprintf("%s/%s.sliding.cumret.png", reportPath, iName), NULL)
 }
 
 
@@ -492,35 +533,168 @@ for (res in expanding_index_results) {
 print("Expanding-window Sharpe ratios:")
 print(expanding_results)
 
-# gt table
-if (nrow(expanding_results) > 0) {
-  expanding_results |>
-  gt() |>
-  tab_header(
-    title = "Expanding Window",
-    subtitle = "2005 → date; consolidated regime; annualized returns + Sharpe"
-  ) |>
-  tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
-  tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
-  fmt_percent(columns = ends_with("_Ret"), decimals = 2) |>
-  fmt_number(columns = ends_with("_Sharpe"), decimals = 2) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_column_labels()
-  ) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_body(columns = Index)
-  ) |>
-  cols_label(
-    SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
-    SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H"
-  ) |>
-  gtsave(sprintf("%s/expanding-window-sharpe.html", reportPath))
+# Max drawdown per strategy for expanding window
+expanding_dd <- tibble()
+for (iName in names(expanding_strats)) {
+  strat <- expanding_strats[[iName]]
+  dd <- maxDrawdown(strat)
+  expanding_dd <- rbind(expanding_dd, tibble(
+    Index = iName,
+    SMA_DD = round(-as.numeric(dd[1,"SMA"]), 4),
+    CP_DD = round(-as.numeric(dd[1,"CP"]), 4),
+    SMA_CP_DD = round(-as.numeric(dd[1,"SMA_CP"]), 4),
+    BH_DD = round(-as.numeric(dd[1,"B&H"]), 4)
+  ))
+}
+print("Expanding-window max drawdowns:")
+print(expanding_dd)
+
+# Combined metrics: expanding window
+expanding_combined <- expanding_results %>%
+  left_join(expanding_dd, by = "Index")
+
+em <- expanding_combined
+
+# gt table(expanding)
+if (nrow(expanding_combined) > 0) {
+  tbl <- expanding_combined |>
+    select(Index,
+           SMA_Ret, CP_Ret, SMA_CP_Ret, BH_Ret,
+           SMA_Sharpe, CP_Sharpe, SMA_CP_Sharpe, BH_Sharpe,
+           SMA_DD, CP_DD, SMA_CP_DD, BH_DD) |>
+    gt() |>
+    tab_header(
+      title = "Expanding Window — Combined Metrics",
+      subtitle = "2005 → date; consolidated regime; annualized returns + Sharpe + Max Drawdown"
+    ) |>
+    tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
+    tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
+    tab_spanner(label = "Max Drawdown", columns = ends_with("_DD")) |>
+    fmt_percent(columns = ends_with("_Ret"), decimals = 1) |>
+    fmt_percent(columns = ends_with("_DD"), decimals = 1) |>
+    fmt_number(columns = ends_with("_Sharpe"), decimals = 2) |>
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_column_labels()) |>
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_body(columns = Index)) |>
+    cols_label(
+      SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
+      SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H",
+      SMA_DD = "SMA", CP_DD = "CP", SMA_CP_DD = "SMA+CP", BH_DD = "B&H"
+    ) |>
+    # Highlight values that beat B&H: bold green
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_Ret, rows = which(em$SMA_Ret > em$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_Ret, rows = which(em$CP_Ret > em$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_Ret, rows = which(em$SMA_CP_Ret > em$BH_Ret))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_Sharpe, rows = which(em$SMA_Sharpe > em$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_Sharpe, rows = which(em$CP_Sharpe > em$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_Sharpe, rows = which(em$SMA_CP_Sharpe > em$BH_Sharpe))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_DD, rows = which(em$SMA_DD > em$BH_DD))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = CP_DD, rows = which(em$CP_DD > em$BH_DD))) |>
+    tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+              locations = cells_body(columns = SMA_CP_DD, rows = which(em$SMA_CP_DD > em$BH_DD)))
+
+  tbl |> gtsave(sprintf("%s/expanding-window-sharpe.html", reportPath))
 
 webshot2::webshot(
   sprintf("%s/expanding-window-sharpe.html", reportPath),
   sprintf("%s/expanding-window-sharpe.png", reportPath),
+  selector = "table.gt_table",
+  expand = c(10, 10, 10, 10)
+)
+}
+
+# =========================================================================
+# Combined metrics table: sliding + expanding in one view
+# =========================================================================
+print("=== COMBINED TABLE ===")
+
+# Build combined data from whichever windows have results
+combined_all <- NULL
+if (exists("sliding_combined") && nrow(sliding_combined) > 0) {
+  combined_all <- sliding_combined %>% mutate(Window = "Sliding Window (train/test, mean across windows)")
+}
+if (exists("expanding_combined") && nrow(expanding_combined) > 0) {
+  exp_df <- expanding_combined %>% mutate(Window = "Expanding Window (2005 → date)")
+  if (is.null(combined_all)) {
+    combined_all <- exp_df
+  } else {
+    combined_all <- bind_rows(combined_all, exp_df)
+  }
+}
+
+if (!is.null(combined_all) && nrow(combined_all) > 0) {
+ca <- combined_all
+beat_ret_sma   <- which(ca$SMA_Ret > ca$BH_Ret)
+beat_ret_cp    <- which(ca$CP_Ret > ca$BH_Ret)
+beat_ret_smacp <- which(ca$SMA_CP_Ret > ca$BH_Ret)
+beat_sr_sma    <- which(ca$SMA_Sharpe > ca$BH_Sharpe)
+beat_sr_cp     <- which(ca$CP_Sharpe > ca$BH_Sharpe)
+beat_sr_smacp  <- which(ca$SMA_CP_Sharpe > ca$BH_Sharpe)
+beat_dd_sma    <- which(ca$SMA_DD > ca$BH_DD)
+beat_dd_cp     <- which(ca$CP_DD > ca$BH_DD)
+beat_dd_smacp  <- which(ca$SMA_CP_DD > ca$BH_DD)
+
+tbl <- combined_all |>
+  select(Window, Index,
+         SMA_Ret, CP_Ret, SMA_CP_Ret, BH_Ret,
+         SMA_Sharpe, CP_Sharpe, SMA_CP_Sharpe, BH_Sharpe,
+         SMA_DD, CP_DD, SMA_CP_DD, BH_DD) |>
+  gt(groupname_col = "Window") |>
+  tab_header(
+    title = "Regime-Based Strategy Backtest — Combined Metrics",
+    subtitle = "Changepoint regime filter vs simple trend-following on Nifty TR indices"
+  ) |>
+  tab_spanner(label = "Annualized Return", columns = ends_with("_Ret")) |>
+  tab_spanner(label = "Sharpe Ratio", columns = ends_with("_Sharpe")) |>
+  tab_spanner(label = "Max Drawdown", columns = ends_with("_DD")) |>
+  fmt_percent(columns = ends_with("_Ret"), decimals = 1) |>
+  fmt_percent(columns = ends_with("_DD"), decimals = 1) |>
+  fmt_number(columns = ends_with("_Sharpe"), decimals = 2) |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_column_labels()) |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_row_groups()) |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_body(columns = Index)) |>
+  cols_label(
+    SMA_Ret = "SMA", CP_Ret = "CP", SMA_CP_Ret = "SMA+CP", BH_Ret = "B&H",
+    SMA_Sharpe = "SMA", CP_Sharpe = "CP", SMA_CP_Sharpe = "SMA+CP", BH_Sharpe = "B&H",
+    SMA_DD = "SMA", CP_DD = "CP", SMA_CP_DD = "SMA+CP", BH_DD = "B&H"
+  ) |>
+  # Highlight values that beat B&H: bold green
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_Ret, rows = beat_ret_sma)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = CP_Ret, rows = beat_ret_cp)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_CP_Ret, rows = beat_ret_smacp)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_Sharpe, rows = beat_sr_sma)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = CP_Sharpe, rows = beat_sr_cp)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_CP_Sharpe, rows = beat_sr_smacp)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_DD, rows = beat_dd_sma)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = CP_DD, rows = beat_dd_cp)) |>
+  tab_style(style = cell_text(weight = "bold", color = "#1a6b1a"),
+            locations = cells_body(columns = SMA_CP_DD, rows = beat_dd_smacp))
+
+tbl |> gtsave(sprintf("%s/combined-metrics.html", reportPath))
+
+webshot2::webshot(
+  sprintf("%s/combined-metrics.html", reportPath),
+  sprintf("%s/combined-metrics.png", reportPath),
   selector = "table.gt_table",
   expand = c(10, 10, 10, 10)
 )
@@ -533,9 +707,9 @@ for (iName in names(expanding_strats)) {
   ddTb <- tibble()
   for (j in 1:ncol(strat)) {
     tdd <- table.Drawdowns(strat[, j])
-    tdd[, 4] <- format(round(100 * tdd[, 4], 2), nsmall = 2)
-    tdd$INDEX <- sprintf("%s (%s)", iName, names(strat)[j])
-    ddTb <- rbind(ddTb, tdd)
+    tdd_df <- as_tibble(tdd)
+    tdd_df$INDEX <- sprintf("%s (%s)", iName, names(strat)[j])
+    ddTb <- rbind(ddTb, tdd_df)
   }
 
   ddHtml <- sprintf("%s/%s.expanding.drawdowns.html", reportPath, iName)
@@ -548,6 +722,8 @@ for (iName in names(expanding_strats)) {
       subtitle = sprintf("%s: %s", iName,
                          paste(format(range(index(strat))), collapse = " → "))
     ) |>
+    fmt_percent(columns = Depth, decimals = 1) |>
+    fmt_number(columns = c(Length, "To Trough", Recovery), decimals = 0) |>
     sub_missing(missing_text = "") |>
     tab_style(
       style = cell_text(weight = "bold"),
