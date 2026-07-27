@@ -141,3 +141,5 @@ result is a strategy that stays fully invested when the trend is up
 - **Source**: `../common/regime_classify.R`, `../common/plot.common.r`
 - **Cache**: symlinks `../historical-index/window-class-cache.Rdata`
 - **Database**: SQL Server (StockViz)
+
+[Blog post](https://stockviz.biz/2026/07/27/changepoints-vs-buy-hold/)

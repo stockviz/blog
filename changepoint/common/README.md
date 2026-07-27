@@ -148,3 +148,5 @@ result$BarryHartigan
 
 Install missing packages with `load_packages()` or manually via
 `install.packages(...)`.
+
+[Blog post](https://stockviz.biz/2026/07/27/changepoints-vs-buy-hold/)

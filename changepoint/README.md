@@ -148,3 +148,5 @@ decision is locked in for a full year with no ability to react, it
 matches or slightly improves on buy-and-hold's own risk-adjusted return on
 two of the three indices tested, while still delivering real drawdown
 protection.
+
+[Blog post](https://stockviz.biz/2026/07/27/changepoints-vs-buy-hold/)

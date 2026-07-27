@@ -145,3 +145,5 @@ equity strategies.
 - **Source**: `../common/regime_classify.R`, config from `/mnt/hollandC/StockViz/R/`
 - **Database**: SQL Server (StockViz)
 - **Cache**: `window-class-cache.Rdata` (regime classifications, ~16 MB)
+
+[Blog post](https://stockviz.biz/2026/07/27/changepoints-vs-buy-hold/)
