@@ -53,24 +53,25 @@ friction scaled by position size.
 
 **Bold** = beats B&H on that metric.
 
-| Index | Ret FusLin | Ret B&H | SR FusLin | SR B&H | DD FusLin | DD B&H | Calmar FusLin | Calmar B&H | Ti FusLin |
-|-------|------------|---------|-----------|--------|-----------|--------|---------------|------------|-----------|
-| 50 TR | 12.1% | 15.1% | 0.79 | 0.87 | **−30.5%** | −38.3% | **0.40** | 0.39 | 93% |
-| MIDCAP 150 TR | 20.9% | 23.6% | **1.24** | 1.23 | **−39.7%** | −43.1% | 0.53 | 0.55 | 91% |
-| SMALLCAP 250 TR | 19.0% | 20.8% | **1.11** | 1.05 | **−41.3%** | −59.8% | **0.46** | 0.35 | 88% |
+| Index | Ret SMA | Ret FusLin | Ret B&H | SR SMA | SR FusLin | SR B&H | DD SMA | DD FusLin | DD B&H | Ti SMA | Ti FusLin |
+|-------|---------|------------|---------|--------|-----------|--------|--------|-----------|--------|--------|-----------|
+| 50 TR | 10.3% | 12.1% | 15.1% | 0.77 | 0.79 | 0.87 | **−30.5%** | **−30.5%** | −38.3% | 70% | 93% |
+| MIDCAP 150 TR | 24.0% | 20.9% | 23.6% | **1.55** | **1.24** | 1.23 | **−31.6%** | **−39.7%** | −43.1% | 72% | 91% |
+| SMALLCAP 250 TR | **24.2%** | 19.0% | 20.8% | **1.49** | **1.11** | 1.05 | **−34.6%** | **−41.3%** | −59.8% | 69% | 88% |
 
-- **FusLin beats B&H on max drawdown across all three indices** — cutting
-  drawdowns by 3–18pp vs buy-and-hold. The biggest improvement is in small
-  caps (−41.3% vs −59.8%).
-- **FusLin matches or beats B&H on Sharpe for mid and small caps** (1.24 vs
-  1.23, 1.11 vs 1.05) and on Calmar for large and small caps. The strategy
-  gives up 3–4pp of return vs B&H but the lower drawdowns produce better
-  risk-adjusted metrics.
-- **Time in market is 88–93%** — during uptrends (60–70% of days), position
-  is fully invested. During downtrends, exposure scales with model
-  confidence but never goes to zero.
+- **SMA dominates**: highest returns (24.0/24.2%) and Sharpe ratios
+  (1.55/1.49) for mid and small caps. Beats B&H on returns for small caps
+  (24.2% vs 20.8%).
+- **FusLin captures 80% of B&H returns** while keeping drawdowns below B&H.
+  The continuous sizing recovers more upside than SMA's binary exits.
+- **All strategies beat B&H on max drawdown** — SMA has the shallowest
+  (−30% to −35%), FusLin is in between (−30% to −41%), B&H deepest (−38%
+  to −60%).
+- **SMA and FusLin both match or beat B&H on Sharpe** for mid/small caps,
+  with SMA leading (1.55 vs 1.24, 1.49 vs 1.11) due to lower drawdowns.
 
-Cumulative return charts with Sharpe ratios are in `{Index}.cumret.png`.
+Cumulative return charts with Sharpe ratios for all three strategies are
+in `{Index}.cumret.png`.
 
 ## Output files
 

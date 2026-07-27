@@ -109,6 +109,13 @@ for (iName in indices) {
   pxSub  <- pXts[full_range, iName]
   smaPx  <- SMA(pxSub, smaLb)
 
+  # SMA: long when close > 50-day MA
+  smaPos   <- ifelse(pxSub > smaPx, 1, 0)
+  smaGross <- smaPos * retL1
+  smaNet   <- ifelse(abs(smaPos - stats::lag(smaPos, 1)) > 1e-10,
+                     smaGross - abs(smaPos - stats::lag(smaPos, 1)) * drag,
+                     smaGross)
+
   vsAligned <- merge(retL1, vs_xts, join = "left")[, 2]
   vs        <- coredata(vsAligned)
   in_dt     <- ifelse(pxSub < smaPx, 1, 0)
@@ -122,9 +129,9 @@ for (iName in indices) {
 
   bhPos <- xts(rep(1, nrow(retL1)), order.by = index(retL1))
 
-  R <- na.omit(merge(fusNet, retL1))
-  names(R) <- c("FusLin", "B_H")
-  P <- na.omit(merge(fusPos, bhPos))
+  R <- na.omit(merge(smaNet, fusNet, retL1))
+  names(R) <- c("SMA", "FusLin", "B_H")
+  P <- na.omit(merge(smaPos, fusPos, bhPos))
   P <- P[index(R)]
   names(P) <- names(R)
 
@@ -227,7 +234,7 @@ gtsave(tbl, sprintf("%s/metrics.html", reportPath))
 webshot2::webshot(
   sprintf("%s/metrics.html", reportPath),
   sprintf("%s/metrics.png", reportPath),
-  selector = "table.gt_table", expand = c(10, 10, 10, 10), vwidth = 1200)
+  selector = "table.gt_table", expand = c(10, 10, 10, 10), vwidth = 2000)
 
 # ---- Cumulative return charts (with Sharpe in subtitle) ----
 print("  Cumulative return charts...")
@@ -248,9 +255,9 @@ for (iName in indices) {
       begin = c("first", "axis"), geometric = TRUE)
     print(plot_object)
     title(main = iName)
-    mtext(sprintf("%s → %s  |  FusLin SR=%.2f  B&H SR=%.2f  |  cum: %s  ann: %s",
+    mtext(sprintf("%s → %s  |  SMA SR=%.2f  FusLin SR=%.2f  B&H SR=%.2f  |  cum: %s  ann: %s",
           format(start(R), "%Y-%m-%d"), format(end(R), "%Y-%m-%d"),
-          round(sr[1, "FusLin"], 2), round(sr[1, "B_H"], 2),
+          round(sr[1, "SMA"], 2), round(sr[1, "FusLin"], 2), round(sr[1, "B_H"], 2),
           paste(sprintf("%.2f%%", 100*apply(R, 2, Return.cumulative)),
                 collapse = " / "),
           paste(sprintf("%.2f%%", 100*apply(R, 2, Return.annualized)),
