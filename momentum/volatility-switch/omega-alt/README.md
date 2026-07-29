@@ -3,7 +3,7 @@
 > Discrete quintile-based exposure (25/50/75/100/100) with lookback selection
 > from train, tested on 5 Indian equity indices.
 
-**Blog post:** (link TBD)
+**Blog post:** [Volatility and Equity Index Returns](https://stockviz.biz/2026/07/29/volatility-and-equity-index-returns/)
 
 [backtest.md](backtest.md) — full methodology, architecture, and limitations.
 

@@ -4,6 +4,8 @@
 > toggle exposure across 5 Indian equity indices, with extensive sensitivity
 > and persistence analysis.
 
+**Blog post:** [Volatility and Equity Index Returns](https://stockviz.biz/2026/07/29/volatility-and-equity-index-returns/)
+
 ## Project Structure
 
 ```

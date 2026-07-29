@@ -3,7 +3,7 @@
 > How does drag affect discrete quintile exposure performance across 5 Indian
 > equity indices? Sweep from 0% to 0.5%.
 
-**Blog post:** (link TBD)
+**Blog post:** [Volatility and Equity Index Returns](https://stockviz.biz/2026/07/29/volatility-and-equity-index-returns/)
 
 ## Approach
 
