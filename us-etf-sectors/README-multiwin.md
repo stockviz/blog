@@ -13,6 +13,11 @@ Test period:  2020-01-01 → 2026-07-31
 **Best window: 2yr** (train SR=1.52)
 - Combo: XLY+XLK+XLV+XLU
 
+| Metric | Combo (Train) | SPY (Train) | Combo (Test) | SPY (Test) |
+|---|---|---|---|---|
+| CAGR | 7.9% | 6.03% | 13.76% | 15.32% |
+| Sharpe | 0.53 | 0.4 | 0.76 | 0.81 |
+| MaxDD | 46.91% | 55.2% | 31.84% | 33.7% |
 ## Files
 
 - `annual-returns-multiwin.png` — Annual returns, best-window combo vs SPY

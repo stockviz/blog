@@ -9,10 +9,12 @@ every 5 years, the **equal-weighted combination of 4 ETFs with the lowest max dr
 
 Data period: 2005-01-03 → 2026-07-31
 
-**4-ETF LD** vs **SPY**:
-- CAGR: 10.75%
-- Sharpe: 0.70
-- MaxDD: 40.32%
+| Metric | 4-ETF LD | SPY |
+|---|---|---|
+| CAGR | 10.47% | 10.83% |
+| Sharpe | 0.69 | 0.64 |
+| MaxDD | 40.61% | 55.20% |
+| Volatility | 16.41% | 18.93% |
 
 ## Files
 

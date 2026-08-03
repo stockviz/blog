@@ -9,10 +9,12 @@ every 5 years, the **equal-weighted combination of 4 ETFs with the highest Sharp
 
 Data period: 2005-01-03 → 2026-07-31
 
-**4-ETF SR** vs **SPY**:
-- CAGR: 12.46%
-- Sharpe: 0.72
-- MaxDD: 43.42%
+| Metric | 4-ETF SR | SPY |
+|---|---|---|
+| CAGR | 12.18% | 10.83% |
+| Sharpe | 0.71 | 0.64 |
+| MaxDD | 43.55% | 55.20% |
+| Volatility | 18.68% | 18.93% |
 
 ## Files
 

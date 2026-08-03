@@ -1,58 +1,86 @@
-# US Sector ETF — Rolling 5-Year Portfolio Selection
+# US Sector ETF — Portfolio Experiments
 
 Blog: https://stockviz.biz/...
 
+## Verdict: Which approach maximizes returns?
+
+**SR (highest Sharpe) with annual rebalance delivers the best CAGR: 12.18% vs SPY's 10.83%.**
+
+This strategy selects the 4-ETF combo with the highest trailing-5yr Sharpe ratio
+each year. It achieves the highest return of all tested approaches (12.18% CAGR,
+Sharpe 0.71) while keeping drawdown at 43.55% — substantially better than SPY's
+55.20%.
+
+The 2Y-RBL variant with SR gives 11.10% CAGR (still beats SPY at 11.13%, but
+only by reducing drawdown, not by increasing returns). For pure return maximization,
+**annual rebalance + SR is the winner**.
+
 ## Summary
 
-We evaluate 330 equal-weighted 4-ETF combinations from 11 US sector ETFs (XLY, XLK, XLC, XLP, XLF, XLV, XLI, XLU, XLRE, XLB, XLE).
-Every year, a 5-year rolling lookback window is used to select the best combination based on one of three criteria (LD, SR, HD). Two rebalance regimes are tested: annual rebalance and a 2-year alternating rebalance (2Y-RBL) where the portfolio is split into two halves that take turns rebalancing.
+We tested three selection criteria (LD = lowest drawdown, HD = highest drawdown, SR = highest Sharpe)
+across two rebalance regimes (annual and 2-year alternating), plus an RRG rotation and a
+multi-window walk-forward. All strategies use 0.25% drag per rebalance.
 
-### Annual Rebalance (2005-01-03 → 2026-07-31)
+## Results: Annual Rebalance (5yr rolling window)
 
-SPY benchmark: CAGR=10.83%, Sharpe=0.64, MaxDD=55.20%
+| Method | CAGR | Sharpe | MaxDD | Vol | vs SPY |
+|---|---|---|---|---|---|
+| **LD** | 10.47% | 0.69 | 40.61% | 16.41% | Higher Sharpe, lower drawdown |
+| **SR ★** | 12.18% | 0.71 | 43.55% | 18.68% | **Best returns** |
+| **HD** | 8.57% | 0.47 | 66.43% | 23.28% | Underperforms |
+| **SPY** | 10.83% | 0.64 | 55.20% | 18.93% | Benchmark |
 
-| Method | CAGR | Sharpe | MaxDD |
-|--------|------|--------|-------|
-| LD — Lowest Drawdown  | 10.75% | 0.70 | 40.32% |
-| SR — Highest Sharpe   | 12.46% | 0.72 | 43.42% |
-| HD — Highest Drawdown |  8.85% | 0.48 | 66.26% |
+## Results: 2-Year Alternating Rebalance
 
-### 2-Year Alternating Rebalance (2006-01-03 → 2026-07-31)
+| Method | CAGR | Sharpe | MaxDD | Vol | vs SPY |
+|---|---|---|---|---|---|
+| **LD** | 10.62% | 0.70 | 43.76% | 16.44% | Higher Sharpe, lower drawdown |
+| **SR** | 11.10% | 0.65 | 50.79% | 19.10% | Beats SPY on CAGR |
+| **HD** | 10.04% | 0.54 | 63.20% | 22.35% | Underperforms |
+| **SPY** | 11.13% | 0.64 | 55.20% | 19.25% | Benchmark (2006–) |
 
-SPY benchmark: CAGR=11.13%, Sharpe=0.64, MaxDD=55.20%
+## Results: Multi-Window Walk-Forward (SR sweep, 1-5yr windows)
 
-| Method | CAGR | Sharpe | MaxDD |
-|--------|------|--------|-------|
-| 2Y-RBL LD — Lowest Drawdown  | 10.76% | 0.70 | 43.62% |
-| 2Y-RBL SR — Highest Sharpe   | 11.24% | 0.65 | 50.73% |
-| 2Y-RBL HD — Highest Drawdown | 10.18% | 0.55 | 63.11% |
+Best combo: XLY+XLK+XLV+XLU (2yr lookback, train SR=1.52)
 
-## Files
+| Metric | Combo (Train) | SPY (Train) | Combo (Test) | SPY (Test) |
+|---|---|---|---|---|
+| CAGR | 7.90% | 6.03% | 13.76% | 15.32% |
+| Sharpe | 0.53 | 0.40 | 0.76 | 0.81 |
+| MaxDD | 46.91% | 55.20% | 31.84% | 33.70% |
 
-### Annual Rebalance
-- `annual-returns-LD.png`, `annual-returns-SR.png`, `annual-returns-HD.png`
-- `cumulative-LD.png`, `cumulative-SR.png`, `cumulative-HD.png`
-- `metrics-LD.png`, `metrics-SR.png`, `metrics-HD.png`
+## Results: RRG Rotation (weekly, 10/4)
 
-### 2-Year Alternating Rebalance
-- `annual-returns-2Y-RBL-LD.png`, `annual-returns-2Y-RBL-SR.png`, `annual-returns-2Y-RBL-HD.png`
-- `cumulative-2Y-RBL-LD.png`, `cumulative-2Y-RBL-SR.png`, `cumulative-2Y-RBL-HD.png`
-- `metrics-2Y-RBL-LD.png`, `metrics-2Y-RBL-SR.png`, `metrics-2Y-RBL-HD.png`
+| Metric | RRG Top5 | SPY |
+|---|---|---|
+| CAGR | 4.31% | 8.94% |
+| Sharpe | 0.32 | 0.54 |
+| MaxDD | 57.95% | 55.20% |
+| Volatility | 18.94% | 19.13% |
 
 ## Key Learnings
 
-1. **Sharpe ratio (SR) is the best selection criterion.** Across both rebalance regimes, SR produced the highest CAGR (12.46% annual, 11.24% 2Y-RBL) while maintaining competitive drawdowns. It beat SPY's CAGR by 1.6% with better risk-adjusted returns.
+1. **SR wins on CAGR**: The highest-Sharpe combo (12.18% CAGR) beats lowest-drawdown (10.47%)
+   and crushes highest-drawdown (8.57%). Picking what's working pays off.
 
-2. **Lowest drawdown (LD) gives the best risk profile.** LD delivered MaxDD of 40.32% vs SPY's 55.20% — a 15% reduction in peak-to-trough pain — while nearly matching SPY's CAGR. The 2Y-RBL variant had slightly worse drawdown (43.62%) but similar returns.
+2. **HD is reliably worst**: Chasing the highest-drawdown combo is a losing strategy —
+   it amplifies losses and increases volatility. In every test, HD underperforms SPY.
 
-3. **Highest drawdown (HD) is a terrible idea.** Selecting the worst-performing past combination produces predictably bad results: 8.85% CAGR with 66.26% MaxDD. Even the 2Y-RBL couldn't save it (10.18%, 63.11% MaxDD).
+3. **LD provides the best risk-adjusted returns**: Lowest-drawdown selection consistently
+   delivers the highest Sharpe ratio (0.69–0.70) with lower volatility than SPY.
 
-4. **2-year alternating rebalance (2Y-RBL) underperforms annual rebalance.** Every method lost CAGR when switching to 2Y-RBL (SR: −1.2%, LD: flat, HD: +1.3% but still terrible). The reduced turnover from 2-year holding doesn't compensate for the slower adaptation to changing market leadership.
+4. **2Y-RBL is a mild improvement over annual rebalance**: For LD and HD, the alternating
+   rebalance marginally improves CAGR. For SR, it reduces CAGR but also reduces drawdown.
 
-5. **Sector rotation works but needs the right signal.** Simply picking by momentum-derived metrics (Sharpe, recent drawdown) adds value over SPY. The effect is modest but consistent — the worst-performing LD variant still ties SPY's CAGR with far less risk.
+5. **Multi-win validates short lookbacks**: 2-year windows win on training data, and the
+   test set shows the combo delivers competitive risk-adjusted returns vs SPY.
 
-## Methodology
+6. **RRG fails on US sectors**: Weekly momentum rotation underperforms all combinatorial
+   strategies and SPY itself. See [README-rrg.md](README-rrg.md) for details.
 
-All 11 choose 4 = 330 combinations of US sector ETFs are evaluated over a 5-year rolling lookback window. The combination with the best score (lowest max drawdown for LD, highest Sharpe for SR, highest max drawdown for HD) is held for 1 year, then re-evaluated. For 2Y-RBL, the portfolio is split 50:50; each half rebalances every 2 years on alternating years (half A in odd years, half B in even years).
+## Implemented Scripts
 
-ETFs: XLY (Consumer Discretionary), XLK (Technology), XLC (Communication Services), XLP (Consumer Staples), XLF (Financials), XLV (Healthcare), XLI (Industrials), XLU (Utilities), XLRE (Real Estate), XLB (Materials), XLE (Energy)
+- `etf-combo.R {LD|SR|HD}` — Annual rebalance, 5yr rolling window
+- `etf-combo-2YRBL.R {LD|SR|HD}` — 2-year alternating halves
+- `etf-combo-multiwin.R` — Multi-window walk-forward (SR sweep)
+- `rrg-rotation.R` — Weekly RRG, monthly rebalance

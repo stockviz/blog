@@ -32,6 +32,7 @@ ETFS        <- c("XLY","XLK","XLC","XLP","XLF","XLV","XLI","XLU","XLRE","XLB","X
 BENCH       <- "SPY"
 COMBO_SIZE  <- 4
 WINDOW_YRS  <- 5
+DRAG        <- 0.25 / 100
 
 SUFFIX <- paste0("-", METHOD)
 
@@ -110,7 +111,9 @@ for (yr in investYrs) {
   investEnd   <- as.Date(sprintf("%d-12-31", yr))
   ivRets <- dailyRets[paste0(investStart, "/", investEnd)]
   ewRet <- rowMeans(ivRets[, bestCombo], na.rm=TRUE)
-  ldDaily[index(xts(ewRet, index(ivRets)))] <- ewRet
+  ewXts <- xts(ewRet, index(ivRets))
+  ewXts[1] <- ewXts[1] - DRAG  # apply drag on first day
+  ldDaily[index(ewXts)] <- ewXts
 }
 
 # Drop NAs (years before first window, or missing data)
@@ -201,10 +204,12 @@ readme <- paste0(
   "Data period: ", format(min(index(ldDaily)), "%Y-%m-%d"), " → ",
   format(max(index(ldDaily)), "%Y-%m-%d"), "\n",
   "\n",
-  "**", COMBO_SIZE, "-ETF ", METHOD, "** vs **SPY**:\n",
-  "- CAGR: ", metricsDf$CAGR[1], "%\n",
-  "- Sharpe: ", metricsDf$Sharpe[1], "\n",
-  "- MaxDD: ", metricsDf$MaxDD[1], "%\n",
+  "| Metric | ", sprintf("%d-ETF %s", COMBO_SIZE, METHOD), " | SPY |\n",
+  "|---|---|---|\n",
+  "| CAGR | ", metricsDf$CAGR[1], "% | ", metricsDf$CAGR[2], "% |\n",
+  "| Sharpe | ", metricsDf$Sharpe[1], " | ", metricsDf$Sharpe[2], " |\n",
+  "| MaxDD | ", metricsDf$MaxDD[1], "% | ", metricsDf$MaxDD[2], "% |\n",
+  "| Volatility | ", metricsDf$Vol[1], "% | ", metricsDf$Vol[2], "% |\n",
   "\n",
   "## Files\n",
   "\n",

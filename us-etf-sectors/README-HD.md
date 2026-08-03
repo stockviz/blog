@@ -9,10 +9,12 @@ every 5 years, the **equal-weighted combination of 4 ETFs with the highest max d
 
 Data period: 2005-01-03 → 2026-07-31
 
-**4-ETF HD** vs **SPY**:
-- CAGR: 8.85%
-- Sharpe: 0.48
-- MaxDD: 66.26%
+| Metric | 4-ETF HD | SPY |
+|---|---|---|
+| CAGR | 8.57% | 10.83% |
+| Sharpe | 0.47 | 0.64 |
+| MaxDD | 66.43% | 55.20% |
+| Volatility | 23.28% | 18.93% |
 
 ## Files
 

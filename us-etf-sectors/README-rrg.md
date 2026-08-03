@@ -9,13 +9,12 @@ industry-rotation methodology. Top 5 ETFs in the Leading quadrant held monthly w
 
 Data: 2000-11-24 → 2026-07-31
 
-**RRG Top5** vs **SPY**:
-- RRG CAGR: 4.31%
-- SPY  CAGR: 8.94%
-- RRG Sharpe: 0.32
-- SPY  Sharpe: 0.54
-- RRG MaxDD: 57.95%
-- SPY  MaxDD: 55.20%
+| Metric | RRG Top5 | SPY |
+|---|---|---|
+| CAGR | 4.31% | 8.94% |
+| Sharpe | 0.32 | 0.54 |
+| MaxDD | 57.95% | 55.20% |
+| Volatility | 18.94% | 19.13% |
 
 ETFs: XLY, XLK, XLC, XLP, XLF, XLV, XLI, XLU, XLRE, XLB, XLE
 

@@ -26,6 +26,7 @@ COMBO_SIZE  <- 4
 TRAIN_END   <- "2019-12-31"
 TEST_START  <- "2020-01-01"
 WINDOWS     <- 1:5
+DRAG        <- 0.25 / 100
 
 SUFFIX <- "-multiwin"
 
@@ -100,7 +101,9 @@ cat(sprintf("Best: %dy lookback, %s (train SR=%.2f)\n",
 
 # ── Evaluate best combo on full train and test ──
 ewTrain <- rowMeans(trainRets[, bestWinCombo], na.rm=TRUE)
+ewTrain[1] <- ewTrain[1] - DRAG
 ewTest  <- rowMeans(testRets[, bestWinCombo], na.rm=TRUE)
+ewTest[1] <- ewTest[1] - DRAG
 
 portTrain <- ewTrain
 portTest  <- ewTest
@@ -222,6 +225,11 @@ readme <- paste0(
   "**Best window: ", bestWindow, "yr** (train SR=", round(bestWinSR, 2), ")\n",
   "- Combo: ", paste(bestWinCombo, collapse="+"), "\n",
   "\n",
+  "| Metric | Combo (Train) | SPY (Train) | Combo (Test) | SPY (Test) |\n",
+  "|---|---|---|---|---|\n",
+  "| CAGR | ", resultDf$CAGR[1], "% | ", resultDf$CAGR[3], "% | ", resultDf$CAGR[2], "% | ", resultDf$CAGR[4], "% |\n",
+  "| Sharpe | ", resultDf$Sharpe[1], " | ", resultDf$Sharpe[3], " | ", resultDf$Sharpe[2], " | ", resultDf$Sharpe[4], " |\n",
+  "| MaxDD | ", resultDf$MaxDD[1], "% | ", resultDf$MaxDD[3], "% | ", resultDf$MaxDD[2], "% | ", resultDf$MaxDD[4], "% |\n",
   "## Files\n",
   "\n",
   "- `annual-returns", SUFFIX, ".png` — Annual returns, best-window combo vs SPY\n",

@@ -11,10 +11,12 @@ Each rebalance selects the best 4-ETF combination based on a
 
 Data period: 2006-01-03 → 2026-07-31
 
-**4-ETF 2Y-RBL** vs **SPY**:
-- CAGR: 11.24%
-- Sharpe: 0.65
-- MaxDD: 50.73%
+| Metric | 4-ETF 2Y-RBL | SPY |
+|---|---|---|
+| CAGR | 11.10% | 11.13% |
+| Sharpe | 0.65 | 0.64 |
+| MaxDD | 50.79% | 55.20% |
+| Volatility | 19.10% | 19.25% |
 
 ## Files
 

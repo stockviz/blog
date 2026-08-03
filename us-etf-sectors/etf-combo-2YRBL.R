@@ -32,6 +32,7 @@ ETFS        <- c("XLY","XLK","XLC","XLP","XLF","XLV","XLI","XLU","XLRE","XLB","X
 BENCH       <- "SPY"
 COMBO_SIZE  <- 4
 WINDOW_YRS  <- 5
+DRAG        <- 0.25 / 100
 
 SUFFIX <- paste0("-2Y-RBL-", METHOD)
 
@@ -115,7 +116,9 @@ for (yr in investYrs) {
     if (!is.null(picked$combo)) comboA <- picked$combo
     if (!is.null(comboA)) {
       ewA <- rowMeans(ivRets[, comboA], na.rm=TRUE)
-      halfA[index(xts(ewA, index(ivRets)))] <- ewA
+      ewAx <- xts(ewA, index(ivRets))
+      ewAx[1] <- ewAx[1] - DRAG  # halfA rebalances
+      halfA[index(ewAx)] <- ewAx
     }
     if (!is.null(comboB)) {
       ewB <- rowMeans(ivRets[, comboB], na.rm=TRUE)
@@ -126,11 +129,13 @@ for (yr in investYrs) {
     if (!is.null(picked$combo)) comboB <- picked$combo
     if (!is.null(comboA)) {
       ewA <- rowMeans(ivRets[, comboA], na.rm=TRUE)
-      halfA[index(xts(ewA, index(ivRets)))] <- ewA
+      halfA[index(xts(ewA, index(ivRets)))] <- ewA   # halfA stays, no drag
     }
     if (!is.null(comboB)) {
       ewB <- rowMeans(ivRets[, comboB], na.rm=TRUE)
-      halfB[index(xts(ewB, index(ivRets)))] <- ewB
+      ewBx <- xts(ewB, index(ivRets))
+      ewBx[1] <- ewBx[1] - DRAG  # halfB rebalances
+      halfB[index(ewBx)] <- ewBx
     }
   }
 
@@ -226,10 +231,12 @@ readme <- paste0(
   "Data period: ", format(min(index(portDaily)), "%Y-%m-%d"), " → ",
   format(max(index(portDaily)), "%Y-%m-%d"), "\n",
   "\n",
-  "**", COMBO_SIZE, "-ETF 2Y-RBL** vs **SPY**:\n",
-  "- CAGR: ", metricsDf$CAGR[1], "%\n",
-  "- Sharpe: ", metricsDf$Sharpe[1], "\n",
-  "- MaxDD: ", metricsDf$MaxDD[1], "%\n",
+  "| Metric | ", sprintf("%d-ETF 2Y-RBL", COMBO_SIZE), " | SPY |\n",
+  "|---|---|---|\n",
+  "| CAGR | ", metricsDf$CAGR[1], "% | ", metricsDf$CAGR[2], "% |\n",
+  "| Sharpe | ", metricsDf$Sharpe[1], " | ", metricsDf$Sharpe[2], " |\n",
+  "| MaxDD | ", metricsDf$MaxDD[1], "% | ", metricsDf$MaxDD[2], "% |\n",
+  "| Volatility | ", metricsDf$Vol[1], "% | ", metricsDf$Vol[2], "% |\n",
   "\n",
   "## Files\n",
   "\n",
