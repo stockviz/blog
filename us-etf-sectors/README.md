@@ -1,6 +1,14 @@
 # US Sector ETF — Portfolio Experiments
 
-Blog: https://stockviz.biz/...
+Blog: [Building Winning Portfolios with SPDR Sector ETFs](https://stockviz.biz/2026/08/05/building-winning-portfolios-with-spdr-sector-etfs/)
+
+> **Abstract:** This post evaluates quantitative strategies for rotating through SPDR
+> Sector ETFs, comparing them against a buy-and-hold S&P 500 benchmark. The analysis
+> finds that while a 5-year rolling window selecting the top 4 ETFs by Sharpe Ratio
+> yields excess returns after transaction costs, the outperformance is highly
+> inconsistent and can lag for years. The author also notes that for Indian investors,
+> short-term capital gains taxes can negate the strategy's benefits, and a two-year
+> rebalancing variant produced uninspiring results.
 
 ## Verdict: Which approach maximizes returns?
 

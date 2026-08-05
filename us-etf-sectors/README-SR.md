@@ -1,6 +1,8 @@
 # US Sector ETF — Rolling 5-Year Highest-Sharpe Selection
 
-Blog: https://stockviz.biz/...
+Blog: [Building Winning Portfolios with SPDR Sector ETFs](https://stockviz.biz/2026/08/05/building-winning-portfolios-with-spdr-sector-etfs/)
+
+> **Abstract:** This post evaluates quantitative strategies for rotating through SPDR Sector ETFs, comparing them against a buy-and-hold S&P 500 benchmark. The analysis finds that while a 5-year rolling window selecting the top 4 ETFs by Sharpe Ratio yields excess returns, the outperformance is inconsistent and can lag for years. For Indian investors, short-term capital gains taxes can negate the strategy's benefits.
 
 ## Summary
 
