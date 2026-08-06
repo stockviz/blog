@@ -26,7 +26,7 @@ source("/mnt/hollandC/StockViz/R/plot.common.r")
 # ── Parameters ──
 args <- commandArgs(trailingOnly=TRUE)
 METHOD <- if (length(args) > 0) toupper(args[1]) else "LD"
-if (!METHOD %in% c("LD", "SR", "HD")) stop("METHOD must be LD, SR, or HD")
+if (!METHOD %in% c("LD", "SR", "HD", "OR")) stop("METHOD must be LD, SR, HD, or OR")
 
 ETFS        <- c("XLY","XLK","XLC","XLP","XLF","XLV","XLI","XLU","XLRE","XLB","XLE")
 BENCH       <- "SPY"
@@ -77,11 +77,13 @@ pickCombo <- function(lbRets) {
     if (all(is.na(ewRet))) next
     if (METHOD == "SR") {
       score <- as.numeric(SharpeRatio.annualized(xts(ewRet, index(lbRets))))
+    } else if (METHOD == "OR") {
+      score <- as.numeric(Omega(xts(ewRet, index(lbRets)), method="simple"))
     } else {
       score <- as.numeric(maxDrawdown(xts(ewRet, index(lbRets))))
     }
     if (!is.na(score) && ((METHOD == "LD" && score < bestScore) ||
-                          (METHOD %in% c("SR", "HD") && score > bestScore))) {
+                          (METHOD %in% c("SR", "HD", "OR") && score > bestScore))) {
       bestScore <- score
       bestCombo <- combo
     }

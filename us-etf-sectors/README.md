@@ -12,20 +12,18 @@ Blog: [Building Winning Portfolios with SPDR Sector ETFs](https://stockviz.biz/2
 
 ## Verdict: Which approach maximizes returns?
 
-**SR (highest Sharpe) with annual rebalance delivers the best CAGR: 12.18% vs SPY's 10.83%.**
+**OR (highest Omega) with annual rebalance delivers the best CAGR: 12.29% vs SPY's 10.83% and SR's 12.18%.**
 
-This strategy selects the 4-ETF combo with the highest trailing-5yr Sharpe ratio
-each year. It achieves the highest return of all tested approaches (12.18% CAGR,
-Sharpe 0.71) while keeping drawdown at 43.55% — substantially better than SPY's
-55.20%.
+Omega Ratio considers both upside and downside — it selects combinations with strong
+risk-adjusted returns that outperform in both bull and bear markets. The OR strategy
+edges out SR on CAGR (12.29% vs 12.18%) with slightly lower drawdown (43.19% vs 43.55%).
 
-The 2Y-RBL variant with SR gives 11.10% CAGR (still beats SPY at 11.13%, but
-only by reducing drawdown, not by increasing returns). For pure return maximization,
-**annual rebalance + SR is the winner**.
+For pure return maximization, **annual rebalance + OR is the winner**.
+The 2Y-RBL OR variant gives 11.19% CAGR (barely beats SPY at 11.13%).
 
 ## Summary
 
-We tested three selection criteria (LD = lowest drawdown, HD = highest drawdown, SR = highest Sharpe)
+We tested four selection criteria (LD = lowest drawdown, HD = highest drawdown, SR = highest Sharpe, OR = highest Omega)
 across two rebalance regimes (annual and 2-year alternating), plus an RRG rotation and a
 multi-window walk-forward. All strategies use 0.25% drag per rebalance.
 
@@ -34,7 +32,8 @@ multi-window walk-forward. All strategies use 0.25% drag per rebalance.
 | Method | CAGR | Sharpe | MaxDD | Vol | vs SPY |
 |---|---|---|---|---|---|
 | **LD** | 10.47% | 0.69 | 40.61% | 16.41% | Higher Sharpe, lower drawdown |
-| **SR ★** | 12.18% | 0.71 | 43.55% | 18.68% | **Best returns** |
+| **SR** | 12.18% | 0.71 | 43.55% | 18.68% | Strong returns |
+| **OR ★** | 12.29% | 0.72 | 43.19% | 18.64% | **Best returns, best Sharpe** |
 | **HD** | 8.57% | 0.47 | 66.43% | 23.28% | Underperforms |
 | **SPY** | 10.83% | 0.64 | 55.20% | 18.93% | Benchmark |
 
@@ -44,6 +43,7 @@ multi-window walk-forward. All strategies use 0.25% drag per rebalance.
 |---|---|---|---|---|---|
 | **LD** | 10.62% | 0.70 | 43.76% | 16.44% | Higher Sharpe, lower drawdown |
 | **SR** | 11.10% | 0.65 | 50.79% | 19.10% | Beats SPY on CAGR |
+| **OR** | 11.19% | 0.66 | 47.95% | 18.81% | Beats SPY on CAGR |
 | **HD** | 10.04% | 0.54 | 63.20% | 22.35% | Underperforms |
 | **SPY** | 11.13% | 0.64 | 55.20% | 19.25% | Benchmark (2006–) |
 
@@ -68,8 +68,8 @@ Best combo: XLY+XLK+XLV+XLU (2yr lookback, train SR=1.52)
 
 ## Key Learnings
 
-1. **SR wins on CAGR**: The highest-Sharpe combo (12.18% CAGR) beats lowest-drawdown (10.47%)
-   and crushes highest-drawdown (8.57%). Picking what's working pays off.
+1. **OR wins on CAGR and Sharpe**: The highest-Omega combo (12.29% CAGR, Sharpe 0.72) edges out
+   SR (12.18% CAGR, Sharpe 0.71) and crushes HD (8.57%). Omega's dual focus on upside/downside pays off.
 
 2. **HD is reliably worst**: Chasing the highest-drawdown combo is a losing strategy —
    it amplifies losses and increases volatility. In every test, HD underperforms SPY.
@@ -88,7 +88,7 @@ Best combo: XLY+XLK+XLV+XLU (2yr lookback, train SR=1.52)
 
 ## Implemented Scripts
 
-- `etf-combo.R {LD|SR|HD}` — Annual rebalance, 5yr rolling window
-- `etf-combo-2YRBL.R {LD|SR|HD}` — 2-year alternating halves
+- `etf-combo.R {LD|SR|HD|OR}` — Annual rebalance, 5yr rolling window
+- `etf-combo-2YRBL.R {LD|SR|HD|OR}` — 2-year alternating halves
 - `etf-combo-multiwin.R` — Multi-window walk-forward (SR sweep)
 - `rrg-rotation.R` — Weekly RRG, monthly rebalance

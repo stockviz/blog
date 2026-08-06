@@ -25,8 +25,8 @@ source("/mnt/hollandC/StockViz/R/plot.common.r")
 # ── Parameters ──
 args <- commandArgs(trailingOnly=TRUE)
 METHOD <- if (length(args) > 0) toupper(args[1]) else "LD"
-# LD = lowest drawdown, SR = highest Sharpe, HD = highest drawdown
-if (!METHOD %in% c("LD", "SR", "HD")) stop("METHOD must be LD, SR, or HD")
+# LD = lowest drawdown, SR = highest Sharpe, HD = highest drawdown, OR = highest Omega
+if (!METHOD %in% c("LD", "SR", "HD", "OR")) stop("METHOD must be LD, SR, HD, or OR")
 
 ETFS        <- c("XLY","XLK","XLC","XLP","XLF","XLV","XLI","XLU","XLRE","XLB","XLE")
 BENCH       <- "SPY"
@@ -92,12 +92,14 @@ for (yr in investYrs) {
 
     if (METHOD == "SR") {
       score <- as.numeric(SharpeRatio.annualized(xts(ewRet, index(lbRets))))
+    } else if (METHOD == "OR") {
+      score <- as.numeric(Omega(xts(ewRet, index(lbRets)), method="simple"))
     } else {
       score <- as.numeric(maxDrawdown(xts(ewRet, index(lbRets))))  # LD/HD
     }
 
     if (!is.na(score) && ((METHOD == "LD" && score < bestScore) ||
-                          (METHOD %in% c("SR", "HD") && score > bestScore))) {
+                          (METHOD %in% c("SR", "HD", "OR") && score > bestScore))) {
       bestScore <- score
       bestCombo <- combo
     }
@@ -187,8 +189,19 @@ gtMetrics <- metricsDf |>
 gt::gtsave(gtMetrics, file.path(reportPath, sprintf("metrics%s.png", SUFFIX)))
 
 # ── README ──
-method_full <- if (METHOD == "SR") "highest Sharpe ratio" else if (METHOD == "HD") "highest max drawdown" else "lowest max drawdown"
-method_label <- if (METHOD == "SR") "Highest-Sharpe" else if (METHOD == "HD") "Highest-Drawdown" else "Lowest-Drawdown"
+if (METHOD == "SR") {
+  method_full <- "highest Sharpe ratio"
+  method_label <- "Highest-Sharpe"
+} else if (METHOD == "OR") {
+  method_full <- "highest Omega ratio"
+  method_label <- "Highest-Omega"
+} else if (METHOD == "HD") {
+  method_full <- "highest max drawdown"
+  method_label <- "Highest-Drawdown"
+} else {
+  method_full <- "lowest max drawdown"
+  method_label <- "Lowest-Drawdown"
+}
 
 readme <- paste0(
   "# US Sector ETF — Rolling 5-Year ", method_label, " Selection\n",
