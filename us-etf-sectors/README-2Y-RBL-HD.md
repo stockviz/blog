@@ -2,7 +2,7 @@
 
 Blog: [Building Winning Portfolios with SPDR Sector ETFs](https://stockviz.biz/2026/08/05/building-winning-portfolios-with-spdr-sector-etfs/)
 
-> **Abstract:** Quantitative rotation through SPDR Sector ETFs: 5yr rolling Sharpe selection beats SPY but with inconsistent outperformance. Indian STCG taxes can negate benefits.
+> **Abstract:** Quantitative rotation through SPDR Sector ETFs: 5yr rolling Omega selection delivers best CAGR (12.29%) with Sharpe 0.72. LD minimizes drawdown (40.61%); HD underperforms SPY.
 
 ## Summary
 
