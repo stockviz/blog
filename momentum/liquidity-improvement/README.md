@@ -3,6 +3,8 @@
 Tests whether the Amihud-based LIQC signal predicts returns and produces
 investable portfolios in the NSE top-60% FF-mcap universe.
 
+**Blog:** [Liquidity Improvements and Momentum](https://stockviz.biz/2026/08/08/liquidity-improvements-and-momentum/) — Explores the Bro (2026) SSRN paper finding that momentum returns arise from cross-sectional liquidity dynamics. Past winners improve in liquidity before formation; past losers deteriorate. We test whether LIQC (a) works as a standalone long-only signal and (b) can enhance momentum by filtering out deteriorating-liquidity stocks.
+
 ## Quintile × Lookback Analysis
 
 Next-month return by LIQC quintile for 1/3/6/12-month lookbacks.
