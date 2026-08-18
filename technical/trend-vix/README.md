@@ -1,5 +1,7 @@
 # India VIX-Adaptive Trend Following
 
+Blog: [VIX and Trend-following](https://stockviz.biz/2026/08/18/vix-and-trend-following/)
+
 This project tests whether an India VIX-dependent momentum lookback improves trend following across:
 
 - NIFTY 50 TR
