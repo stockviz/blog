@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+
+
+</head>
+<body>
+<div id="sqquticbis" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#sqquticbis table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sqquticbis thead, #sqquticbis tbody, #sqquticbis tfoot, #sqquticbis tr, #sqquticbis td, #sqquticbis th {
+  border-style: none;
+}
+
+#sqquticbis p {
+  margin: 0;
+  padding: 0;
+}
+
+#sqquticbis .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#sqquticbis .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sqquticbis .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sqquticbis .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sqquticbis .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sqquticbis .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sqquticbis .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sqquticbis .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sqquticbis .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sqquticbis .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sqquticbis .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sqquticbis .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sqquticbis .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sqquticbis .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sqquticbis .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sqquticbis .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sqquticbis .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sqquticbis .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sqquticbis .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sqquticbis .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sqquticbis .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sqquticbis .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sqquticbis .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sqquticbis .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sqquticbis .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sqquticbis .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sqquticbis .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sqquticbis .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sqquticbis .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sqquticbis .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sqquticbis .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sqquticbis .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sqquticbis .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sqquticbis .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sqquticbis .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sqquticbis .gt_left {
+  text-align: left;
+}
+
+#sqquticbis .gt_center {
+  text-align: center;
+}
+
+#sqquticbis .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sqquticbis .gt_font_normal {
+  font-weight: normal;
+}
+
+#sqquticbis .gt_font_bold {
+  font-weight: bold;
+}
+
+#sqquticbis .gt_font_italic {
+  font-style: italic;
+}
+
+#sqquticbis .gt_super {
+  font-size: 65%;
+}
+
+#sqquticbis .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sqquticbis .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sqquticbis .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sqquticbis .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sqquticbis .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sqquticbis .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sqquticbis .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#sqquticbis .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#sqquticbis div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+  <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="6" class="gt_heading gt_title gt_font_normal" style>VIX Top 1 Robustness — Test Period</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="6" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>From 2020-05-01 | adaptive versus fixed 10-month momentum</td>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Test">Test</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Months">Months</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="MeanMonthlyExcess">MeanMonthlyExcess</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="AdaptiveSharpe">AdaptiveSharpe</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="FixedSharpe">FixedSharpe</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="SumExcess">SumExcess</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Test" class="gt_row gt_left">Full test</td>
+<td headers="Months" class="gt_row gt_right">75.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.34%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">1.11</td>
+<td headers="FixedSharpe" class="gt_row gt_right">0.87</td>
+<td headers="SumExcess" class="gt_row gt_right">25.60%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Exclude Mar-Dec 2020</td>
+<td headers="Months" class="gt_row gt_right gt_striped">67.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.15%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">0.90</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">0.76</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">10.09%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Exclude 2020-2021</td>
+<td headers="Months" class="gt_row gt_right">55.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.25%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">0.50</td>
+<td headers="FixedSharpe" class="gt_row gt_right">0.30</td>
+<td headers="SumExcess" class="gt_row gt_right">13.89%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Exclude 2022</td>
+<td headers="Months" class="gt_row gt_right gt_striped">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.25%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">1.34</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">1.21</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">16.00%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Leave out 2020</td>
+<td headers="Months" class="gt_row gt_right">67.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.15%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">0.90</td>
+<td headers="FixedSharpe" class="gt_row gt_right">0.76</td>
+<td headers="SumExcess" class="gt_row gt_right">10.09%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Leave out 2021</td>
+<td headers="Months" class="gt_row gt_right gt_striped">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.47%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">0.82</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">0.49</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">29.40%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Leave out 2022</td>
+<td headers="Months" class="gt_row gt_right">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.25%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">1.34</td>
+<td headers="FixedSharpe" class="gt_row gt_right">1.21</td>
+<td headers="SumExcess" class="gt_row gt_right">16.00%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Leave out 2023</td>
+<td headers="Months" class="gt_row gt_right gt_striped">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.41%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">0.84</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">0.56</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">25.60%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Leave out 2024</td>
+<td headers="Months" class="gt_row gt_right">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.41%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">1.08</td>
+<td headers="FixedSharpe" class="gt_row gt_right">0.79</td>
+<td headers="SumExcess" class="gt_row gt_right">25.60%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Leave out 2025</td>
+<td headers="Months" class="gt_row gt_right gt_striped">63.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.41%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">1.53</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">1.22</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">25.60%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Leave out 2026</td>
+<td headers="Months" class="gt_row gt_right">68.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">0.31%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">1.29</td>
+<td headers="FixedSharpe" class="gt_row gt_right">1.06</td>
+<td headers="SumExcess" class="gt_row gt_right">21.30%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left gt_striped">Remove best month</td>
+<td headers="Months" class="gt_row gt_right gt_striped">74.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right gt_striped">0.19%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right gt_striped">1.04</td>
+<td headers="FixedSharpe" class="gt_row gt_right gt_striped">0.87</td>
+<td headers="SumExcess" class="gt_row gt_right gt_striped">13.85%</td></tr>
+    <tr><td headers="Test" class="gt_row gt_left">Remove best 3 months</td>
+<td headers="Months" class="gt_row gt_right">72.00</td>
+<td headers="MeanMonthlyExcess" class="gt_row gt_right">−0.01%</td>
+<td headers="AdaptiveSharpe" class="gt_row gt_right">1.00</td>
+<td headers="FixedSharpe" class="gt_row gt_right">0.99</td>
+<td headers="SumExcess" class="gt_row gt_right">−0.90%</td></tr>
+  </tbody>
+  <tfoot>
+    <tr class="gt_sourcenotes">
+      <td class="gt_sourcenote" colspan="6">@StockViz</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</body>
+</html>
