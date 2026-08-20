@@ -99,26 +99,118 @@ Top 1 through top 4 are therefore fully populated from the start of the test
 period, and the staggered machinery only matters for the handful of late
 starters.
 
-## Test-period results (25 bps, from 2020-05-01)
+## Benchmark
 
-```text
-Strategy     CAGR     Sharpe   MaxDD
-VIX Top 1   24.17%    0.93    33.99%
-VIX Top 2   30.12%    1.29    28.23%
-VIX Top 3   30.49%    1.39    27.08%
-VIX Top 4   27.80%    1.34    25.86%
-10M Top 1   18.99%    0.83    43.83%
-10M Top 2   26.52%    1.21    28.23%
-10M Top 3   27.57%    1.30    27.08%
-10M Top 4   26.85%    1.31    25.86%
-```
+A monthly-rebalanced **Equal Weight B&H** portfolio of the full sectoral
+universe is included as a buy-and-hold benchmark (no momentum, no VIX
+regime, no cash substitution, no transaction costs). Each month it holds
+`1 / N_available` in every sector with a finite return on the first trading
+day of the month and drifts within the month — the sectoral analogue of the
+parent project's equal-weight benchmark. Late starters enter only at the
+next monthly rebalance. It is the only benchmark in `daily-returns.csv` /
+`primary_daily`; metrics tables compare all 8 trading formulations against it.
 
-These are economic backtest results, not statistical conclusions. The VIX
-lookback beats the fixed 10-month lookback at every portfolio size in this
-sample, and maximum drawdown falls as the number of held sectors rises. The
-full metrics tables (CAGR, volatility, Sharpe, MaxDD, Calmar, recovery days,
-worst month, positive months) are in `metrics-*.html` for train, test, and full
-periods.
+## Results (25 bps cost for trading formulations; benchmark is cost-free)
+
+Train period is the in-sample window used to validate that the code runs — no
+parameter was tuned on it — but it is the only place to test whether trend
+had any unconditional edge over naive diversification before the 2020 regime
+shift.
+
+| Strategy         | Train CAGR | Train Sharpe | Train MaxDD | Test CAGR | Test Sharpe | Test MaxDD | Full CAGR |
+|------------------|-----------:|-------------:|------------:|----------:|------------:|-----------:|----------:|
+| VIX Top 1        |      3.79% |         0.28 |      33.25% |    24.17% |        0.93 |     34.00% |     9.01% |
+| VIX Top 2        |      6.71% |         0.43 |      40.56% |    30.12% |        1.29 |     28.23% |    12.09% |
+| VIX Top 3        |      8.24% |         0.52 |      34.15% |    30.49% |        1.39 |     27.08% |    13.49% |
+| VIX Top 4        |      9.99% |         0.63 |      33.11% |    27.80% |        1.34 |     25.86% |    13.22% |
+| 10M Top 1        |      5.32% |         0.35 |      31.94% |    18.99% |        0.83 |     43.83% |     8.30% |
+| 10M Top 2        |      8.78% |         0.53 |      31.25% |    26.52% |        1.21 |     28.23% |    12.87% |
+| 10M Top 3        |      8.06% |         0.52 |      29.63% |    27.57% |        1.30 |     27.08% |    12.85% |
+| 10M Top 4        |     11.84% |         0.73 |      28.18% |    26.85% |        1.31 |     25.86% |    14.39% |
+| Equal Weight B&H |     12.93% |         0.82 |      34.25% |    25.11% |        1.49 |     21.14% |    15.36% |
+
+Train: 2009-06-01 to 2019-12-31 (2,625 trading days). Test: 2020-05-04 to
+2026-07-31 (1,553 trading days). Full: 2009-06-01 to 2026-07-31 (4,260
+trading days).
+
+### Do any formulations beat the benchmark in train?
+
+No — not on the metrics that matter for an unconditional rule.
+
+On CAGR the benchmark wins outright at **12.93%**, ahead of the best
+trend formulation (10M Top 4, 11.84%) and well ahead of the best
+VIX-adaptive portfolio (VIX Top 4, 9.99%). On risk-adjusted return
+the gap is the same: benchmark Sharpe **0.82** exceeds every trend
+variant (best is 10M Top 4 at 0.73). Drawdowns do not rescue the story
+— trend MaxDDs of 28–40% sit in the same band as the benchmark's 34%.
+
+Annual attribution shows why. Two broad-based rallies account for most
+of the shortfall:
+
+* **2012** — Equal Weight +43.7% (NBFC +85.5%, Private Bank +69.0%,
+  Midsmall Financial Services +68.6% — almost every sector paid).
+  VIX Top 1 managed +7.6% and VIX Top 2 +7.9%; the concentrated picks
+  captured only a slice of a breadth rally.
+* **2014** — Equal Weight +49.0% (Capital Goods +75.8%, Chemicals +75.7%,
+  PSU Bank +69.9%). Trend finished materially negative (VIX Top 1
+  −8.7%, 10M Top variants −5% to −11%) — momentum held the wrong
+  leaders heading into the year and the negative-momentum-to-cash rule
+  did not help because the prior leaders were not negative, just no
+  longer winners.
+
+Those two years alone more than offset VIX wins in 2011 (+18pp vs
+benchmark), 2013 (+25pp), and 2017 (+4pp). In a universe where 30-odd
+sectors can all rally 30–70% in the same year, diversification is the
+free lunch and concentration is the cost — independent of whether the
+lookback is 1, 3, or 10 months. The daily correlation of VIX Top 1 with
+the benchmark is 0.67 in train, so the two series are not independent
+bets; trend simply held a subset of what the benchmark already owned.
+
+### What explains the test set?
+
+The ranking flips in test, but only narrowly and for a specific reason.
+
+VIX Top 2 and Top 3 beat the benchmark on absolute return (30.12% and
+30.49% vs 25.11%, about +5pp of CAGR), and VIX Top 1/Top 4 also clear it
+(24.17% is a whisker below, 27.80% above). The fixed 10M controls beat
+the benchmark only at Top 2 and above and by a smaller margin. On
+Sharpe, however, the benchmark still leads: its test Sharpe of **1.49**
+(at 15.9% annualised volatility) exceeds the best trend Sharpe of 1.39
+(VIX Top 3, 20.7% vol). The benchmark also has the smallest MaxDD
+(21.1% vs 25.9–34.0% for VIX variants and 27.1–43.8% for fixed).
+
+Year-by-year, the test result is not a uniform trend edge. The
+benchmark actually won the single most extreme year:
+
+* **2020** — benchmark +53.4% vs VIX Top 1 +34.0% / 10M Top 1 +33.1%.
+  The Covid rebound lifted almost every sector (Midsmall IT & Telecom
+  +72%, Pharma +62%, IT +58%); holding 34 names beat holding 1–4.
+* **2021** — trend recoups: VIX Top 1 +46.2% vs benchmark +40.6% /
+  10M Top 1 +34.0%. Leader: Power +114%, Metals +73%.
+* **2022** — the VIX-adaptive edge in isolation: VIX Top 1 +8.0%,
+  benchmark +2.1%, 10M Top 1 −5.0%. The Red regime (1-month lookback)
+  avoided the sustained losers that the fixed 10-month rule kept
+  holding. This single year is the cleanest demonstration of the VIX
+  switch.
+* **2023** — VIX Top 1 +41.8% (nearly identical to fixed) vs benchmark
+  +34.6%. Breadth again, but this time trend held the right tail
+  (Realty +82%, Construction +75%).
+* **2024–2025** — benchmark reasserts (+20.9% and +6.6% vs VIX Top 1
+  +18.5% and +1.7%). Concentration gives back part of the lead.
+
+In other words, test outperformance is **concentrated in 2021–2023 and
+within that in 2022's regime switch**, not a persistent premium. The
+equal-weight benchmark remains the best risk-adjusted portfolio in both
+train and test; trend's test win is absolute-return only, higher-vol
+and drawdown-heavier, and depends on a small number of years. Over the
+full 2009–2026 window the train shortfall dominates, leaving the
+benchmark ahead at 15.36% full-period CAGR versus 13.49% for the best
+trend variant (VIX Top 3).
+
+These are economic backtest results, not statistical conclusions. The
+full metrics tables (CAGR, volatility, Sharpe, MaxDD, Calmar, recovery
+days, worst month, positive months) are in `metrics-*.html` for train,
+test, and full periods.
 
 ## Files
 
@@ -127,7 +219,7 @@ periods.
 - `backtest.R` — regime, momentum, ranking, staggered availability, P&L, and
   cost functions
 - `tests.R` — deterministic synthetic tests
-- `run.R` — canonical runner: test, build cache, run all 8 strategies
+- `run.R` — canonical runner: test, build cache, run all 8 trading formulations plus the Equal Weight B&H benchmark
 - `analysis.R` — metrics tables, cumulative/annual charts, availability report
 - `data-quality-report.txt` — the exact data corrections applied
 

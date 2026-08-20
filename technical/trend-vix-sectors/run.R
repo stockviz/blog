@@ -55,6 +55,9 @@ run_all <- function() {
   }
 
   primary_daily <- merge_daily_results(cross[["25bps"]])
+  benchmark <- run_equal_weight(cache, first(index(primary_daily)), last(index(primary_daily)))
+  common_dates <- intersect(as.Date(index(primary_daily)), as.Date(index(benchmark)))
+  primary_daily <- merge(primary_daily[as.character(common_dates)], benchmark[as.character(common_dates)])
 
   split_counts <- c(
     train = NROW(primary_daily[paste0("/", TRAIN_END)]),
@@ -74,6 +77,7 @@ run_all <- function() {
     top_ns = TOP_NS,
     primary_cost_bps = 25,
     cross = cross,
+    benchmark = benchmark,
     primary_daily = primary_daily,
     audit = audit,
     split_counts = split_counts,

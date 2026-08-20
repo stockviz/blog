@@ -119,6 +119,40 @@ build_signal_data <- function(cache, regime_thresholds = NULL) {
        regime = regime, lookback = lookback, momentum = moms)
 }
 
+run_equal_weight <- function(cache, start_date, end_date) {
+  x <- cache$index_returns[paste0(start_date, "/", end_date)]
+  if (NROW(x) == 0L) stop("No returns for equal-weight benchmark")
+  values <- numeric(NROW(x))
+  months <- format(index(x), "%Y-%m")
+  for (month in unique(months)) {
+    positions <- which(months == month)
+    first_rets <- as.numeric(x[positions[1], ])
+    available <- which(is.finite(first_rets))
+    if (length(available) == 0L) {
+      values[positions] <- 0
+      next
+    }
+    weights <- rep(0, NCOL(x))
+    weights[available] <- 1 / length(available)
+    for (i in positions) {
+      day_rets <- as.numeric(x[i, ])
+      # Portfolio return uses only available sleeve; unavailable weight is 0
+      # so 0*NA is avoided by subsetting to available
+      avail_rets <- day_rets[available]
+      avail_rets[!is.finite(avail_rets)] <- 0
+      port_ret <- sum(weights[available] * avail_rets)
+      values[i] <- port_ret
+      # Drift weights within the month among available names only
+      grown <- weights[available] * (1 + avail_rets)
+      s <- sum(grown)
+      if (s > 0) weights[available] <- grown / s
+    }
+  }
+  out <- xts(values, index(x))
+  colnames(out) <- "Equal Weight B&H"
+  out
+}
+
 empty_audit_row <- function(signal_date, holding_dates, signal, lookback, strategy, cost_rate) {
   data.frame(
     strategy = strategy,
