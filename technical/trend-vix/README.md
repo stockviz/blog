@@ -275,3 +275,96 @@ This is intentional under the tested rules.
 ### Conclusion
 
 VIX Top 2 finishes with a better CAGR, but the evidence does not show a reliable improvement over Fixed 10M Top 2. Its advantage depends on three months, largely disappears outside 2020-2021, does not reduce maximum drawdown, and requires more turnover. The defensible conclusion is that VIX Top 2 had a better ending value in this sample, not that it is consistently superior.
+
+## Appendix: Further Research
+
+Three companion studies test whether the base result improves by expanding the
+index universe or changing the momentum lookbacks:
+
+- [Trend-VIX Extended — broad-market additions](../trend-vix-extended/README.md)
+- [Trend-VIX Sectors — sector rotation](../trend-vix-sectors/README.md)
+- [Trend-VIX Lookback — lookback sensitivity and held-out test](../trend-vix-lookback/README.md)
+
+### Adding broad-market indices
+
+[Trend-VIX Extended](../trend-vix-extended/README.md) adds each of 17 eligible
+broad-based total-return indices to the original market-cap universe, one at a
+time, and evaluates the additions on the training set through 2019-12-31.
+
+For VIX Top 2, adding **NIFTY 200 TR** produces the best balance: train CAGR rises
+from 13.13% to 14.25%, Sharpe rises from 0.95 to 1.02, and maximum drawdown falls
+from 19.85% to about 17.3%. NIFTY TOTAL MARKET TR produces almost the same result
+because it is roughly 99% correlated with NIFTY 200 TR. Adding NIFTY 100 TR or
+NIFTY 500 TR also helps, but less. Adding smaller and more volatile indices usually
+increases drawdown.
+
+The benefit is specific to Top 2. No addition materially improves VIX Top 1, and
+adding several broad indices does not improve on adding NIFTY 200 alone. This is a
+**train-only selection**; its post-2020 behaviour has not been evaluated, so NIFTY
+200 should not be adopted without a held-out test.
+
+### Replacing size indices with sectors
+
+[Trend-VIX Sectors](../trend-vix-sectors/README.md) replaces the three size-segment
+indices with 34 sectoral total-return indices plus cash. Indices enter the universe
+when they have enough history, avoiding survivorship-by-common-start truncation.
+The same VIX 10/3/1 rule is compared with fixed 10M for Top 1 through Top 4.
+
+At 25 bps from 2020-05-01, the VIX-adaptive rule beats fixed 10M at every portfolio
+size:
+
+| Portfolio | VIX CAGR | VIX Sharpe | VIX MaxDD | Fixed-10M CAGR | Fixed-10M Sharpe | Fixed-10M MaxDD |
+|---|---:|---:|---:|---:|---:|---:|
+| Top 1 | 24.17% | 0.93 | 33.99% | 18.99% | 0.83 | 43.83% |
+| Top 2 | 30.12% | 1.29 | 28.23% | 26.52% | 1.21 | 28.23% |
+| Top 3 | **30.49%** | **1.39** | 27.08% | 27.57% | 1.30 | 27.08% |
+| Top 4 | 27.80% | 1.34 | **25.86%** | 26.85% | 1.31 | **25.86%** |
+
+Top 3 has the best return and Sharpe; Top 4 has the lowest drawdown. Unlike adding
+another highly correlated broad-market index, sector rotation supplies genuinely
+different return streams and gives the momentum ranking more useful choices.
+These remain economic backtest results rather than statistical proof.
+
+### Changing the regime lookbacks
+
+[Trend-VIX Lookback](../trend-vix-lookback/README.md) first sweeps fixed 1–12 month
+momentum windows on the training set. Lookback choice matters substantially: across
+Top 1 runs, Sharpe ranges from 0.42 to 0.97, CAGR from 5.70% to 15.80%, and maximum
+drawdown from 29.48% to 54.89%. Very fast 1–2 month signals whipsaw; the
+unconditional train peak is around 3–4 months.
+
+Conditioning the sweep on the original VIX regimes selects 10M for Green and 6M
+for Yellow in Top 1. Red has only four train observations, so its 1M lookback cannot
+be meaningfully optimized. Carrying the frozen **10/6/1** rule into the test set
+shows that the Yellow 6M train optimum does not generalize:
+
+| Portfolio | Rule | Test CAGR | Test Sharpe | Test MaxDD |
+|---|---|---:|---:|---:|
+| Top 1 | Train-tuned 10/6/1 | 15.28% | 1.00 | 32.95% |
+| Top 1 | Original 10/3/1 | **19.72%** | **1.19** | 33.79% |
+| Top 1 | Fixed 10M | 14.87% | 0.96 | 34.98% |
+| Top 2 | Train-tuned 10/6/1 | 17.05% | 1.14 | 25.19% |
+| Top 2 | Original 10/3/1 | **19.93%** | **1.27** | 25.19% |
+| Top 2 | Fixed 10M | 17.26% | 1.17 | 25.19% |
+
+The original 10/3/1 rule should therefore not be replaced by 10/6/1. This is a
+useful negative result: the lookback surface is economically important, but its
+train optimum is unstable enough to overfit.
+
+### Combined conclusion
+
+The follow-up studies point in three different directions:
+
+1. **More correlated broad-market indices offer limited value.** NIFTY 200 helps
+   Top 2 on train, but not Top 1, and still requires out-of-sample validation.
+2. **A genuinely broader opportunity set helps more.** Sector rotation produces
+   the strongest test-period results, particularly with three holdings, while
+   diversification into four sectors reduces drawdown further.
+3. **Parameter tuning is fragile.** Replacing Yellow 3M with its train-selected 6M
+   alternative worsens held-out CAGR and Sharpe. The pre-specified 10/3/1 mapping
+   survives this challenge better than the optimized replacement.
+
+The most promising extension is therefore the sector universe, not a more complex
+lookback rule. The NIFTY 200 addition is worth a formal held-out test, while Red-
+regime calibration remains impossible with the available six observations across
+train and test.
