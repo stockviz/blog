@@ -4,3 +4,5 @@
 *.Ruserdata
 *.Rdata
 *.rds
+# stop-loss audit CSVs are large and generated locally — not committed
+stop-loss/**/*.csv

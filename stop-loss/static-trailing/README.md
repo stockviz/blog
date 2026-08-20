@@ -90,9 +90,7 @@ This does not prove stops are useless — it proves *this* static,
 trailing formulation is. An adaptive stop (ATR-scaled, volatility-scaled,
 or regime-conditioned), a wider buffer, or a time-stop (re-enter after
 N days) would need to be tested to see if the 2018/2022 benefit can be
-kept without the 2017/2023 drag. The forward-returns file is provided to
-allow exactly that — every SL event is listed with 1/5/10/20d returns and
-source flag.
+kept without the 2017/2023 drag.
 
 ## Files
 
@@ -107,7 +105,6 @@ source flag.
   fingerprint tests
 * [`run.R`](./run.R) — `Rscript tests.R && Rscript build.R && Rscript analysis.R`
 * [`cache.rds`](./cache.rds) — SL table, PG/RSA prices, forward returns
-* [`forward-returns.csv`](./forward-returns.csv) — audit table: `model,symbol,sl_date,horizon,ret,src`
 * [`results.rds`](./results.rds) — aggregated stats bundles
 * `*.png` / `*.html` — tables and charts (see links above)
 
