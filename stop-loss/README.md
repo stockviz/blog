@@ -1,5 +1,7 @@
 # Should You Let Winners Run? — What Two Stop-Loss Audits Say
 
+Blog: [Stop-losses or Stop-profits?](https://stockviz.biz/2026/08/23/stop-losses-or-stop-profits/)
+
 **Bottom line:** for the static trailing stop used by these two StockViz advisor
 models, you would have made more money by doing nothing — letting the stopped
 positions ride and not replacing them — in about **5 out of 10 cases after 1 day
