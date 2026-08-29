@@ -1,0 +1,15 @@
+# data caches (large parquet pulls from the StockViz estate)
+**/cache/
+
+# training artifacts
+**/checkpoints/
+*.log
+*.npy
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# source books (copyrighted — not part of this repo)
+books/
