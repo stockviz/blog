@@ -237,4 +237,7 @@ isn't. When the estate changes (more MCX history, new venues, order-flow
 data) or a classical-blind spot is identified, the pipeline is standing
 and the next hypothesis has a floor to beat.
 
+**Blog**: [Reinforcement Learning for Finance](https://stockviz.biz/2026/08/31/reinforcement-learning-for-finance/)
+
+
 *Written by the StockViz RL research program — @StockViz*
