@@ -6,5 +6,5 @@
 *.rds
 *.csv
 *.log
-
+*.sqlite
 

@@ -1,0 +1,36 @@
+# No Silver Bullets
+
+- Difficulty level: 3
+- Published: Fri, 15 Mar 2019 07:07:02 +0000
+- Source: [https://stockviz.biz/2019/03/15/no-silver-bullets/](https://stockviz.biz/2019/03/15/no-silver-bullets/)
+
+## Summary
+
+The article examines the performance of the Roubini Country Insights model, a quantitative smart-beta strategy that analyzes over 2,500 macroeconomic and demographic data points to rank countries and generate investment returns. Comparing the Insights model equity indices against plain-vanilla market-cap weighted cousins like the MSCI World and MSCI Emerging Markets indices reveals that the value added by the complex model is only about one percent per year. This marginal outperformance indicates that the vast majority of the data points have no meaningful effect on equity returns. The author connects this finding to the curse of dimensionality in complex adaptive systems, where incorporating excessive data often detracts from a model's effectiveness. Ultimately, the analysis suggests that investors are generally better off accepting market beta through simpler cap-weighted indices rather than pursuing small marginal gains with overly complicated quantitative strategies.
+
+## Article
+
+Most of the time, beta swamps alpha. Take the case of the Roubini Country Insights model, for example. It claims to “rank countries based on an analysis of over 2500 data points from institutions such as the Bank of International Settlements and the World Bank.” Also, “these data points cover each country’s demographics, quality of education, healthcare and ability to innovate, and will look at the country’s growth potential in political and social spheres, as well as its top-down macro-economic situation.” It sounds like it does everything that a smart investment manager with a long-only global equities mandate should be doing. And you would expect such a smart model to add significant alpha. Thanks to Barclays, a bunch of equity indices based on this model have been available for a while now. We were curious as to how these performed vs. their corresponding plain-vanilla market-cap weighted cousins. Developed markets: MSCI World (black) vs. Insights (green) Emerging markets: MSCI EM (red) vs. Insights (blue) The value add from the smart-beta quantitative “Insights” model, roughly about 1% a year, seems skinny compared to all the work that must have gone into it. 2500 data points is a big dataset but it looks like most of them have no effect on equity returns. This also ties into the curse of dimensionality when dealing with complex adaptive systems – more data typically subtracts from the model. As an investor, it probably would have been easier to stay invested in one of the cap-weighted indices, just accepting the beta, rather than reach for that 1% extra with fancy sounding strategies.
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: The Inflation Drag on Bond Returns | https://stockviz.biz/2019/03/14/the-inflation-drag-on-bond-returns/]
+Previously, we looked at how inflation adjusted returns for the NIFTY, from 1991 through 2016, was 5% annualized. How does it look for bonds? At the short-end of the curve, it looks like inflation ate away all of the returns… and some more. Code and charts on github.
+
+[Linked: Book Review: Atomic Habits | https://stockviz.biz/2019/03/18/book-review-atomic-habits/]
+In the book Atomic Habits: An Easy and Proven Way to Build Good Habits and Break Bad Ones (Amazon,) author James Clear lays out a step-by-step guide on how to adopt better habits. An excerpt from the book that hit the spot for me: Your current habits are not necessarily the best way to solve the problems you face; they are just the methods you learned to use. Once you associate a solution with the problem you need to solve, you keep coming back to it. Habits are all about associations. You see a cue, categorize it based on past experience, and determine the appropriate response. Every action is preceded by a prediction. Life feels reactive, but it is actually predictive. Our behavior is heavily dependent on these predictions. Put another way, our behavior is heavily dependent on how we interpret the events that happen to us, not necessarily the objective reality of the events themselves. Most investors are well aware of biases that they should overcome. However, when the hypothetical becomes real, they feel powerless to control their behavior. How do you go about making the right choices by default? By making them a habit. And this book will put you on a path where you can make better choices. Recommendation: Must read!
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: About Us | https://stockviz.biz/2012/11/28/about-us/]
+Our Mission The StockViz mission is to make modern investment practices and systems affordable to the average Indian investor to help people trade and invest better. People Shyam Sunder has over 10 years of experience in investment management, analysis and algorithmic trading. He worked at Merrill Lynch as a trader on their ABS CDS desk in New York. Having had to build his own tools specific to the Indian market to help manage his investments better, he founded StockViz to bring those tools to a wider investor base. Follow @ShyamNation Follow @ShyamNation Col Dipanshu Sinha, SM took premature retirement from the Indian Army as a Colonel in the Assam Regiment. Initially specialising as an Army Aviator, he has subsequently served with distinction in frontline infantry roles and has substantial experience in counter-insurgency operations earning his stripes with multiple tours of duty in Kashmir and various appointments in command and staff roles. A graduate of the Defence Services Staff College, Wellington, throughout his career he felt the absence of financial and tax planning information which was accentuated by peculiar service conditions and limited exposure to money management skills training in the regular professional courses. He has been one of the driving forces behind the conceptualisation and establishment of Stockviz and is a co-founder. Dipanshu is responsible for managing day-to-day operations, strategic planning, business development and oversight and policy advice for the firm’s investment activities. Follow @dipanshusinha Follow @dipanshusinha
+
+[Linked: Contact Us | https://stockviz.biz/2012/11/28/contact-us/]
+Message @StockViz [iframe class=”span12″ frameborder=”0″ scrolling=”no” marginheight=”0″ marginwidth=”0″ src=”https://maps.google.co.in/maps?f=q&source=s_q&hl=en&geocode=&q=stockviz&sll=12.953997,77.63094&sspn=0.815042,1.352692&t=h&ie=UTF8&hq=stockviz&hnear=&z=10&iwloc=A&cid=8020117427587487552&ll=12.916192,77.580084&output=embed”]

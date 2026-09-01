@@ -1,0 +1,30 @@
+# Covered Call Strategy Cheat Sheet
+
+- Difficulty level: 4
+- Published: Fri, 27 Jun 2014 05:56:22 +0000
+- Source: [https://stockviz.biz/2014/06/27/covered-call-strategy-cheat-sheet/](https://stockviz.biz/2014/06/27/covered-call-strategy-cheat-sheet/)
+
+## Summary
+
+This document analyzes the mechanics and risk profile of covered call strategies based on research by AQR Capital Management. A covered call involves owning an underlying stock while selling a call option against it, which caps the stock upside and provides a premium. The article explains how changing deltas in varying market environments create a net exposure that embeds elements of a reversal strategy rather than a trend-following one. Specifically, in falling markets, market exposure increases, while in rising markets, it decreases. Consequently, the cheat sheet advises against using covered calls if an investor is bearish on volatility or the market, or if they prefer trend-following strategies, highlighting that a significant portion of strategy risk stems from market timing effects.
+
+## Article
+
+Paper from the brain-trust at AQR Capital Management: Covered Calls and Their Unintended Reversal Bet is a must read for anybody trading options. Simply put, a covered call is when you own the underlying stock and you sell a call on it. If the stock doesn’t go beyond the strike at which you sold the call, then you pocket the premium. Otherwise, your upside on owning the stock is capped at the strike. The payoff diagram of a covered call looks like this: The authors claim that over a quarter of a covered call’s risk may be attributed to market timing and investors are ignoring its effect on returns. Because a covered call option strategy reflects an underlying position in equity (delta = 1) and being short a call with changing delta, we get the following situation: - Baseline situation: equity delta = 1.0 and short call position delta = -0.5; net 0.5 delta - In a falling market environment: equity delta = 1.0 and short call position delta = -0.25; net 0.75 delta, or higher market exposure - In a rising market environment: equity delta = 1.0 and short call position delta = -0.75; net 0.25 delta, or lower market exposure The insight: a covered call strategy embeds elements of a reversal strategy, not a trend-following strategy. The cheat sheet - Bearish on volatility? Don’t do a covered call. - Bearish on the market? Don’t do a covered call. - Like trend-following? Don’t do a covered call. Sources - Covered Calls and Their Unintended Reversal Bet (pdf) - Own the Stock and Sell Calls: Guaranteed Win, Right? (AlphaArchitect)
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Themes and Smart Beta | https://stockviz.biz/2014/06/25/themes-smart-beta/]
+From Research Affiliates’ Slugging It Out in the Equity Arena: The Gap There is a huge gap between reported mutual fund performance and the returns actually earned by the average investor. The gap — the difference between the fund’s total time-weighted return and the average investor’s money-weighted return — reflects the value added (or subtracted) by investors’ decisions to move cash into and out of funds. In other words, the gap is the return impact of investors’ market timing decisions. Over the past 10 years, the average investor earned a return that was 2.5% worse than the return of the average fund they invested in! Procyclical vs. Countercyclical Smart beta strategies – Themes – are countercyclical, periodically rebalancing out of winning stocks and into losers. They may underperform for extended periods but they ultimately tend to prevail. Investors’ procyclical behavior, selling recent losers and buying recent winners, pays for the long-term value added by Themes. Source: Slugging It Out in the Equity Arena To see how Themes have performed, follow the trail: http://stockviz.biz/tag/theme/
+
+[Linked: Weekly Recap: Single-Variable Analysis | https://stockviz.biz/2014/06/28/weekly-recap-single-variable-analysis/]
+Equities The Nifty ended flat for the week. Commodities | Energy | | Brent Crude Oil | -1.19% | | Ethanol | +1.34% | | Heating Oil | -1.65% | | Natural Gas | -2.05% | | RBOB Gasoline | -0.79% | | WTI Crude Oil | -1.44% | | Metals | | Copper | +0.96% | | Gold 100oz | +0.05% | | Palladium | +2.27% | | Platinum | +1.59% | | Silver 5000oz | -0.48% | | Agricultural | | Cattle | +3.71% | | Cocoa | +1.17% | | Coffee (Arabica) | -2.02% | | Coffee (Robusta) | +1.76% | | Corn | -1.94% | | Cotton | -8.32% | | Feeder Cattle | +3.80% | | Lean Hogs | +2.27% | | Lumber | +3.05% | | Orange Juice | -9.38% | | Soybean Meal | +3.00% | | Soybeans | +1.71% | | Sugar #11 | -5.08% | | Wheat | -0.21% | | White Sugar | -2.30% | Nifty heatmap Index returns Top winners and losers A mixed bag, but Bosch was on fire this week! ETFs Banks got back on the saddle… Investment Theme Performance Sector Performance Yield Curve Advance Decline Nifty OI Thought for the Weekend The behavior of markets or economies simply can’t be explained by looking at just one thing. conomies and markets are extremely complex. They have a variety of different inputs, including earnings, interest rates, psychology, economic activity, fund flows, taxes, sentiment, momentum, geopolitics, etc. The relevant significance of all of these inputs varies over time. Source: When Correlations Lie Related: Musings on stock-market forecasts
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.

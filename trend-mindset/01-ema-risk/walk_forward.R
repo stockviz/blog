@@ -1,0 +1,18 @@
+#!/usr/bin/env Rscript
+# Rolling walk-forward EMA selection: 3-year train, 1-year test.
+# Candidate selection uses only data strictly before each test year.
+options(stringsAsFactors=FALSE, scipen=100)
+args<-commandArgs(FALSE);h<-grep("^--file=",args,value=TRUE);OUT<-if(length(h))dirname(normalizePath(sub("^--file=","",h),mustWork=FALSE)) else getwd()
+DRAG<-0.0025; LOOKBACKS<-c(20L,50L,100L); PRE_END<-as.Date("2019-12-31"); POST_START<-as.Date("2020-05-01")
+load_series<-function(path){x<-read.csv(path);d<-as.Date(x$date);p<-as.numeric(x$price);ok<-is.finite(p)&p>0;d<-d[ok];p<-p[ok];r<-c(NA_real_,p[-1]/p[-length(p)]-1);data.frame(date=d,price=p,ret=r)}
+ema_signal<-function(p,lb){e<-rep(NA_real_,length(p));for(i in lb:length(p))e[i]<-mean(p[(i-lb+1):i]);des<-as.numeric(is.finite(e)&p>e);pos<-c(0,des[-length(des)]);turn<-abs(pos-c(0,pos[-length(pos)]));list(pos=pos,turn=turn)}
+metrics<-function(r){r<-r[is.finite(r)];if(length(r)<20)return(c(N=length(r),CAGR=NA,Vol=NA,Sharpe=NA,MaxDD=NA));eq<-cumprod(1+r);dd<-eq/cummax(eq)-1;c(N=length(r),CAGR=eq[length(eq)]^(252/length(r))-1,Vol=sd(r)*sqrt(252),Sharpe=mean(r)/sd(r)*sqrt(252),MaxDD=-min(dd))}
+all_met<-list();all_daily<-list();all_sel<-list()
+for(inst in c("NIFTY","SELECT")){
+ f<-if(inst=="NIFTY")"/mnt/data/blog/turbulence/simple/daily_NIFTY.csv" else "/mnt/data/blog/turbulence/simple/daily_SELECT.csv";s<-load_series(f);n<-nrow(s); cand<-lapply(LOOKBACKS,function(lb){z<-ema_signal(s$price,lb);z$net<-z$pos*s$ret-DRAG*z$turn;z});names(cand)<-as.character(LOOKBACKS)
+ years<-sort(unique(as.integer(format(s$date,"%Y"))));wf<-rep(NA_real_,n);wfpos<-rep(NA_real_,n);wft<-rep(NA_real_,n);prev_pos<-0
+ for(y in years){test_start<-as.Date(sprintf("%d-01-01",y));test_end<-as.Date(sprintf("%d-12-31",y));test_idx<-which(s$date>=test_start&s$date<=test_end);train_idx<-which(s$date<test_start);if(length(train_idx)<756||!length(test_idx))next;train_idx<-tail(train_idx,756);scores<-vapply(cand,function(z){m<-metrics(z$net[train_idx]);v<-as.numeric(m["Sharpe"]);if(is.finite(v))v else -Inf},numeric(1));names(scores)<-as.character(LOOKBACKS);chosen<-as.integer(names(cand)[which.max(scores)]);z<-cand[[as.character(chosen)]];for(i in test_idx){wf[i]<-z$pos[i]*s$ret[i];wfpos[i]<-z$pos[i];wft[i]<-abs(wfpos[i]-prev_pos);prev_pos<-wfpos[i]};all_sel[[length(all_sel)+1L]]<-data.frame(Instrument=inst,TestYear=y,TrainStart=min(s$date[train_idx]),TrainEnd=max(s$date[train_idx]),ChosenEMA=chosen,TrainSharpe=as.numeric(scores[as.character(chosen)]),TrainSharpe20=as.numeric(scores["20"]),TrainSharpe50=as.numeric(scores["50"]),TrainSharpe100=as.numeric(scores["100"]),TestDays=length(test_idx))}
+ ok<-is.finite(wf);wf_net<-wf-DRAG*wft;wf_net[!ok]<-NA;zout<-data.frame(date=s$date,ret=s$ret,position=wfpos,turnover=wft,gross=wf,net=wf_net,Instrument=inst);all_daily[[length(all_daily)+1L]]<-zout
+ for(w in c("pre","post","full")){keep<-if(w=="pre")s$date<=PRE_END else if(w=="post")s$date>=POST_START else ok;m<-metrics(wf_net[keep]);all_met[[length(all_met)+1L]]<-data.frame(Window=w,Instrument=inst,System="WF EMA selector",t(m),MeanExposure=mean(wfpos[keep],na.rm=TRUE),MeanTurnover=mean(wft[keep],na.rm=TRUE))}
+}
+sel<-do.call(rbind,all_sel);dy<-do.call(rbind,all_daily);met<-do.call(rbind,all_met);write.csv(sel,file.path(OUT,"walk_forward_selections.csv"),row.names=FALSE);write.csv(dy,file.path(OUT,"walk_forward_daily.csv"),row.names=FALSE);write.csv(met,file.path(OUT,"walk_forward_metrics.csv"),row.names=FALSE);cat(sprintf("Wrote %d selection rows, %d daily rows, %d metric rows; train=756 days, drag=%.4f\n",nrow(sel),nrow(dy),nrow(met),DRAG));print(met,row.names=FALSE);print(sel[,c("Instrument","TestYear","ChosenEMA","TrainSharpe")],row.names=FALSE)

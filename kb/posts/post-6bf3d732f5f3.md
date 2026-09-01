@@ -1,0 +1,39 @@
+# Large Moves Happen Together
+
+- Difficulty level: 3
+- Published: Thu, 09 Mar 2023 07:40:04 +0000
+- Source: [https://stockviz.biz/2023/03/09/large-moves-happen-together/](https://stockviz.biz/2023/03/09/large-moves-happen-together/)
+
+## Summary
+
+This article discusses the phenomenon of volatility clustering in the NIFTY 50 index, where large moves (both up and down) tend to occur close together. It compares a buy-and-hold strategy with an actively managed strategy that attempts to avoid downside moves, showing that while the active strategy reduces left-tail risk, it also sacrifices some upside moves. The article highlights the trade-off between capturing all market moves and avoiding losses, and warns against switching strategies due to FOMO, which can lead to sub-par returns. It uses statistical concepts like standard deviations and histograms to illustrate the clustering of extreme returns. The content assumes familiarity with basic statistics and investment concepts, and applies these to practical strategy evaluation, making it suitable for readers with some investing knowledge.
+
+## Article
+
+We are often told that missing the 10-biggest days in the market leads to sub-par returns. While it is certainly true, what is often not said is that those really big days occur around really bad days. Welcome to tail-risk. The average daily return of the NIFTY 50 is 0.06%. The worst daily return is ~ -13% and the best is ~18%. Welcome to tail-risk. In any given year, there are a lot of days when returns fall out of 1, 2 or even 3 standard deviations (σs), Up and Down. And these σ moves tend to happen close to each other. i.e., volatility clusters. What the histogram above is showing is that most of the 3σ moves have happened within 5 days of each other! Let’s zoom in on a 10-year period of the index and mark the outliers on it: Now, lets pick a very simple actively managed strategy that tries to side-step the –σ moves. The details of the strategy itself is unimportant. Suffice to say that it creates excess returns compared to buy & hold. The average daily return of this strategy is 0.07%. The worst daily return is ~ -7% and the best is ~18%. At least some of the left-tail has been clipped but at what cost? Notice how both the number of large Up and Down days are lower here compared to buy & hold? Outliers still cluster but there a lot less of them. This is the nature of market volatility. Investors have to either commit to buy & hold and catch all the moves or commit to an actively managed strategy knowing that while trying to side-step –σ moves, some +σ moves will also be sacrificed. It is the FOMO that keeps investors switching between the two, resulting in sub-par returns.
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Options Weekly 04.03.2023 | https://stockviz.biz/2023/03/04/options-weekly-04-03-2023/]
+Summary: Mar NIFTY 18000 calls added 65,14,850 contracts while 17400 calls shed 44,21,500. On the Put side of the equation, the 17500 strike added 80,10,000 while the 16850’s shed 4,60,800. MAR NIFTY OI MAR BANKNIFTY OI MAR NIFTY Volatility MAR BANKNIFTY Volatility Dotted lines indicated actual underlying volatility. Solid lines are IVs.
+
+[Linked: Mahalanobis Distance | https://stockviz.biz/2023/03/16/mahalanobis-distance/]
+We are big fans on using distance measures while prospecting for investment strategies. Previously: - Euclidean Distance for Pattern Matching - Hamming Distance - Euclid vs. Hamming Distance - Beta vs. Hamming Recently, we came across an interesting paper, Skulls, Financial Turbulence, and Risk Management, Mark Kritzman, CFA, and Yuanzhen Li, that uses the Mahalanobis distance to construct a turbulence index. The basic idea is that the more asset returns break from the past, the more “significant” a market event. We took the basic intuition behind this and constructed a portfolio that switches between equities and bonds based on the Mahalanobis distance between them. The out-of-sample results, factoring in transaction costs, look promising but doesn’t really stand out compared to other, more dumber, strategies that avoid steep drawdowns. However, two points over the Midcap buy & hold cannot be dismissed outright. The code, charts and paper are on github.
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: About Us | https://stockviz.biz/2012/11/28/about-us/]
+Our Mission The StockViz mission is to make modern investment practices and systems affordable to the average Indian investor to help people trade and invest better. People Shyam Sunder has over 10 years of experience in investment management, analysis and algorithmic trading. He worked at Merrill Lynch as a trader on their ABS CDS desk in New York. Having had to build his own tools specific to the Indian market to help manage his investments better, he founded StockViz to bring those tools to a wider investor base. Follow @ShyamNation Follow @ShyamNation Col Dipanshu Sinha, SM took premature retirement from the Indian Army as a Colonel in the Assam Regiment. Initially specialising as an Army Aviator, he has subsequently served with distinction in frontline infantry roles and has substantial experience in counter-insurgency operations earning his stripes with multiple tours of duty in Kashmir and various appointments in command and staff roles. A graduate of the Defence Services Staff College, Wellington, throughout his career he felt the absence of financial and tax planning information which was accentuated by peculiar service conditions and limited exposure to money management skills training in the regular professional courses. He has been one of the driving forces behind the conceptualisation and establishment of Stockviz and is a co-founder. Dipanshu is responsible for managing day-to-day operations, strategic planning, business development and oversight and policy advice for the firm’s investment activities. Follow @dipanshusinha Follow @dipanshusinha
+
+[Linked: Contact Us | https://stockviz.biz/2012/11/28/contact-us/]
+Message @StockViz [iframe class=”span12″ frameborder=”0″ scrolling=”no” marginheight=”0″ marginwidth=”0″ src=”https://maps.google.co.in/maps?f=q&source=s_q&hl=en&geocode=&q=stockviz&sll=12.953997,77.63094&sspn=0.815042,1.352692&t=h&ie=UTF8&hq=stockviz&hnear=&z=10&iwloc=A&cid=8020117427587487552&ll=12.916192,77.580084&output=embed”]
+
+[Linked: Trading Account | https://stockviz.biz/the-stockviz-demat-account/]
+Enjoy the benefits of hassle free trading with Composite Investments while enjoying StockViz equity trading models , daily portfolio updates and analysis – all in one convenient package. Success = Composite + StockViz Open a demat account, for Rs. 699/- and get StockViz bundled with it for free! (We expect a minimum account size of Rs. 25 lakhs to get started.) | Equity (intraday / delivery) | 0.008% / 0.05% | | Futures (equity, currency, commodities) | 0.02% | | Options (equity, currency) | Rs. 25 /lot | | Mutual Funds (through NSE) | As per AMC | Fee structure for NRI/FPI accounts | Equity (delivery) | 0.50% | | Mutual Funds (through NSE) | As per AMC | We do not offer derivative trading services for NRIs/FPIs. Nobody should be put through the torture of paperwork required. There will an additional Rs. 5,000/- account opening fee to cover legal and postage expenses. ( Why? ) *AP Details

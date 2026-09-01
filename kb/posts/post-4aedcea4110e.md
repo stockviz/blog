@@ -1,0 +1,36 @@
+# Rolling Sharpe
+
+- Difficulty level: 3
+- Published: Wed, 06 Dec 2023 07:52:09 +0000
+- Source: [https://stockviz.biz/2023/12/06/rolling-sharpe/](https://stockviz.biz/2023/12/06/rolling-sharpe/)
+
+## Summary
+
+This article discusses the limitations of using lifetime Sharpe ratios, which can be misleading during bull markets or due to launch date sensitivity. It introduces the rolling Sharpe ratio as a more dynamic metric to evaluate strategy performance over time. The author illustrates this with an example of a momentum strategy that recently achieved a Sharpe of 2.0 but had poor performance during a drawdown. The article emphasizes that rolling metrics provide a clearer picture of consistency and risk-adjusted returns, especially for momentum and value strategies. It assumes familiarity with the Sharpe ratio and basic performance metrics, and it references prior discussions on risk-free rates. The content is practical for investors applying these concepts to evaluate strategies, making it suitable for an intermediate audience.
+
+## Article
+
+In an earlier post, we discussed how the risk-free rate influences the Sharpe Ratio. Another problem with using lifetime Sharpe to gauge investments is that if you are in the middle of a bull market, then everything looks good. For example, our All Stars strategy recently hit a Sharpe of 2.0, which is sort of a holy grail in investing. However, if you had looked at it a few months ago, when it was still recovering from a drawdown, you would’ve stayed clear of it. So, what changed? The everything rally in stocks. One way to avoid falling into this trap is to also look at the rolling Sharpe ratio over the life of the strategy. While this is particularly true for momentum strategies that all look exceptional in bull markets, value strategies are not immune to this effect either. Lifetime metrics are also sensitive to launch dates as well. Long running strategies would’ve seen their fair share of market ups and downs compared to newer ones launched during bear markets. Rolling metrics will help investors get a better idea about strategy performance.
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: earlier post | https://stockviz.biz/2023/02/23/sharpe-vs-rates/]
+Sharpe Ratios are often used to sort through competing investments. It is the original “risk adjusted returns.” It’s a mathematical expression of the insight that excess returns over a period of time may signify more volatility and risk, rather than investing skill (investopedia, wikipedia). Rb or Rf, the risk-free return, is usually cumbersome to handle. So, typically, it is either set to zero or a constant value. The problem is that rates vary over time and has an impact on the relative ordering of investments. At high interest rates, SR(mid-caps) > SR(large-caps) Ideally, you want your Sharpes to be positive and stable. Unfortunately, that is never the case. During bull markets, Sharpes trend up and reverse course in bears. At the end of the day, it boils down to whether the returns are worth the risk. You might very well be trying to catch lightening in a bottle. For more index stats, visit our Index Metrics dashboard.
+
+[Linked: All Stars | https://stockviz.biz/theme-eq/BB3B520D-E257-4881-8340-A4F46F44DC4C]
+All Stars Portfolio of stocks hitting their All Time Highs (ATH) A dynamic momentum strategy based on stocks hitting their all time highs. Stocks exit if they break below a 15% trailing stop loss. This model was created on 2020-May-10 and was last updated on 2026-Aug-25 To view historical performance metrics, please login with your free StockViz account. Map this Theme to your brokerage account. Cumulative Returns | lookback (days) | theme | nifty 50 | midcap 100 | |---|---|---|---| | {{item.LB === 2147483647 ? 'inception' : item.LB}} | {{numeral(selectedReturnType === 'gross' ? item.MODEL : item.MODEL_BRK).format('+,.00%')}} | {{numeral(item.NIFTY_50).format('+,.00%')}} | {{numeral(item.MID100_FREE).format('+,.00%')}} | Metrics | {{item.NAME}} | {{numeral(item.VAL).format(',.0000')}} | | risk-free rate: 2.5%; MAR: 0%; benchmark: NIFTY 50 | | Drawdowns | From | Trough | To | Depth | Length | To Trough | Recovery | |---|---|---|---|---|---|---| | {{dd.FROM_DT ? moment(dd.FROM_DT).format('YYYY-MMM-DD') : '-'}} | {{dd.TROUGH_DT ? moment(dd.TROUGH_DT).format('YYYY-MMM-DD') : '-'}} | {{dd.TO_DT ? moment(dd.TO_DT).format('YYYY-MMM-DD') : '-'}} | {{numeral(dd.DEPTH).format('#,0.00%')}} | {{dd.LENGTH}} | {{dd.TROUGH}} | {{dd.RECOVERY}} | Strategy vs. NIFTY 50 and MIDCAP 100 Performance metrics are not available at this time. Returns through time Performance metrics are not available at this time. Returns & Portfolio Turnover Performance metrics are not available at this time.
+
+[Linked: Skew | https://stockviz.biz/2023/11/08/skew/]
+Our previous post discussed how the implied volatility (IV) of OTM puts are often higher than the IV of OTM calls. We would like to add that this “smirk” is very much warranted – it is not an invitation to sell OTM puts. Returns of financial instruments often have negative skew – a fancy way to say that they often take an escalator up, and an elevator down. Here are the daily and weekly return skews of the NIFTY 50 TR index and the SPY ETF: The market is willing to pay up to hedge against this risk. If you sell the skew, you’ll have to hedge against it by some other means. Otherwise, it is like picking up pennies in front of a bulldozer.
+
+[Linked: MAD – Moving Average Distance | https://stockviz.biz/2023/12/20/mad-moving-average-distance/]
+Sometimes, a research paper comes along that gives academic rigor to an obvious thing that trend-followers were doing for decades and makes you sit up and take notice. Moving Average Distance as a Predictor of Equity Returns, Avramov, Kaplanski and Subrahmanyam (SSRN) does just that. Turns out, a simple moving average crossover signal proves robust to momentum, 52-week highs, profitability, and other prominent anomalies. A later paper extends it to international stocks and finds similar results (SSRN). A quick backtest shows that it works for Indian stocks as well. It looks like COVID turbo-charged this strategy. The pre-COVID equity curve is saner. The returns are good but it comes with some nasty drawdowns. Not sure if most investors can stomach a 25% drawdown that lasts over a year. Can it be made better by applying a volatility filter? By sacrificing 2 points of returns, you can get to a sub 20% drawdown. Also, the filter worked during the most recent 2021-23 drawdown as well. You can follow along the live version of this strategy here: MAD 21/200 Code and charts on github.
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.

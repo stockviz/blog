@@ -1,0 +1,24 @@
+# Selling NIFTY Butterflies
+
+- Difficulty level: 3
+- Published: Thu, 09 Jul 2015 15:44:41 +0000
+- Source: [https://stockviz.biz/2015/07/09/selling-nifty-butterflies/](https://stockviz.biz/2015/07/09/selling-nifty-butterflies/)
+
+## Summary
+
+This document explores the mechanics and profitability of selling NIFTY butterfly options, examining how rolling returns and market movements impact the strategy. By analyzing historical NIFTY return patterns and comparing theoretical Black-Scholes projections with actual market behavior, the text explains the relationship between index levels, strike distances, and hit ratios. It discusses the necessity for the underlying asset to expire away from the wings, the challenges of managing large potential losses, and the impact of liquidity on execution. Ultimately, the material highlights that while selling butterflies can systematically generate carry when volatility is present, it requires rigorous risk management to avoid significant drawdowns.
+
+## Article
+
+Nifty Rolling Returns In our earlier post, we saw how selling NIFTY butterflies has been profitable this year. To understand why, let’s have a look at the rolling returns of the NIFTY. Here’s the 30-day rolling returns of the NIFTY, from 2010 to the present, the whole population: Beginning of 2015-present: Median: -1.08% Profitability For a short-call butterfly to be profitable, NIFTY has to expire away from the either of the wings. Each wing is 100 points away. With NIFTY at 8500, that’s a 1.12% move. Whereas back when NIFTY was around 6000, this trade would require a 1.67% move to be profitable. So as the NIFTY rises, if they don’t widen the distance between the listed strikes, your hit ratio with selling butterflies will increase. However, the total profitability will decrease because everybody will think this way. Summary If NIFTY continues to exhibit the same pattern of returns, a rising NIFTY will make selling butterflies more profitable.
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: earlier post | https://stockviz.biz/2015/07/09/butterfly-option-strategy-introduction/]
+What is it? An option butterfly strategy can be used to bet on underlying volatility. A long call butterfly can entered when you think that the underlying will not rise or fall much by expiration. Using calls, the long butterfly can be constructed by buying one lower striking ITM call, writing two ATM calls and buying another higher striking OTM call. For example, with the NIFTY at ~8330, the strikes would be 8300, 8400 and 8500. If the NIFTY bends between 8310 and 8490, you make a profit of ~Rs. 90 per contract (x lot-size) and your downside (max loss) is limited to the premium you paid (~Rs. 10 per butterfly contract x lot-size.) To get a sense for how your P&L will look, you can project the option premiums using the Black-Scholes model. The solid black line is the P&L scenario at expiry. As you can see, intermediate P&L bears very little resemblance to expiry. It is almost as if most of the P&L is “pulled” as you get nearer to expiry. Projection vs. Reality Back in early April this year, the NIFTY was trading around 8600. So you would enter into an 8600, 8700, 8800 butterfly. If you sold the June butterfly, you are essentially betting that the NIFTY would expire outside of 8605 and 8795. If it did, you would get to keep the premium you received (~Rs. 5.70 per butterfly.) Here is how the butterfly actually behaved: As a seller, your P&L is actually the inverse of what is shown above. So you would have lost a lot of money when NIFTY shot to 8800s and then swung the other way as NIFTY headed back down. Finally, as you neared expiry, your P&L approached the premium you received. As you can see, actual behavior bears very little resemblance to modeled behavior. Butterfly profitability Selling butterflies has been a profitable trade this year. As long as there is volatility, a short call butterfly should make money. Here is the long P&L (selling butterflies would invert this P&L): However, it is a bet on the NIFTY not expiring within the break-even range of the trade. Getting this right could prove tricky. Losses tend to be large and if risk is not managed properly, it can wipe out all the profits made over a period of time. The proverbial “picking up pennies in front of a bulldozer.” Summary To point out the obvious, liquidity is a huge problem while executing on this trade. However, selling butterflies can be used to systematically earn carry, as long as risks are managed.

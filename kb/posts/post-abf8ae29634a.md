@@ -1,0 +1,27 @@
+# Definition: Drawdown
+
+- Difficulty level: 2
+- Published: Wed, 20 Jan 2016 14:35:16 +0000
+- Source: [https://stockviz.biz/2016/01/20/definition-drawdown/](https://stockviz.biz/2016/01/20/definition-drawdown/)
+
+## Summary
+
+This document defines the basic concept of investment drawdown, explaining it as the peak-to-trough decline over a specific period. It breaks down the process into three distinct points: the start of the decline, the trough where the investment stops going down, and the recovery point where all losses are recouped. The article discusses length and recovery days, highlights path dependency through examples like NIFTY 50 and Midcap 100, and concludes with key takeaways about how returns correspond with drawdowns and how long-term investors use strategies like dollar-cost averaging.
+
+## Article
+
+Drawdown, of an investment, is the peak-to-trough decline during a specific period. It is not uncommon for stock indices to drawdown 30% in a year. Here’s how we see it. Nifty 50 Drawdowns Nifty Midcap 100 Drawdowns Explainer Drawdowns take their time to form and can be identified into three distinct points: - The day from which the investment started going down. ‘From’ in the above images. - The day on which the investment stopped going down. ‘Trough’ in the above images. - The day on which the investment recouped all its losses from (1). ‘To’ in the above images. The number of days the whole processes took is the ‘Length’ of the drawdown. ‘Recovery’ shows the number of days it took to get back to it initial value. Path dependency The yearly breakup shown above doesn’t give the real picture of how the investment actually performed during the entire stretch of time. For example, here’s NIFTY 50 vs. MIDCAP 100: Depending on where your starting point is, you end up with different drawdown and return profiles. You can fool around with that here: svz.bz Take-away Returns go hand-in-hand with drawdowns. Seasoned investors wait for it (in bond funds) to enter, most long-term investors learn to ignore them and continue their dollar cost averaging (aka SIP.)
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Index Update 16.01.2016 | https://stockviz.biz/2016/01/16/index-update-16-01-2016/]
+MOMENTUM We run our proprietary momentum scoring algorithm on indices just like we do on stocks. You can use the momentum scores of sub-indices to get a sense for which sectors have the wind on their backs and those that are facing headwinds. Traders can pick their longs in sectors with high short-term momentum and their shorts in sectors with low momentum. Investors can use the longer lookback scores to position themselves using our re-factored index Themes. You can see how the momentum algorithm has performed on individual stocks here. Here are the best and the worst sub-indices: Relative Strength Spread Refactored Index Performance 50-day performance, from November 03, 2015 through January 15, 2016: Trend Model Summary | Index | Signal | % From Peak | Day of Peak | |---|---|---|---| | NIFTY AUTO | LONG | 17.09 | 2015-Jan-27 | | NIFTY BANK | LONG | 26.02 | 2015-Jan-27 | | NIFTY COMMODITIES | SHORT | 37.60 | 2008-Jan-04 | | NIFTY CONSUMPTION | LONG | 10.19 | 2015-Aug-05 | | NIFTY ENERGY | SHORT | 28.34 | 2008-Jan-14 | | NIFTY FIN SERVICE | LONG | 22.84 | 2015-Jan-28 | | NIFTY FMCG | LONG | 14.35 | 2015-Feb-25 | | NIFTY INFRA | LONG | 60.96 | 2008-Jan-09 | | NIFTY IT | SHORT | 88.49 | 2000-Feb-21 | | NIFTY MEDIA | LONG | 18.33 | 2008-Jan-04 | | NIFTY METAL | LONG | 70.43 | 2008-Jan-04 | | NIFTY MNC | LONG | 15.76 | 2015-Aug-10 | | NIFTY PHARMA | LONG | 18.59 | 2015-Apr-08 | | NIFTY PSE | SHORT | 36.99 | 2008-Jan-04 | | NIFTY PSU BANK | LONG | 56.98 | 2010-Nov-05 | | NIFTY REALTY | LONG | 91.74 | 2008-Jan-14 | | NIFTY SERV SECTOR | LONG | 18.49 | 2015-Mar-03 |
+
+[Linked: Market-Cap Deciles, Part II | https://stockviz.biz/2016/01/27/market-cap-deciles-part-ii/]
+We had introduced the concept of dividing the universe of stocks by market-cap deciles a while ago (StockViz.) Here are some observations. Returns The last year has been spectacular for small- and mid-cap stocks. From August-2014 to Now: For 2015: So far in 2016: Note: Deciles go from 1 (micro-cap) to 10 (mega-cap) In 2015: - If you had blindly invested in an equal-weight portfolio of ~145 micro-cap stocks, you would have been up ~70% - Every other decile out-performed the mega-caps (decile #1) - Note how the standard-deviation of returns compress as you walk up the cap Migrations Market breadth indicator The mega-cap decile (decile #1) can be used as a crude market-timing indicator. If you track the number of stocks in the decile that went up vs. the number that went down, you end up with a proxy for breadth. Even though technically it beat the buy-and-hold NIFTY 50, the indicator produces too many trades and it doesn’t offer a large enough margin of out-performance to be useful in live trading. Next steps We will continue to poke around and share what we find!

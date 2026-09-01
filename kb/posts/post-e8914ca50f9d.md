@@ -1,0 +1,39 @@
+# Adventures in Pattern Matching, Part I
+
+- Difficulty level: 3
+- Published: Thu, 13 Oct 2022 06:17:28 +0000
+- Source: [https://stockviz.biz/2022/10/13/adventures-in-pattern-matching-part-i/](https://stockviz.biz/2022/10/13/adventures-in-pattern-matching-part-i/)
+
+## Summary
+
+This article explores an applied quantitative method for predicting short-term market movements using historical price pattern matching. The hypothesis posits that similar intraday price segments should correlate with future returns. The methodology involves extracting 60-minute segments from one-minute bars, aligning them with the most recent 200 days of data, and identifying the 40 closest matches using Euclidean distance. The median of the subsequent 30-minute returns for these matched segments is then calculated and compared against actual returns. The investigation concludes that this simple pattern-matching approach yields no discernible predictive relationship. The piece also touches upon the limitations of the setup, such as non-overlapping segments and the arbitrary choice of the look-back and prediction windows, providing a practical example of algorithmic trading hypothesis testing.
+
+## Article
+
+Hypothesis: If a price segment is similar to a set of historical segments, then there should be a correlation between historical and future returns. Setup: Take 60-minute segments of 1-minute bars. Match them with 200 of the most recent days’ with times aligned. Take the top 40 days with the closest match and calculate their median next 30-minute returns. Plot the median vs. actual. Simplifications: - Non-overlapping segments. Its can be argued that patterns don’t start and stop and perfectly aligned boundaries. - Most-recent 200 day look-back period. What if that’s not enough? Or too much? - 30-minute prediction. Too short? Too long? Verdict: There is no discernable relationship. Code: github
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: github | https://github.com/stockviz/blog/tree/master/pattern-matching-1]
+Blog post: Adventures in Pattern Matching, Part I Tested whether matching current intraday price segments to historical patterns can predict future 30-minute returns. Found no discernable relationship, concluding that this simple pattern-matching approach has no predictive power. implements pattern matching algorithms to find historical market analogues
+
+[Linked: Euclidean Distance for Pattern Matching | https://stockviz.biz/2020/11/17/euclidean-distance-for-pattern-matching/]
+Most of us have learnt how to calculate the distance between 2 points on a plane in high school. The simplest one is called the Euclidean Distance – a pretty basic application of the Pythagorean Theorem. The concept can be extended to calculate the distance between to vectors. This is where it gets interesting. Suppose you want to match a price series with another, ranking a rolling window by its Euclidean Distance is the fastest and simplest way of pattern matching. For example, take the most recent 20-day VIX time-series and “match” it with a rolling window of historical 20-day VIX segments and sort it by its Euclidean Distance (ED.) Here, the ED has dug up a segment from November-2010 as one of the top 5 matches. Take a closer look: While not a perfect match, it “sort of” comes close. Sometimes, a simple tool is good enough to get you 80% of the way. This is one of them.
+
+[Linked: Book Review: Wanting | https://stockviz.biz/2022/05/03/book-review-wanting/]
+In Wanting: The Power of Mimetic Desire in Everyday Life (Amazon,) Luke Burgis lays out the “why” behind why we want things. The gist of it is that we want things that we think others want. Everything else flows from it. Desire is manufactured. Just look at the influencer marketing industry that grew from $1.7 billion in 2016 to $9.7 billion in 2020 and $13.8 billion in 2021. You might think that it doesn’t affect you but desire is our primordial concern. Long before people can articulate why they want something, they start wanting it. Are we destined to me miserable, running in an hamster-wheel of desire? The book presents some things that you could try. Recommendation: Worth flipping through.
+
+[Linked: Volatility and Returns of Momentum Indices | https://stockviz.biz/2022/11/26/volatility-and-returns-of-momentum-indices/]
+The standard deviation over 200-days and future 20-day returns from 2010 through 2015 of NIFTY MIDCAP150 MOMENTUM 50 TR and NIFTY200 MOMENTUM 30 TR looks like this: Can historical volatility, as measured by standard deviation, be used to enter and exit momentum strategies? On a rolling basis, there doesn’t seem to be a strong correlation between historical volatility and future returns. Back-tests over this period might give you a config that might look like it works but it is probably a fluke. Given that liquid ETFs for these indices are not available and we are stuck with index funds for the foreseeable future, we setup a back-test to calculate the 200-day std. dev. at the end of each month to decide whether to hold it for the next month. Needless to say, the results were pretty lackluster. We chose the 2010-2015 period because it avoids the 2008 crash and the subsequent recovery. The back-tests look phenomenal when you include that data but we wanted to see how such a strategy would perform in “normal” markets before stress-testing it. We don’t want to be the generals always fighting the last war. Code & charts: github Related: - Reducing Crash Risk in the Nifty Alpha Indices - Low Volatility: Stock vs. Portfolio - VIX and Equity Index Returns Part I, Part II
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: About Us | https://stockviz.biz/2012/11/28/about-us/]
+Our Mission The StockViz mission is to make modern investment practices and systems affordable to the average Indian investor to help people trade and invest better. People Shyam Sunder has over 10 years of experience in investment management, analysis and algorithmic trading. He worked at Merrill Lynch as a trader on their ABS CDS desk in New York. Having had to build his own tools specific to the Indian market to help manage his investments better, he founded StockViz to bring those tools to a wider investor base. Follow @ShyamNation Follow @ShyamNation Col Dipanshu Sinha, SM took premature retirement from the Indian Army as a Colonel in the Assam Regiment. Initially specialising as an Army Aviator, he has subsequently served with distinction in frontline infantry roles and has substantial experience in counter-insurgency operations earning his stripes with multiple tours of duty in Kashmir and various appointments in command and staff roles. A graduate of the Defence Services Staff College, Wellington, throughout his career he felt the absence of financial and tax planning information which was accentuated by peculiar service conditions and limited exposure to money management skills training in the regular professional courses. He has been one of the driving forces behind the conceptualisation and establishment of Stockviz and is a co-founder. Dipanshu is responsible for managing day-to-day operations, strategic planning, business development and oversight and policy advice for the firm’s investment activities. Follow @dipanshusinha Follow @dipanshusinha

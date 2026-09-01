@@ -1,0 +1,36 @@
+# Growth for Poorer Groups Outpaces Middle Class
+
+- Difficulty level: 3
+- Published: Thu, 03 Apr 2014 12:54:11 +0000
+- Source: [https://stockviz.biz/2014/04/03/growth-poorer-groups-outpaces-middle-class/](https://stockviz.biz/2014/04/03/growth-poorer-groups-outpaces-middle-class/)
+
+## Summary
+
+Alliance Bernstein research indicates that poorer populations are often more hopeful about new opportunities and motivated to seek better education to escape poverty compared to the middle class. This discussion examines whether targeting lower-income consumers with a demand for quality goods at fair prices serves as a key to business success. Linked materials discuss various financial topics, including monthly market recaps for Indian and world equities featuring commodities, sector performances, and investment theme returns like Nifty and various Exchange Traded Funds. Additional commentary explores investment forecasting credibility, active management strategies, and company profiles of financial platforms aiming to provide affordable modern investment practices and algorithmic trading tools to average investors in India. The text blends consumer demographic insights with broader equity market performance data and historical observations on fund management.
+
+## Article
+
+Alliance Bernstein’s research shows that poorer people were generally more hopeful than the middle class about new opportunities and keen to seek better education in order to pull their families out of poverty. Is reaching lower income consumers — who have demanding tastes for quality goods at a fair price — the key to success? Source: Beyond the Emerging Middle Class
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Beyond the Emerging Middle Class | https://www.alliancebernstein.com/corporate/en/insights-landing.html]
+Featured Insights Responsible Investing: Insights Subscribe CONTEXT: The AB Blog on Investing Meet Barron’s Stock Pick Buy AllianceBernstein for Its Dividend and Its Growth Don’t just take our word for it. Our people are the best of the best. Our focus on active management and improving our margins are delivering nearly 9% yield.
+
+[Linked: Monthly Recap: Save More | https://stockviz.biz/2014/04/01/monthly-recap-save/]
+The Nifty was up a whopping 6.81% (10.31% in USD terms) in March. World Equities Commodities | CME | | | |---|---|---| | Gold Futures | $1283.40 | -2.88% | | Silver Futures | $19.73 | -6.93% | | Platinum Futures | $1418.50 | -1.92% | | Copper Futures | $3.05 | -5.93% | | Nymex Steel Futures | $639.00 | +1.91% | | Brent Crude Oil Last Day Financial Futures | $107.76 | -1.20% | | E-mini Natural Gas Futures | $4.37 | -5.16% | Nifty Heatmap Index performance Top winners and losers Beta is in, Defensives are out… ETFs | PSUBNKBEES | +25.62% | | INFRABEES | +16.88% | | BANKBEES | +16.63% | | JUNIORBEES | +8.70% | | NIFTYBEES | +5.61% | | GOLDBEES | -5.02% | PSU bank rallied on RBI’s decision to postpone Basel III… Advancers and Decliners Investment Theme Performance | Market Fliers | +22.96% | | Quality to Price | +17.03% | | Enterprise Yield | +12.41% | | Magic Formula Investing | +10.83% | | Growth with Moat | +7.91% | | Financial Strength Value | +7.79% | | Balance-sheet Strength | +6.40% | | Long Term Equity* | +5.54% | | Market Elephants | +3.24% | | Consistent10* | +3.14% | | Efficient Growth | +2.18% | | IT 3rd Benchers | -3.03% | | Momentum 200 | -5.19% | | Velocity* | -6.05% | Beta For The Win! Sector Performance Yield Curve Interbank Rates Thought to Sum up the Month [iframe src=”http://embed.readtapestry.com/s/kBU8bUWHY/” width=”600″ height=”338″] Saving a little bit more is going to have a bigger impact than telling ourselves a story that we’re the next great hedge fund manager. So why keep wasting time on returns when there are so many other questions we can ask that will make a difference?
+
+[Linked: Reel Life vs. Real Life | https://stockviz.biz/2014/04/04/reel-life-vs-real-life/]
+Jim Jubak, beginning in 1997 and continuing for twelve years, wrote one of the first and ultimately the best-read stock picking column on the Internet, “Jubak’s Journal,” for Microsoft’s MSN Money. His initial boss, a hotshot software guy, said: “If you’re so good as a stock picker why don’t you do what no one else does and issue clear buys and sells and then track the results.” That resulted in what we believe was the first online, daily-priced stock portfolio on the Internet, Jubak’s Picks. In 2010, Jubak apparently decided that investment management looked awfully easy and so launched his own fund. Ben Carlson over @awealthofcs notes: Because these are all intelligent-sounding people, it’s very easy to get sucked into believing every single forecast they put out there. Some will be right some of the time. Most are wrong most of the time. What’s surprising is not that Jubak setup his own mutual fund, but the fact that it still has $16 million in assets. Go figure… Source: Related:
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: About Us | https://stockviz.biz/2012/11/28/about-us/]
+Our Mission The StockViz mission is to make modern investment practices and systems affordable to the average Indian investor to help people trade and invest better. People Shyam Sunder has over 10 years of experience in investment management, analysis and algorithmic trading. He worked at Merrill Lynch as a trader on their ABS CDS desk in New York. Having had to build his own tools specific to the Indian market to help manage his investments better, he founded StockViz to bring those tools to a wider investor base. Follow @ShyamNation Follow @ShyamNation Col Dipanshu Sinha, SM took premature retirement from the Indian Army as a Colonel in the Assam Regiment. Initially specialising as an Army Aviator, he has subsequently served with distinction in frontline infantry roles and has substantial experience in counter-insurgency operations earning his stripes with multiple tours of duty in Kashmir and various appointments in command and staff roles. A graduate of the Defence Services Staff College, Wellington, throughout his career he felt the absence of financial and tax planning information which was accentuated by peculiar service conditions and limited exposure to money management skills training in the regular professional courses. He has been one of the driving forces behind the conceptualisation and establishment of Stockviz and is a co-founder. Dipanshu is responsible for managing day-to-day operations, strategic planning, business development and oversight and policy advice for the firm’s investment activities. Follow @dipanshusinha Follow @dipanshusinha

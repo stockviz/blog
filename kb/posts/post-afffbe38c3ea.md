@@ -1,0 +1,36 @@
+# Simple Momentum with Transaction costs and Taxes
+
+- Difficulty level: 3
+- Published: Fri, 13 Jul 2018 13:34:56 +0000
+- Source: [https://stockviz.biz/2018/07/13/simple-momentum-transaction-costs-taxes/](https://stockviz.biz/2018/07/13/simple-momentum-transaction-costs-taxes/)
+
+## Summary
+
+This document analyzes the impact of transaction costs and taxes on a simple momentum investment strategy from January 2005 through June 2018. Assuming a 25bps net transaction cost and a 10% tax on gains, the analysis reveals that frictional costs reduce gross returns by 82%. Despite having only 17 trades during the period, the 10% tax on gains severely inhibits the compounding effect of the portfolio, demonstrating that taxes rather than transaction costs are the primary detractor from overall strategy performance.
+
+## Article
+
+The earlier post on a simple momentum strategy ignored transaction costs and taxes. Typically, these are added to backtests where gross profits are high enough to consider them for further analysis. However, one of readers requested that we add these costs to get an idea of their effect on returns. To keep things simple, we assumed a 25bps net transaction cost and a 10% tax on gains. The tax part is a bit tricky so we ran the analysis with some simplifying assumptions. Follow the github link to the code if you are curious. Running with these assumptions, transaction costs and taxes lopped 82% off gross returns over Jan 2005 through June 2018. What kills you are the taxes, not the transaction costs. There were only 17 trades throughout the period. It is the 10% tax on gains that ruins the compounding. Code and other charts are on github. Look for ones with a ‘tx’ in the suffix.
+
+## Linked sources
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: Home | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
+
+[Linked: earlier post | https://stockviz.biz/2018/07/11/simple-momentum/]
+Michael Batnick, in his blog titled “Simple Momentum,” proposes a strategy that follows a simple rule: If the S&P 500 outperformed 5-year U.S. treasury notes over the previous twelve months, invest 100% of this portfolio in the S&P 500 in the following month. If the 5-year U.S. treasury notes outperformed the S&P 500 over the previous twelve months, invest 100% of this portfolio in bonds in the following month. It outperformed the S&P 500 with significantly lower drawdowns. Could the same strategy work with Indian indices? We took NIFTY 50 and MIDCAP 100 indices and paired it with the 5-10 year tenure gilts. Returns The strategy returns are significantly lower than a simple buy and hold. December 2004 through June 2018, the NIFTY 50 version of it under performed buy and hold by 6% and the MIDCAP 100 version by 34%. This is before transaction costs and taxes. Here are the cumulative return charts: Drawdowns The simple momentum strategy did have lower peak drawdowns than a buy and hold: What keeps you out of the troughs also ends up keeping you out of the peaks. This is highlighted by how the strategy behaved in 2008 and 2009: Conclusion The simple momentum strategy is perhaps too simple. The backtest doesn’t capture transaction costs and taxes that would further ding the already lagging gross returns. You can peruse the code and the charts used in this blog on github.
+
+[Linked: github | https://github.com/stockviz/blog/tree/master/simple%20momentum]
+Blog posts: Replicated Michael Batnick's simple momentum strategy that switches between the S&P 500 and 5-year U.S. treasuries based on 12-month relative performance, finding the rule-based approach outperforms buy-and-hold. Extended the simple momentum strategy analysis by incorporating transaction costs and taxes, showing that these frictions significantly erode the gross returns and must be accounted for in realistic backtests. backtests a simple dual momentum strategy that switches between equity (NIFTY 50) and bonds based on trailing 12-month relative returns, with and without transaction cost/tax drag - simple.momentum.annual.NIFTY 50.png - simple.momentum.annual.NIFTY MIDCAP 100.png - simple.momentum.annual.tx.NIFTY 50.png - simple.momentum.annual.tx.NIFTY MIDCAP 100.png - simple.momentum.cumulative.NIFTY 50.png - simple.momentum.cumulative.NIFTY MIDCAP 100.png - simple.momentum.cumulative.tx.NIFTY 50.png - simple.momentum.cumulative.tx.NIFTY MIDCAP 100.png - simple.momentum.drawdowns.NIFTY 50.png - simple.momentum.drawdowns.NIFTY MIDCAP 100.png
+
+[Linked: Simple Momentum | https://stockviz.biz/2018/07/11/simple-momentum/]
+Michael Batnick, in his blog titled “Simple Momentum,” proposes a strategy that follows a simple rule: If the S&P 500 outperformed 5-year U.S. treasury notes over the previous twelve months, invest 100% of this portfolio in the S&P 500 in the following month. If the 5-year U.S. treasury notes outperformed the S&P 500 over the previous twelve months, invest 100% of this portfolio in bonds in the following month. It outperformed the S&P 500 with significantly lower drawdowns. Could the same strategy work with Indian indices? We took NIFTY 50 and MIDCAP 100 indices and paired it with the 5-10 year tenure gilts. Returns The strategy returns are significantly lower than a simple buy and hold. December 2004 through June 2018, the NIFTY 50 version of it under performed buy and hold by 6% and the MIDCAP 100 version by 34%. This is before transaction costs and taxes. Here are the cumulative return charts: Drawdowns The simple momentum strategy did have lower peak drawdowns than a buy and hold: What keeps you out of the troughs also ends up keeping you out of the peaks. This is highlighted by how the strategy behaved in 2008 and 2009: Conclusion The simple momentum strategy is perhaps too simple. The backtest doesn’t capture transaction costs and taxes that would further ding the already lagging gross returns. You can peruse the code and the charts used in this blog on github.
+
+[Linked: Tax Drag on Compounding | https://stockviz.biz/2018/08/03/tax-drag-compounding/]
+The long-term capital gains tax on equity returns of 10% may not seem as much but it makes a huge difference if you are one of those “long-term” mutual fund investors who switch funds every year. To think through the effect of the tax on compounded returns, imagine a simple scenario where you invest in the midcap index and just sell and buy it back at the end of every year. In this hypothetical scenario, from the year 2002 through now, gross returns of buy-and-hold would have been 2245% vs. 1754% after tax. That’s ~22% of profits gone poof. Will mutual fund investors be better behaved given this new normal? Code and more charts on github.
+
+[Linked: StockViz | https://stockviz.biz/]
+Invest Without Emotions Had you invested in our {{theme.NAME_PUBLIC}} Theme, you would have made {{numeral(theme.RET).format('#,0.00%')}} in the last {{theme.RET_LB}} days.
