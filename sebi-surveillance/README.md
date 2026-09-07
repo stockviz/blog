@@ -122,6 +122,14 @@ The decile pattern is not monotonic. For first entries, the mean return was nega
 
 The results also show why sample coverage matters. There were 2,663 first-entry events, but only 1,872 had both a usable event-day return and a historical decile. There were 12,333 grade transitions, but only 8,538 had both fields. Missing returns arise when neither the adjusted-price series nor the fallback daily-return series can supply the event date; missing deciles arise when no historical membership record exists on or before the first entry date. The reported p-values therefore describe the covered sample, not every surveillance record.
 
+### ASM and GSM split
+
+The current `SEBI_SURVEILLANCE.STAGE` values encode more than one surveillance family. The report now decodes the plain stages `I` through `VI` as GSM, the `L`-prefixed stages as ASM combinations, and the `Stage I`, `Stage II`, `XXXVI`, and `XXXVII` values as ESM. Exit rows use the preceding active stage so that an exit remains assigned to the family that produced it. The event-level CSV and all decile summary tables include a `measure` column, and the return and volume charts use separate panels for ASM, ESM, and GSM.
+
+The split changes the interpretation of the pooled results. For first-entry returns, the usable GSM sample was 2,037 events with a mean of -0.33%, compared with only 9 ASM events at +0.38% and 47 ESM events at +0.04%. For grade-transition returns, the GSM sample was 5,256 events at +0.42%, the ASM sample was 361 events at +1.14%, and the ESM sample was 3,965 events at +0.28%. The small ASM first-entry sample is not sufficient for a meaningful comparison.
+
+For the decile tests, original market-cap decile was associated with return differences for ASM grade transitions (p = 0.000069) and ESM grade transitions (p = 0.000010), but not GSM grade transitions (p = 0.832). GSM first-entry returns still showed a decile difference (p = 0.0025). These are separate unconditional tests; the apparent family differences may reflect different securities, dates, stages, and sample sizes rather than a causal effect of ASM or GSM.
+
 ## Why a surveillance stock may not be tradable in the usual way
 
 Surveillance does not mean that every order is prohibited. The restriction depends on the specific measure and stage. In practice, “cannot be traded” usually refers to one of four different situations:

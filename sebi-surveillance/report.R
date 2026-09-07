@@ -183,6 +183,16 @@ classify_active <- function(grade, status) {
     !grepl("\\b(exit|exited|out|remove|removed|withdraw|inactive|ceased|closed)\\b", text)
 }
 
+#' Map the encoded surveillance stage to its surveillance family.
+classify_measure <- function(grade) {
+  stage <- toupper(trimws(ifelse(is.na(grade), "", grade)))
+  if (stage %in% c("I", "II", "III", "IV", "V", "VI")) return("GSM")
+  if (stage %in% c("STAGE I", "STAGE II", "XXXVI", "XXXVII")) return("ESM")
+  if (stage %in% c("L", "LI", "LIV", "LV", "LVI", "LVII", "LVIII",
+                   "LXII", "LXIII", "LXIV", "LXV")) return("ASM")
+  NA_character_
+}
+
 #' Convert raw surveillance records into entry, transition, and exit events.
 make_events <- function(raw, cols) {
   # Reduce the source to the fields needed by the state machine. Keeping the
@@ -232,7 +242,15 @@ make_events <- function(raw, cols) {
     }
   }
   if (length(event_rows) == 0) return(data.frame())
-  do.call(rbind, event_rows)
+  events <- do.call(rbind, event_rows)
+
+  # Exit rows carry stage 0, so use the preceding active grade to retain the
+  # surveillance family under which the security exited.
+  events$measure <- vapply(seq_len(nrow(events)), function(i) {
+    stage <- if (events$event_type[i] == "exit") events$from_grade[i] else events$grade[i]
+    classify_measure(stage)
+  }, character(1))
+  events
 }
 
 #' Assign the latest known market-cap decile on or before first surveillance entry.
@@ -315,7 +333,7 @@ decile_levels <- function(x) {
 event_stats <- function(events) {
   groups <- events[is.finite(events$return) & !is.na(events$original_decile), ]
   if (nrow(groups) == 0) return(data.frame())
-  split_groups <- split(groups, list(groups$event_type, groups$original_decile), drop = TRUE)
+  split_groups <- split(groups, list(groups$measure, groups$event_type, groups$original_decile), drop = TRUE)
   rows <- lapply(split_groups, function(d) {
     x <- d$return
     s <- sd(x)
@@ -324,7 +342,7 @@ event_stats <- function(events) {
     # against zero, not whether two deciles differ from each other.
     t_stat <- if (length(x) > 1L && is.finite(s) && s > 0) mean(x) / (s / sqrt(length(x))) else NA_real_
     data.frame(
-      event_type = d$event_type[1], original_decile = d$original_decile[1],
+      measure = d$measure[1], event_type = d$event_type[1], original_decile = d$original_decile[1],
       N = length(x), mean = mean(x) * 100, median = median(x) * 100,
       sd = s * 100, positive_rate = mean(x > 0) * 100,
       t_stat = t_stat,
@@ -334,7 +352,7 @@ event_stats <- function(events) {
   })
   out <- do.call(rbind, rows)
   out$decile_order <- match(out$original_decile, decile_levels(out$original_decile))
-  out <- out[order(out$event_type, out$decile_order), ]
+  out <- out[order(out$measure, out$event_type, out$decile_order), ]
   out$decile_order <- NULL
   out
 }
@@ -343,13 +361,13 @@ event_stats <- function(events) {
 decile_effect_stats <- function(events) {
   groups <- events[is.finite(events$return) & !is.na(events$original_decile), ]
   if (nrow(groups) == 0) return(data.frame())
-  rows <- lapply(split(groups, groups$event_type), function(d) {
+  rows <- lapply(split(groups, list(groups$measure, groups$event_type)), function(d) {
     # Kruskal-Wallis tests compare return distributions across deciles without
     # assuming normality. They are reported separately for each event type.
     d$decile_factor <- factor(d$original_decile)
     kw <- if (nlevels(d$decile_factor) > 1L) kruskal.test(d$return, d$decile_factor) else NULL
     data.frame(
-      event_type = d$event_type[1], N = nrow(d), deciles = nlevels(d$decile_factor),
+      measure = d$measure[1], event_type = d$event_type[1], N = nrow(d), deciles = nlevels(d$decile_factor),
       kruskal_statistic = if (is.null(kw)) NA_real_ else unname(kw$statistic),
       kruskal_p_value = if (is.null(kw)) NA_real_ else kw$p.value,
       stringsAsFactors = FALSE
@@ -362,11 +380,11 @@ decile_effect_stats <- function(events) {
 volume_stats <- function(events) {
   groups <- events[is.finite(events$volume_change) & !is.na(events$original_decile), ]
   if (nrow(groups) == 0) return(data.frame())
-  split_groups <- split(groups, list(groups$event_type, groups$original_decile), drop = TRUE)
+  split_groups <- split(groups, list(groups$measure, groups$event_type, groups$original_decile), drop = TRUE)
   rows <- lapply(split_groups, function(d) {
     x <- d$volume_change
     data.frame(
-      event_type = d$event_type[1], original_decile = d$original_decile[1],
+      measure = d$measure[1], event_type = d$event_type[1], original_decile = d$original_decile[1],
       N = length(x), mean_change = mean(x) * 100, median_change = median(x) * 100,
       sd_change = sd(x) * 100, increased_rate = mean(x > 0) * 100,
       stringsAsFactors = FALSE
@@ -374,7 +392,7 @@ volume_stats <- function(events) {
   })
   out <- do.call(rbind, rows)
   out$decile_order <- match(out$original_decile, decile_levels(out$original_decile))
-  out <- out[order(out$event_type, out$decile_order), ]
+  out <- out[order(out$measure, out$event_type, out$decile_order), ]
   out$decile_order <- NULL
   out
 }
@@ -383,11 +401,11 @@ volume_stats <- function(events) {
 volume_decile_effect_stats <- function(events) {
   groups <- events[is.finite(events$volume_change) & !is.na(events$original_decile), ]
   if (nrow(groups) == 0) return(data.frame())
-  rows <- lapply(split(groups, groups$event_type), function(d) {
+  rows <- lapply(split(groups, list(groups$measure, groups$event_type)), function(d) {
     decile_factor <- factor(d$original_decile)
     kw <- if (nlevels(decile_factor) > 1L) kruskal.test(d$volume_change, decile_factor) else NULL
     data.frame(
-      event_type = d$event_type[1], N = nrow(d), deciles = nlevels(decile_factor),
+      measure = d$measure[1], event_type = d$event_type[1], N = nrow(d), deciles = nlevels(decile_factor),
       kruskal_statistic = if (is.null(kw)) NA_real_ else unname(kw$statistic),
       kruskal_p_value = if (is.null(kw)) NA_real_ else kw$p.value,
       stringsAsFactors = FALSE
@@ -430,6 +448,7 @@ save_charts <- function(events) {
   p <- ggplot(plot_df, aes(x = original_decile, y = return * 100, fill = event_type)) +
     geom_boxplot(outlier.alpha = 0.15, position = position_dodge(width = 0.8)) +
     geom_hline(yintercept = 0, linetype = 2, color = "red") +
+    facet_wrap(~ measure) +
     labs(title = "SEBI Surveillance Event-Day Returns by Original Market-Cap Decile",
          subtitle = sprintf("N=%d events with usable returns | adjusted close, else RETURN_SERIES_ALL", nrow(plot_df)),
          x = "Original market-cap decile", y = "Event-day return (%)", fill = "Event type", caption = "@StockViz") +
@@ -437,11 +456,12 @@ save_charts <- function(events) {
   ggsave(file.path(REPORT_PATH, "event-day-returns-by-decile.png"), p, width = 13, height = 7, dpi = 130)
 
   means <- plot_df |>
-    group_by(event_type, original_decile) |>
+    group_by(measure, event_type, original_decile) |>
     summarise(mean_return = mean(return) * 100, N = n(), .groups = "drop")
   p2 <- ggplot(means, aes(x = original_decile, y = mean_return, color = event_type, group = event_type)) +
     geom_hline(yintercept = 0, linetype = 2, color = "grey40") +
     geom_line(linewidth = 1) + geom_point(size = 2.5) +
+    facet_wrap(~ measure) +
     labs(title = "Mean SEBI Surveillance Event-Day Return by Original Market-Cap Decile",
          subtitle = "Means are shown only for decile/event-type groups with usable event-day returns",
          x = "Original market-cap decile", y = "Mean event-day return (%)", color = "Event type", caption = "@StockViz") +
@@ -459,6 +479,7 @@ save_charts <- function(events) {
     p3 <- ggplot(volume_df, aes(x = original_decile, y = volume_change * 100, fill = event_type)) +
       geom_boxplot(outlier.alpha = 0.15, position = position_dodge(width = 0.8)) +
       geom_hline(yintercept = 0, linetype = 2, color = "red") +
+      facet_wrap(~ measure) +
       labs(title = "SEBI Surveillance Event-Day Volume Change by Original Market-Cap Decile",
            subtitle = sprintf("N=%d events with usable volume | event-day volume relative to prior trading day", nrow(volume_df)),
            x = "Original market-cap decile", y = "Volume change (%)", fill = "Event type", caption = "@StockViz") +
@@ -466,11 +487,12 @@ save_charts <- function(events) {
     ggsave(file.path(REPORT_PATH, "event-day-volume-change-by-decile.png"), p3, width = 13, height = 7, dpi = 130)
 
     volume_means <- volume_df |>
-      group_by(event_type, original_decile) |>
+      group_by(measure, event_type, original_decile) |>
       summarise(mean_change = mean(volume_change) * 100, N = n(), .groups = "drop")
     p4 <- ggplot(volume_means, aes(x = original_decile, y = mean_change, color = event_type, group = event_type)) +
       geom_hline(yintercept = 0, linetype = 2, color = "grey40") +
       geom_line(linewidth = 1) + geom_point(size = 2.5) +
+      facet_wrap(~ measure) +
       labs(title = "Mean SEBI Surveillance Event-Day Volume Change by Decile",
            subtitle = "Event-day volume relative to the prior trading day",
            x = "Original market-cap decile", y = "Mean volume change (%)", color = "Event type", caption = "@StockViz") +
