@@ -329,6 +329,27 @@ decile_levels <- function(x) {
   labels[order(is.na(numeric_labels), numeric_labels, labels)]
 }
 
+#' Remove values beyond three standard deviations for chart display only.
+filter_chart_outliers <- function(df, value_col) {
+  if (nrow(df) == 0) return(df)
+
+  # Estimate the cutoff within each measure/event type so ASM, ESM, and GSM
+  # are not compared against one pooled volatility estimate. Summary CSVs
+  # remain based on the complete, unfiltered event sample.
+  group_key <- interaction(df$measure, df$event_type, drop = TRUE, lex.order = TRUE)
+  keep <- rep(TRUE, nrow(df))
+  for (key in levels(group_key)) {
+    rows <- which(group_key == key)
+    values <- df[[value_col]][rows]
+    centre <- mean(values, na.rm = TRUE)
+    spread <- sd(values, na.rm = TRUE)
+    if (is.finite(spread) && spread > 0) {
+      keep[rows] <- abs(values - centre) <= 3 * spread
+    }
+  }
+  df[keep, , drop = FALSE]
+}
+
 #' Calculate summary statistics by event type and original market-cap decile.
 event_stats <- function(events) {
   groups <- events[is.finite(events$return) & !is.na(events$original_decile), ]
@@ -440,6 +461,8 @@ save_gt_table <- function(df, stem, title, subtitle) {
 save_charts <- function(events) {
   plot_df <- events[is.finite(events$return) & !is.na(events$original_decile), ]
   if (nrow(plot_df) == 0) return(invisible(NULL))
+  plot_df <- filter_chart_outliers(plot_df, "return")
+  if (nrow(plot_df) == 0) return(invisible(NULL))
   # Explicit factor levels prevent lexical ordering such as 1, 10, 2.
   plot_df$original_decile <- factor(
     plot_df$original_decile,
@@ -450,7 +473,7 @@ save_charts <- function(events) {
     geom_hline(yintercept = 0, linetype = 2, color = "red") +
     facet_wrap(~ measure) +
     labs(title = "SEBI Surveillance Event-Day Returns by Original Market-Cap Decile",
-         subtitle = sprintf("N=%d events with usable returns | adjusted close, else RETURN_SERIES_ALL", nrow(plot_df)),
+         subtitle = sprintf("N=%d events after within-family 3-sigma trimming | adjusted close, else RETURN_SERIES_ALL", nrow(plot_df)),
          x = "Original market-cap decile", y = "Event-day return (%)", fill = "Event type", caption = "@StockViz") +
     theme_minimal(base_size = 11)
   ggsave(file.path(REPORT_PATH, "event-day-returns-by-decile.png"), p, width = 13, height = 7, dpi = 130)
@@ -472,6 +495,8 @@ save_charts <- function(events) {
   # avoids comparing raw share counts across companies of very different size.
   volume_df <- events[is.finite(events$volume_change) & !is.na(events$original_decile), ]
   if (nrow(volume_df) > 0) {
+    volume_df <- filter_chart_outliers(volume_df, "volume_change")
+    if (nrow(volume_df) == 0) return(invisible(NULL))
     volume_df$original_decile <- factor(
       volume_df$original_decile,
       levels = decile_levels(volume_df$original_decile)
@@ -481,7 +506,7 @@ save_charts <- function(events) {
       geom_hline(yintercept = 0, linetype = 2, color = "red") +
       facet_wrap(~ measure) +
       labs(title = "SEBI Surveillance Event-Day Volume Change by Original Market-Cap Decile",
-           subtitle = sprintf("N=%d events with usable volume | event-day volume relative to prior trading day", nrow(volume_df)),
+           subtitle = sprintf("N=%d events after within-family 3-sigma trimming | event-day volume relative to prior trading day", nrow(volume_df)),
            x = "Original market-cap decile", y = "Volume change (%)", fill = "Event type", caption = "@StockViz") +
       theme_minimal(base_size = 11)
     ggsave(file.path(REPORT_PATH, "event-day-volume-change-by-decile.png"), p3, width = 13, height = 7, dpi = 130)
