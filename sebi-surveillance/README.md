@@ -124,7 +124,7 @@ Run the diagnostic from the repository root with:
 
     Rscript backtest/backtest.R
 
-Outputs are written only under `backtest/`: `daily_reaction_returns.csv`, `metrics.csv`, `bootstrap_event_mean.csv`, `event_reaction_cumulative_drawdown.png`, `metrics_table.html`, and `metrics_table.png`.
+Outputs are written only under `backtest/`: `daily_reaction_returns.csv`, `metrics.csv`, `bootstrap_event_mean.csv`, `event_reaction_cumulative_drawdown.png`, `metrics_table.html`, and `metrics_table.png`. `metrics_table.png` is the primary visual summary; `metrics_table.html` is the inspectable HTML version. The cumulative/drawdown chart remains available separately as `event_reaction_cumulative_drawdown.png`.
 
 ### Volume findings
 
