@@ -21,6 +21,14 @@ suppressPackageStartupMessages({
 options("scipen" = 100)
 options(stringsAsFactors = FALSE)
 
+# Keep event colors consistent across return and volume charts.
+EVENT_COLORS <- c(
+  exit = "#D55E00",
+  first_entry = "#0072B2",
+  grade_transition = "#009E73",
+  re_entry = "#CC79A7"
+)
+
 # ---------------------------------------------------------------------------
 # Paths and configuration
 # ---------------------------------------------------------------------------
@@ -330,21 +338,28 @@ decile_levels <- function(x) {
 }
 
 #' Remove values beyond three standard deviations for chart display only.
-filter_chart_outliers <- function(df, value_col) {
+filter_chart_outliers <- function(df, value_col, transform = identity) {
   if (nrow(df) == 0) return(df)
 
   # Estimate the cutoff within each measure/event type so ASM, ESM, and GSM
-  # are not compared against one pooled volatility estimate. Summary CSVs
-  # remain based on the complete, unfiltered event sample.
+  # are not compared against one pooled volatility estimate. Use the median
+  # and MAD-based sigma because a mean/standard deviation cutoff can itself be
+  # inflated by the extreme values this function is meant to remove. Summary
+  # CSVs remain based on the complete, unfiltered event sample.
   group_key <- interaction(df$measure, df$event_type, drop = TRUE, lex.order = TRUE)
   keep <- rep(TRUE, nrow(df))
   for (key in levels(group_key)) {
     rows <- which(group_key == key)
-    values <- df[[value_col]][rows]
-    centre <- mean(values, na.rm = TRUE)
-    spread <- sd(values, na.rm = TRUE)
+    values <- transform(df[[value_col]][rows])
+    valid <- is.finite(values)
+    values <- values[valid]
+    centre <- median(values, na.rm = TRUE)
+    spread <- mad(values, center = centre, constant = 1.4826, na.rm = TRUE)
+    if (!is.finite(spread) || spread == 0) spread <- sd(values, na.rm = TRUE)
     if (is.finite(spread) && spread > 0) {
-      keep[rows] <- abs(values - centre) <= 3 * spread
+      row_keep <- rep(TRUE, length(rows))
+      row_keep[valid] <- abs(values - centre) <= 3 * spread
+      keep[rows] <- row_keep
     }
   }
   df[keep, , drop = FALSE]
@@ -472,6 +487,7 @@ save_charts <- function(events) {
     geom_boxplot(outlier.alpha = 0.15, position = position_dodge(width = 0.8)) +
     geom_hline(yintercept = 0, linetype = 2, color = "red") +
     facet_wrap(~ measure) +
+    scale_fill_manual(values = EVENT_COLORS, drop = FALSE) +
     labs(title = "SEBI Surveillance Event-Day Returns by Original Market-Cap Decile",
          subtitle = sprintf("N=%d events after within-family 3-sigma trimming | adjusted close, else RETURN_SERIES_ALL", nrow(plot_df)),
          x = "Original market-cap decile", y = "Event-day return (%)", fill = "Event type", caption = "@StockViz") +
@@ -485,6 +501,7 @@ save_charts <- function(events) {
     geom_hline(yintercept = 0, linetype = 2, color = "grey40") +
     geom_line(linewidth = 1) + geom_point(size = 2.5) +
     facet_wrap(~ measure) +
+    scale_color_manual(values = EVENT_COLORS, drop = FALSE) +
     labs(title = "Mean SEBI Surveillance Event-Day Return by Original Market-Cap Decile",
          subtitle = "Means are shown only for decile/event-type groups with usable event-day returns",
          x = "Original market-cap decile", y = "Mean event-day return (%)", color = "Event type", caption = "@StockViz") +
@@ -495,7 +512,12 @@ save_charts <- function(events) {
   # avoids comparing raw share counts across companies of very different size.
   volume_df <- events[is.finite(events$volume_change) & !is.na(events$original_decile), ]
   if (nrow(volume_df) > 0) {
-    volume_df <- filter_chart_outliers(volume_df, "volume_change")
+    # Volume changes are heavy-tailed. Apply the 3-sigma rule to log volume
+    # ratios so a few very large spikes do not inflate the standard deviation.
+    volume_df <- filter_chart_outliers(
+      volume_df, "volume_change",
+      transform = function(x) log(pmax(1 + x, 1e-6))
+    )
     if (nrow(volume_df) == 0) return(invisible(NULL))
     volume_df$original_decile <- factor(
       volume_df$original_decile,
@@ -505,6 +527,7 @@ save_charts <- function(events) {
       geom_boxplot(outlier.alpha = 0.15, position = position_dodge(width = 0.8)) +
       geom_hline(yintercept = 0, linetype = 2, color = "red") +
       facet_wrap(~ measure) +
+      scale_fill_manual(values = EVENT_COLORS, drop = FALSE) +
       labs(title = "SEBI Surveillance Event-Day Volume Change by Original Market-Cap Decile",
            subtitle = sprintf("N=%d events after within-family 3-sigma trimming | event-day volume relative to prior trading day", nrow(volume_df)),
            x = "Original market-cap decile", y = "Volume change (%)", fill = "Event type", caption = "@StockViz") +
@@ -518,6 +541,7 @@ save_charts <- function(events) {
       geom_hline(yintercept = 0, linetype = 2, color = "grey40") +
       geom_line(linewidth = 1) + geom_point(size = 2.5) +
       facet_wrap(~ measure) +
+      scale_color_manual(values = EVENT_COLORS, drop = FALSE) +
       labs(title = "Mean SEBI Surveillance Event-Day Volume Change by Decile",
            subtitle = "Event-day volume relative to the prior trading day",
            x = "Original market-cap decile", y = "Mean volume change (%)", color = "Event type", caption = "@StockViz") +
