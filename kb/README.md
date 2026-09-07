@@ -31,5 +31,5 @@ Advanced analysis: research requiring comfort with quantitative methods, portfol
 ## [Level 5](level-05.md)
 
 
-Specialist research and implementation: highly technical studies, complex models, code, and research design details. (6 posts).
+Specialist research and implementation: highly technical studies, complex models, code, and research design details. (7 posts).
 
