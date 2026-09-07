@@ -1,5 +1,7 @@
 # SEBI surveillance measures
 
+**Blog**: [SEBI Surveillance Measures](https://stockviz.biz/2026/09/07/sebi-surveillance-measures/)
+
 SEBI and Indian stock exchanges use surveillance measures to monitor securities that show unusual price or volume activity, volatility, weak fundamentals, or other surveillance concerns. The measures are preventive: they alert investors, increase the controls applied to trading, and help protect market integrity. Being placed under surveillance does not, by itself, establish fraud or wrongdoing.[1][2][3]
 
 This README explains the measures most commonly shown as surveillance indicators by brokers. It is an educational overview, not investment advice. Exchange rules, lists, stages, and applicable restrictions can change. Check the latest notice from the relevant exchange before placing an order.
