@@ -110,6 +110,22 @@ The decile analysis provides evidence of differences across original market-cap 
 
 The return-source breakdown was 11,961 observations from `eod_adjusted_nse`, 632 from `RETURN_SERIES_ALL`, and 3,348 without a usable return. The report uses adjusted-close returns first and falls back to the daily return series only when an adjusted-close event return cannot be computed.
 
+## Event-reaction backtest diagnostic
+
+The `backtest/` subfolder contains a reproducible opportunity/risk diagnostic based on the event extract. It aggregates event-day returns into an equal-weight daily reaction series for four views: all events long, entries/transitions long, exits long, and entries/transitions contrarian. It reports cumulative wealth, drawdown, Sharpe, CAGR, maximum drawdown, 5% VaR, 5% CVaR, best/worst day, positive-day rate, event concentration, and cumulative transaction drag.
+
+This is not a causal trading backtest. `surveillance-events.csv` contains the return from the prior close to the event-day close, while the surveillance event is only observable at or after that close. The diagnostic therefore measures the size and tail risk of the observed reaction, not the return available to an investor who trades after seeing the surveillance label. A proper causal backtest needs post-event prices, next-session execution assumptions, liquidity/price-band handling, and transaction costs. The script intentionally does not fabricate those inputs.
+
+The diagnostic uses one available-sample window: 18 September 2020 through 7 September 2026. There is no separate full/post split because the established pre window through 31 December 2019 has no observations. A 50 bps one-way drag is charged once per equal-weight event-date transaction and is included in the daily net returns and metrics. After that drag, entries/transitions long had a -0.24% mean daily return, -57.1% CAGR, -0.82 Sharpe, -99.4% maximum drawdown, -4.94% 5% VaR, and -7.83% 5% CVaR. All-events long had a -0.27% mean daily return, -59.6% CAGR, -0.98 Sharpe, -99.6% maximum drawdown, -4.85% 5% VaR, and -7.75% 5% CVaR. These wealth figures are diagnostic compounding and must not be interpreted as investable returns.
+
+The cumulative transaction drag was 7.43 return points for entries/transitions and 7.48 return points for all events. The event-level bootstrap means remain gross reaction estimates: entries/transitions were 0.29%, with a 95% interval of 0.16% to 0.43%; exits were 0.23%, with an interval of -0.14% to 0.60%. The largest observed daily event reaction was +64.5% gross and the worst was -39.9% gross, while the maximum event count on one date was 208. These tails and concentration measures are the main risk result: a small number of event dates can dominate any naive implementation.
+
+Run the diagnostic from the repository root with:
+
+    Rscript backtest/backtest.R
+
+Outputs are written only under `backtest/`: `daily_reaction_returns.csv`, `metrics.csv`, `bootstrap_event_mean.csv`, `event_reaction_cumulative_drawdown.png`, `metrics_table.html`, and `metrics_table.png`.
+
 ### Volume findings
 
 The report also compares event-day traded volume with the prior trading day's volume using the `v` column in `eod_adjusted_nse`. It does not substitute a volume estimate from `RETURN_SERIES_ALL`, so the volume sample is smaller when the PostgreSQL volume history is missing. There were 9,646 of 15,941 events with both event-day and prior-day volume; after requiring an original decile as well, the usable sample contained 1,761 first entries, 6,159 grade transitions, 349 exits, and 323 re-entries.
