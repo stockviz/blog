@@ -386,6 +386,12 @@ This document examines the relationship between investment observation frequency
 
 [Read the knowledge note](posts/post-327c05309b4a.md) · [Original](https://stockviz.biz/2016/09/05/pain-proportional-frequency-observations/) [2016]
 
+## SEBI Surveillance Measures
+
+This document explores the application and implications of SEBI's Additional Surveillance Measures (ASM) and Graded Surveillance Measures (GSM) frameworks introduced in 2018. It examines how these surveillance mechanisms act as early warning systems by targeting price volatility and weak corporate fundamentals. The text analyzes whether trading around the transitions of stocks entering and exiting these restricted lists can generate trading alpha, ultimately concluding that such an effect is not reliably exploitable due to severe volume drops, narrow price bands, and additional margin requirements that hinder risk management.
+
+[Read the knowledge note](posts/post-5b3beb314237.md) · [Original](https://stockviz.biz/2026/09/07/sebi-surveillance-measures/) [2026]
+
 ## Prophet for Momentum
 
 This article applies Facebook's Prophet forecasting library to monthly stock returns to predict next-month returns and construct a momentum portfolio. It compares the performance of Prophet-based forecasts against a simple linear model and a naive momentum strategy. The results indicate that Prophet performs better than the linear model but still underperforms the naive momentum approach. The article includes code on GitHub and references prior work on linear models for momentum. It assumes familiarity with time series forecasting, momentum strategies, and basic portfolio construction, making it suitable for readers with intermediate knowledge of quantitative finance and machine learning.

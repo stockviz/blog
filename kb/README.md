@@ -19,7 +19,7 @@ Core concepts: essential ideas in markets, portfolio construction, risk, and inv
 ## [Level 3](level-03.md)
 
 
-Applied methods: practical strategies, data interpretation, backtests, and implementation-oriented analysis. (324 posts).
+Applied methods: practical strategies, data interpretation, backtests, and implementation-oriented analysis. (325 posts).
 
 
 ## [Level 4](level-04.md)
