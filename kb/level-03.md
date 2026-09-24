@@ -388,7 +388,7 @@ This document examines the relationship between investment observation frequency
 
 ## SEBI Surveillance Measures
 
-This document explores the application and implications of SEBI's Additional Surveillance Measures (ASM) and Graded Surveillance Measures (GSM) frameworks introduced in 2018. It examines how these surveillance mechanisms act as early warning systems by targeting price volatility and weak corporate fundamentals. The text analyzes whether trading around the transitions of stocks entering and exiting these restricted lists can generate trading alpha, ultimately concluding that such an effect is not reliably exploitable due to severe volume drops, narrow price bands, and additional margin requirements that hinder risk management.
+This document introduces SEBI's surveillance frameworks, namely the Additional Surveillance Measures (ASM) and Graded Surveillance Measures (GSM), established in 2018 to act as early warning systems protecting investors from unusual price volatility and weak corporate fundamentals. The author discusses how these measures create useful no-go zones during portfolio construction because the combined restrictions, such as narrow price bands and additional margin requirements, make effective risk management nearly impossible. It explores whether transitioning stocks in and out of this surveillance list can be exploited for trading alpha, concluding that such an effect is not viable. Additionally, related frameworks like Enhanced Surveillance Measures (ESM) and Trade-to-Trade (T2T) segments are mentioned.
 
 [Read the knowledge note](posts/post-5b3beb314237.md) · [Original](https://stockviz.biz/2026/09/07/sebi-surveillance-measures/) [2026]
 

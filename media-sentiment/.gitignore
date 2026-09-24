@@ -1,0 +1,4 @@
+qwen/models
+__pycache__
+*.key
+*.db

@@ -32,6 +32,12 @@ This article evaluates the Bold Asset Allocation (BAA) strategy, a hybrid model 
 
 [Read the knowledge note](posts/post-f7a22a80b840.md) · [Original](https://stockviz.biz/2026/07/12/bold-asset-allocation/) [2026]
 
+## Filtering and Momentum Signals
+
+This document analyzes a quantitative trading strategy based on trend filtering and momentum signals, originally published in an ICDEIT 2025 paper focusing on two Chinese bank stocks. The author tests whether the strategy generalizes to broader equity universes, specifically Indian and US stocks, by implementing a monthly portfolio adaptation using indicators such as SMA120, EMA12, EMA30, RSI7, and ATR-based risk management. The evaluation contrasts the paper-style event-driven strategy with a standard 365-calendar-day momentum portfolio benchmark. Findings indicate mixed results, with the filter reducing drawdowns in both markets but giving up returns in the US post-period, highlighting the challenges of scaling narrow, overfitted technical strategies to larger cross-sectional universes.
+
+[Read the knowledge note](posts/post-9f4d74ddb092.md) · [Original](https://stockviz.biz/2026/09/17/filtering-and-momentum-signals/) [2026]
+
 ## Practical Momentum – Conclusion
 
 This document concludes a series on executing practical momentum strategies using derivatives and equities within unique market constraints. It recaps key findings: a one-year lookback period is optimal; survivorship bias causes long-short portfolios to underperform long-only counterparts; hedging with single-name put options fails due to option value decay and spreads; and larger long-only portfolios successfully reduce drawdowns while improving overall performance. The article synthesizes that momentum is most effectively executed through a broad basket of stocks rather than mechanical derivative portfolios, marking the culmination of specialist quantitative research and strategy implementation in the Indian market.
