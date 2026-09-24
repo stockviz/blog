@@ -411,7 +411,7 @@ confusion_plot <- ggplot(confusion, aes(x = SENTIMENT_JEV, y = SENTIMENT_QWEN, f
     caption = "@StockViz"
   ) +
   base_theme +
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(), legend.position = "none")
 ggsave(file.path(output_dir, "05_paired_confusion_matrix.png"), confusion_plot, width = 8, height = 7, units = "in", dpi = 160)
 
 paired_percent <- function(group_name) {

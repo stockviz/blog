@@ -1,5 +1,7 @@
 # Media sentiment comparison: Qwen and Jev
 
+**Blog**: [Financial News Sentiment Analysis](https://stockviz.biz/2026/09/24/financial-news-sentiment-analysis-qwen-vs-jev/)
+
 This directory contains two independent sentiment-classification pipelines and an R analysis script that compares their outputs.
 
 The analysis is descriptive. It shows how the two classifiers label this media archive; it does not establish that sentiment causes market returns or that either classifier measures investor sentiment correctly.
@@ -510,3 +512,54 @@ Then report the paired confusion matrix, agreement rate, and disagreement rate. 
 - TypeSafe quick start and API format: https://docs.typesafe.ai/introduction/quickstart
 - TypeSafe Choice primitive: https://docs.typesafe.ai/primitives/choice
 - Nifty Indices historical total-return data: https://www.niftyindices.com/reports/historical-data
+
+## Appendix: interpreting chart 17
+
+`17_sentiment_event_study.png` is an event-study plot. It asks whether index returns were unusual around days with extreme model-assigned sentiment.
+
+### Layout
+
+- Rows are the models: Jev on top and Qwen below.
+- Columns are the three indices: NIFTY 50 TR, NIFTY MIDCAP 150 TR, and NIFTY SMALLCAP 250 TR.
+- The x-axis is trading days relative to the event. `-5` is five trading days before the event, `0` is the event day, and `10` is ten trading days afterward.
+- The y-axis is average cumulative index return relative to the close immediately before the event.
+- The lines represent high-positive and high-negative sentiment events.
+- The shaded regions are approximate 95% confidence intervals around the average path.
+
+### Event definition
+
+Events are defined separately for each model:
+
+```text
+High positive event = daily positive sentiment share in that model's top decile
+High negative event = daily negative sentiment share in that model's top decile
+```
+
+The thresholds are model-specific. A Qwen event and a Jev event therefore do not necessarily represent the same sentiment percentage.
+
+For each event, the script requires five valid trading days before the event and ten valid trading days afterward. The return path is normalized to zero at relative day `-1`. The value at day `0` is the event-day return, while the value at day `10` is the cumulative return from the pre-event baseline through ten trading days after the event.
+
+### Reading the current result
+
+Both high-positive and high-negative events are followed by modestly positive average returns across the displayed indices. At relative day `10`, the average cumulative returns are approximately:
+
+- Jev high-positive events: 0.7% to 0.9%.
+- Jev high-negative events: 0.8% to 1.0%.
+- Qwen high-positive events: 0.9% to 1.1%.
+- Qwen high-negative events: 0.8% to 1.0%.
+
+High-negative sentiment days do not show a clear subsequent market decline. The positive and negative event curves remain fairly close, so the chart does not show strong separation between the two event types.
+
+The appropriate conclusion is that chart 17 does not establish a reliable relationship between extreme media sentiment and subsequent index direction. The positive post-event paths may reflect the general upward drift of the indices, event selection, source composition, or sampling noise.
+
+### Limitations
+
+- Events are selected in-sample.
+- The analysis uses classifier labels rather than human-validated sentiment.
+- Events may overlap.
+- Publication timestamps are not used; only publication dates are used.
+- The study does not control for market regime, volatility, sector exposure, or article volume.
+- It is not a trading strategy.
+- The confidence bands do not correct for multiple event definitions, indices, or horizons.
+
+Chart 17 is therefore a visual diagnostic. It checks whether extreme sentiment days are followed by visibly unusual market paths. In this archive, it shows no clear or robust separation.
