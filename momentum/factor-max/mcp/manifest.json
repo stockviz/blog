@@ -1,0 +1,34 @@
+{
+  "schema_version": "mcp-backtest-v1",
+  "run_id": "factor-momentum-20260925-f3de4481b982",
+  "strategy_id": "factor-momentum",
+  "generated_at_utc": "2026-09-27 04:34:44 UTC",
+  "source_script": "factor-rotation-ew.R",
+  "files": [
+    {
+      "name": "backtest_definition.json",
+      "sha256": "0512df3b3725312b3ce7fc11e0e5bc119134fc82bc14fc9ee440eb509456c0c4",
+      "bytes": 1466
+    },
+    {
+      "name": "backtest_metrics.csv",
+      "sha256": "e72fb793bfc640ac37aff6b4f498f53ac5845ef8b7e84ac8fe1eae39a77d90e0",
+      "bytes": 2987
+    },
+    {
+      "name": "backtest_observations.csv",
+      "sha256": "6999a37050213570c5e7a7f89ce0c2550da654a738a7681b5d66cea5aa0fd4c5",
+      "bytes": 126328
+    },
+    {
+      "name": "annual_returns.csv",
+      "sha256": "dc10014dc474cb2c437de74fa20037725eb78c37bc5cd523dcd6ca268e7ec216",
+      "bytes": 5649
+    },
+    {
+      "name": "drawdown_episodes.csv",
+      "sha256": "f80e9ee0169152a32abc4b445f3ade0a49abfb1a8087f81367ea19babf7e15d9",
+      "bytes": 10916
+    }
+  ]
+}

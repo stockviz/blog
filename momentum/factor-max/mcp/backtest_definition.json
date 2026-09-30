@@ -1,0 +1,42 @@
+{
+  "strategy_id": "factor-momentum",
+  "strategy_name": "Indian MF Factor Momentum",
+  "backtest_label": "factor-rotation-ew",
+  "signal_frequency": "monthly",
+  "signal_rule": "Select the factor with the highest completed prior-calendar-month return.",
+  "execution_rule": "Hold the selected factor during the following calendar month.",
+  "signal_lag": "The prior completed month determines the current month.",
+  "factor_indices": ["NIFTY500 LOW VOLATILITY 50 TR", "NIFTY500 MOMENTUM 50 TR", "NIFTY500 QUALITY 50 TR", "NIFTY500 VALUE 50 TR"],
+  "benchmark": "NIFTY 500 TR",
+  "switch_cost": 0.002,
+  "switch_cost_convention": "Applied once when the selected factor changes.",
+  "return_frequency": "monthly",
+  "annualization_factor": 12,
+  "source_tables": {
+    "factor_prices": "StockViz.dbo.BHAV_INDEX",
+    "benchmark_prices": "StockViz.dbo.BHAV_INDEX"
+  },
+  "source_script": "factor-rotation-ew.R",
+  "selection_policy": "No parameter selection; this is a fixed-rule descriptive backtest.",
+  "windows": {
+    "pre": {
+      "start": null,
+      "end": "2019-12-31"
+    },
+    "post": {
+      "start": "2020-05-01",
+      "end": null
+    },
+    "full": {
+      "start": null,
+      "end": null
+    }
+  },
+  "run_id": "factor-momentum-20260925-f3de4481b982",
+  "generated_at_utc": "2026-09-27 04:34:44 UTC",
+  "coverage_start": "2005-05-31",
+  "coverage_end": "2026-09-25",
+  "observation_count": 771,
+  "metric_count": 9,
+  "drawdown_episode_count": 75
+}

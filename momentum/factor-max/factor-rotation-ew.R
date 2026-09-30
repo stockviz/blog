@@ -13,6 +13,8 @@ library(ggrepel)
 library(patchwork)
 library(gt)
 library(webshot2)
+library(jsonlite)
+library(digest)
 
 options(scipen = 100)
 options(stringsAsFactors = FALSE)
@@ -20,6 +22,11 @@ pdf(NULL)
 
 reportPath <- "."
 source("common.R")
+
+# MCP artifacts are written separately from the human-facing report files. The
+# path can be overridden by MCP_OUTPUT_DIR for a staged upload job.
+mcpOutputPath <- Sys.getenv("MCP_OUTPUT_DIR", unset = file.path(reportPath, "mcp"))
+dir.create(mcpOutputPath, recursive = TRUE, showWarnings = FALSE)
 
 # Fixed colors are reused in every chart and table.
 series_colors <- c(
@@ -257,4 +264,181 @@ annual_returns <- apply.yearly(all_returns, Return.cumulative) |>
 write_csv(annual_returns, file.path(reportPath, "annual_returns.csv"))
 write_csv(bind_rows(all_metrics, .id = "Window"), file.path(reportPath, "metrics_all_windows.csv"))
 
+# Export a versioned, machine-readable contract for the mutual-fund MCP server.
+# The MCP loader consumes these files instead of scraping charts, HTML, or logs.
+as_iso_date <- function(x) {
+  if (length(x) == 0 || is.na(x[[1]])) return(NA_character_)
+  format(as.Date(x[[1]]), "%Y-%m-%d")
+}
+
+run_config <- list(
+  strategy_id = "factor-momentum",
+  strategy_name = "Indian MF Factor Momentum",
+  backtest_label = "factor-rotation-ew",
+  signal_frequency = "monthly",
+  signal_rule = "Select the factor with the highest completed prior-calendar-month return.",
+  execution_rule = "Hold the selected factor during the following calendar month.",
+  signal_lag = "The prior completed month determines the current month.",
+  factor_indices = unname(factorIndices),
+  benchmark = indexBench,
+  switch_cost = drag,
+  switch_cost_convention = "Applied once when the selected factor changes.",
+  return_frequency = "monthly",
+  annualization_factor = 12,
+  source_tables = list(
+    factor_prices = "StockViz.dbo.BHAV_INDEX",
+    benchmark_prices = "StockViz.dbo.BHAV_INDEX"
+  ),
+  source_script = "factor-rotation-ew.R",
+  selection_policy = "No parameter selection; this is a fixed-rule descriptive backtest.",
+  windows = list(
+    pre = list(start = NA_character_, end = "2019-12-31"),
+    post = list(start = "2020-05-01", end = NA_character_),
+    full = list(start = NA_character_, end = NA_character_)
+  )
+)
+
+run_fingerprint <- digest::digest(run_config, algo = "sha256")
+run_id <- sprintf(
+  "factor-momentum-%s-%s",
+  format(as.Date(last(index(all_returns))), "%Y%m%d"),
+  substr(run_fingerprint, 1, 12)
+)
+
+metric_export <- bind_rows(all_metrics, .id = "window") |>
+  mutate(
+    run_id = run_id,
+    strategy_id = run_config$strategy_id,
+    strategy_name = run_config$strategy_name,
+    benchmark = indexBench,
+    coverage_start = vapply(window, function(w) {
+      x <- slice_window(all_returns, windows[[w]]$start, windows[[w]]$end)
+      as_iso_date(first(index(x)))
+    }, character(1)),
+    coverage_end = vapply(window, function(w) {
+      x <- slice_window(all_returns, windows[[w]]$start, windows[[w]]$end)
+      as_iso_date(last(index(x)))
+    }, character(1)),
+    .before = 1
+  )
+write_csv(metric_export, file.path(mcpOutputPath, "backtest_metrics.csv"))
+
+observation_wide <- fortify.zoo(all_returns) |>
+  rename(period_end = Index) |>
+  mutate(
+    run_id = run_id,
+    period_end = as.Date(period_end),
+    period_start = as.Date(format(period_end, "%Y-%m-01")),
+    .before = 1
+  )
+observation_long <- observation_wide |>
+  pivot_longer(
+    cols = all_of(colnames(all_returns)),
+    names_to = "series",
+    values_to = "return"
+  ) |>
+  group_by(run_id, series) |>
+  arrange(period_end, .by_group = TRUE) |>
+  mutate(
+    cumulative_value = cumprod(1 + return),
+    drawdown = cumulative_value / cummax(cumulative_value) - 1
+  ) |>
+  ungroup() |>
+  mutate(
+    strategy_id = run_config$strategy_id,
+    frequency = run_config$return_frequency,
+    series_type = if_else(series == indexBench, "benchmark", "strategy")
+  ) |>
+  select(run_id, strategy_id, series, series_type, frequency,
+         period_start, period_end, return, cumulative_value, drawdown)
+write_csv(observation_long, file.path(mcpOutputPath, "backtest_observations.csv"))
+
+annual_export <- annual_returns |>
+  rename(year_end = Year) |>
+  mutate(run_id = run_id, .before = 1) |>
+  pivot_longer(-c(run_id, year_end), names_to = "series", values_to = "return") |>
+  mutate(year_end = as.Date(year_end))
+write_csv(annual_export, file.path(mcpOutputPath, "annual_returns.csv"))
+
+drawdown_episode_rows <- lapply(split(observation_long, observation_long$series), function(df) {
+  df <- df[order(df$period_end), ]
+  underwater <- df$drawdown < 0
+  if (!any(underwater)) return(tibble())
+  underwater_positions <- which(underwater)
+  groups <- cumsum(c(TRUE, diff(underwater_positions) != 1))
+  episodes <- split(underwater_positions, groups)
+  bind_rows(lapply(seq_along(episodes), function(i) {
+    ep <- episodes[[i]]
+    trough <- ep[which.min(df$drawdown[ep])]
+    recovery_candidates <- which(
+      seq_len(nrow(df)) > ep[length(ep)] &
+        df$cumulative_value >= df$cumulative_value[ep[1]]
+    )
+    recovery <- if (length(recovery_candidates) > 0) recovery_candidates[1] else NA_integer_
+    tibble(
+      run_id = df$run_id[1],
+      strategy_id = df$strategy_id[1],
+      series = df$series[1],
+      series_type = df$series_type[1],
+      episode_number = i,
+      start_date = as_iso_date(df$period_end[ep[1]]),
+      trough_date = as_iso_date(df$period_end[trough]),
+      recovery_date = if (is.na(recovery)) NA_character_ else as_iso_date(df$period_end[recovery]),
+      max_drawdown = min(df$drawdown[ep], na.rm = TRUE),
+      duration_periods = length(ep),
+      recovered = !is.na(recovery)
+    )
+  }))
+})
+drawdown_export <- bind_rows(drawdown_episode_rows)
+write_csv(drawdown_export, file.path(mcpOutputPath, "drawdown_episodes.csv"))
+
+definition_export <- c(
+  run_config,
+  list(
+    run_id = run_id,
+    generated_at_utc = format(Sys.time(), tz = "UTC", usetz = TRUE),
+    coverage_start = as_iso_date(first(index(all_returns))),
+    coverage_end = as_iso_date(last(index(all_returns))),
+    observation_count = nrow(observation_long),
+    metric_count = nrow(metric_export),
+    drawdown_episode_count = nrow(drawdown_export)
+  )
+)
+jsonlite::write_json(
+  definition_export,
+  file.path(mcpOutputPath, "backtest_definition.json"),
+  auto_unbox = TRUE,
+  pretty = TRUE,
+  na = "null"
+)
+
+artifact_names <- c(
+  "backtest_definition.json", "backtest_metrics.csv", "backtest_observations.csv",
+  "annual_returns.csv", "drawdown_episodes.csv"
+)
+artifact_paths <- file.path(mcpOutputPath, artifact_names)
+manifest <- list(
+  schema_version = "mcp-backtest-v1",
+  run_id = run_id,
+  strategy_id = run_config$strategy_id,
+  generated_at_utc = format(Sys.time(), tz = "UTC", usetz = TRUE),
+  source_script = "factor-rotation-ew.R",
+  files = lapply(seq_along(artifact_names), function(i) {
+    list(
+      name = artifact_names[i],
+      sha256 = digest::digest(file = artifact_paths[i], algo = "sha256"),
+      bytes = unname(file.info(artifact_paths[i])$size)
+    )
+  })
+)
+jsonlite::write_json(
+  manifest,
+  file.path(mcpOutputPath, "manifest.json"),
+  auto_unbox = TRUE,
+  pretty = TRUE,
+  na = "null"
+)
+
 cat("Generated factor rotation comparison metrics and charts.\n")
+cat(sprintf("Generated MCP backtest artifacts in %s (run_id=%s).\n", mcpOutputPath, run_id))
